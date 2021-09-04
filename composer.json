@@ -1,0 +1,19 @@
+{
+  "name": "nng/nnrestapi",
+  "type": "typo3-cms-extension",
+  "description": "Rest Api Extension",
+  "authors": [],
+  "require": {
+    "typo3/cms-core": "^9.5 || ^10.0 || ^11.0"
+  },
+    "autoload": {
+    "psr-4": {
+      "Nng\\Nnrestapi\\": "Classes"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Nng\\Nnrestapi\\Tests\\": "Tests"
+    }
+  }
+}

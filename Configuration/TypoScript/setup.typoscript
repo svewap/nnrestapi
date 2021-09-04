@@ -1,0 +1,56 @@
+
+plugin.tx_nnrestapi {
+	view {
+		templateRootPaths {
+			0 = EXT:nnrestapi/Resources/Private/Templates/
+		}
+		partialRootPaths {
+			0 = EXT:nnrestapi/Resources/Private/Partials/
+		}
+		layoutRootPaths {
+			0 = EXT:nnrestapi/Resources/Private/Layouts/
+		}
+	}
+	persistence {
+		storagePid = 
+	}
+	features {
+		#skipDefaultArguments = 1
+		ignoreAllEnableFieldsInBe = 0
+		requireCHashArgumentForActionArguments = 1
+	}
+	mvc {
+		callDefaultActionIfActionCantBeResolved = 1
+	}
+
+	settings {
+		upload {
+			filepath = fileadmin/nnrestapi/
+		}
+	}
+}
+
+plugin.tx_nnrestapi_api < plugin.tx_nnrestapi
+
+nnrestapiApi = PAGE
+nnrestapiApi {
+	config {
+		disableAllHeaderCode = 1
+		debug = 0
+		no_cache = 1
+		additionalHeaders {
+			10 {
+				header = Content-Type: application/json
+				replace = 1
+			}
+		}
+	}
+	typeNum = 20200505
+
+	10 = USER
+	10 {
+		userFunc = TYPO3\CMS\Extbase\Core\Bootstrap->run
+		extensionName = Nnrestapi
+		pluginName = Api
+	}
+}

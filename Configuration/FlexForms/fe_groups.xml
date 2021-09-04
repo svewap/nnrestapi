@@ -1,0 +1,66 @@
+<T3DataStructure>
+	<meta>
+		<langDisable>1</langDisable>
+	</meta>
+	<sheets>
+		<sDEF>
+			<ROOT>
+				<TCEforms>
+					<sheetTitle>Bearbeitung</sheetTitle>
+				</TCEforms>
+				<type>array</type>
+				<el>
+					 <write>
+                        <TCEforms>
+                            <label>Artikel bearbeiten</label>
+                            <config>
+                                <type>select</type>
+                                <renderType>checkboxToggle</renderType>
+                                <items>
+                                    <numIndex index="0" type="array">
+                                        <numIndex index="0">Bearbeitung erlauben</numIndex>
+                                        <numIndex index="1">1</numIndex>
+                                    </numIndex>
+                                </items>
+                            </config>
+                        </TCEforms>
+                    </write>
+
+					 <read>
+                        <TCEforms>
+                            <label>Artikel lesen</label>
+                            <config>
+                                <type>select</type>
+                                <renderType>checkboxToggle</renderType>
+                                <items>
+                                    <numIndex index="0" type="array">
+                                        <numIndex index="0">Lesen erlauben</numIndex>
+                                        <numIndex index="1">1</numIndex>
+                                    </numIndex>
+                                </items>
+                            </config>
+                        </TCEforms>
+                    </read>
+
+					<comment>
+                        <TCEforms>
+                            <label>Artikel kommentieren</label>
+                            <config>
+                                <type>select</type>
+                                <renderType>checkboxToggle</renderType>
+                                <items>
+                                    <numIndex index="0" type="array">
+                                        <numIndex index="0">Kommentieren erlauben</numIndex>
+                                        <numIndex index="1">1</numIndex>
+                                    </numIndex>
+                                </items>
+                            </config>
+                        </TCEforms>
+                    </comment>
+							
+				</el>
+			</ROOT>
+		</sDEF>
+	
+</sheets>
+</T3DataStructure>
