@@ -32,12 +32,30 @@ plugin.tx_nnrestapi {
 
 plugin.tx_nnrestapi_api < plugin.tx_nnrestapi
 
+# Backend Module
+
+module.tx_nnrestapi {
+	view {
+		templateRootPaths {
+			10 = EXT:nnrestapi/Resources/Private/Backend/Templates/
+		}
+		layoutRootPaths {
+			0 = EXT:nnhelpers/Resources/Private/Backend/Layouts/
+			20 = EXT:nnrestapi/Resources/Private/Backend/Layouts/
+		}
+		partialRootPaths {
+			10 = EXT:nnrestapi/Resources/Private/Backend/Partials/
+		}
+	}
+}
+
 nnrestapiApi = PAGE
 nnrestapiApi {
+	typeNum = 20210904
 	config {
 		disableAllHeaderCode = 1
+		admPanel = 0
 		debug = 0
-		no_cache = 1
 		additionalHeaders {
 			10 {
 				header = Content-Type: application/json
@@ -45,12 +63,5 @@ nnrestapiApi {
 			}
 		}
 	}
-	typeNum = 20200505
-
-	10 = USER
-	10 {
-		userFunc = TYPO3\CMS\Extbase\Core\Bootstrap->run
-		extensionName = Nnrestapi
-		pluginName = Api
-	}
+	10 =< tt_content.list.20.nnrestapi_api
 }

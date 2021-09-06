@@ -1,0 +1,24 @@
+<f:layout name="Module"/>
+
+<f:section name="content">
+	
+	<h2>Test endpoints</h2>
+
+	<h2>Configuration for the RouteEnhancer</h2>
+	<nnt3:format.code lang="yaml">
+		{f:render(partial:'RouteEnhancer')}
+	</nnt3:format.code>
+
+	<h2>ViewHelpers</h2>
+	{f:render(partial:'ViewHelpers')}
+
+	<h2>Utilities</h2>
+	{f:render(partial:'Utilities')}
+
+	<h2>Tests</h2>
+	<nnt3:format.code lang="yaml">
+		<f:for each="{link}" as="uri">
+{uri}</f:for>
+	</nnt3:format.code>
+
+</f:section>

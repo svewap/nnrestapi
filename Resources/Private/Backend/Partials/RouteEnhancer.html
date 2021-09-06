@@ -1,0 +1,25 @@
+{parsing off}
+
+routeEnhancers
+  Nnrestapi:
+    type: NnrestapiEnhancer
+    routePath: '/api/{controller}/{action}/{uid}/{param1}/{param2}'
+    limitToPageType: 20210904
+    defaults:
+      controller: 'index'
+      action: 'index'
+      uid: null
+      param1: null
+      param2: null
+    requirements:
+      controller: '[^/]++'
+      action: '[^/]*'
+      uid: '[^/]*'
+      param1: '[^/]*'
+      param2: '[^/]*'
+    _arguments:        
+      controller: 'controller'
+      action: 'action'
+      uid: 'uid'
+      param1: 'param1'
+      param2: 'param2'

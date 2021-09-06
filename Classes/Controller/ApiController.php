@@ -31,7 +31,7 @@ class ApiController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 	public function initializeView( \TYPO3\CMS\Extbase\Mvc\View\ViewInterface $view ) {
 
 		// autoload.php laden
-		\Nng\Nnrestapi\Service\AutoloadService::loadLibraries();
+		//\Nng\Nnrestapi\Service\AutoloadService::loadLibraries();
 
 		$this->sendHeaders();
 
@@ -68,38 +68,20 @@ class ApiController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 	 * 	POST ?type=20200505&controller=feed&uid=1				=> Nng\Nnrestapi\Api\Feed->postEntryAction
 	 * 	POST ?type=20200505&controller=feed&action=some&uid=1	=> Nng\Nnrestapi\Api\Feed->postSomeAction
 	 *	
-	 *	Konfiguration für den RouteEnhancer:
-	 *
-	 *	```
-	 *	routeEnhancers:
-	 *		NnrestapiApi:
-	 *			type: NncalenderEnhancer
-	 *			routePath: '/api/{controller}/{action}/{uid}/{param1}/{param2}'
-	 *			defaults:
-	 *			controller: 'index'
-	 *			action: 'index'
-	 *			uid: ''
-	 *			param1: ''
-	 *			param2: ''
-	 *			_arguments:        
-	 *				controller: 'controller'
-	 *				action: 'action'
-	 *				uid: 'uid'
-	 *				param1: 'param1'
-	 *				param2: 'param2'
-	 *	```
-	 *
 	 */
 	public function indexAction() {
 
 		$httpMethod = $this->request->getMethod();
 		$reqVars = \nn\t3::Request()->GP() ?? [];
 		$payload = json_decode(file_get_contents('php://input'), true) ?: [];
+		
 		if (is_array($payload)) {
 			$reqVars = \nn\t3::Arrays( $reqVars )->merge( $payload );
 		}
 
-		$controllerName = $reqVars['controller'] ?? '';
+		$endpoints = \nn\rest::Endpoint()->getAll();
+
+		$controllerName = ucfirst($reqVars['controller'] ?? '');
 		$actionName = $reqVars['action'] ?: false;
 		$uid = $reqVars['uid'] ?: false;
 		
@@ -145,18 +127,35 @@ class ApiController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 
 		if ($uid) $reqVars['uid'] = $uid;
 
+		// Methode, die aufgerufen werden soll, z.B. `getIndexAction` oder `postSometingAction`
 		$methodName = lcfirst($reqType . ucfirst( $actionName ) . 'Action');
 
-		$controllerClassName = 'Nng\Nnrestapi\Api\\' . ucfirst( $controllerName );
+		$controllerClassName = false;
+		
+		// Über `\nn\rest::Endpoint()->register()` bekannten Controllername mit höchster Prio finden
+		foreach ($endpoints as $endpoint) {
+			if ($namespace = $endpoint['namespace'] ?? false) {
+				$className = rtrim($namespace, '\\') . '\\' . $controllerName;
+				if (method_exists($className, $methodName)) {
+					$controllerClassName = 	$className;
+					break;
+				}
+			}
+		}
+
+		// Methode und/oder Klasse existiert nicht. Fehlermeldung ausgeben
+		if (!$controllerClassName) {
+			$checked = array_map( 
+				function ( $str ) use ($controllerName, $methodName) {
+					return "\\{$str}\\{$controllerName}->{$methodName}()";
+				},
+				\nn\t3::Arrays( $endpoints )->pluck('namespace')->toArray()
+			);
+			return $this->error(404, "Endpoint controller {$controllerName}->{$methodName}() not found. Checked these namespaces: " . join( ', ', $checked ) );
+		}
+
+		// Klasse instanziieren
 		$classInstance = \nn\t3::injectClass( $controllerClassName );
-
-		if (!$classInstance) {
-			return $this->error(404, "Endpoint controller {$controllerName} not found." );
-		}
-
-		if (!method_exists($classInstance, $methodName)) {
-			return $this->error(404, "Method \\{$controllerClassName}->{$methodName}() not found." );
-		}
 		
 		// Rechte prüfen.
 		$ref = new \ReflectionMethod( $controllerClassName, $methodName );
@@ -170,7 +169,7 @@ class ApiController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 		// Nur wenn Annotation `@access public` exisitert wird action von Nicht-Fe-User erlaubt
 		$access = \nn\t3::Arrays($annotations['@access'] ?? '')->trimExplode();
 		if (!in_array('public', $access) && !\nn\t3::FrontendUser()->isLoggedIn()) {
-			return $this->error(403, "{$controllerName}->{$methodName}() no public access." );
+			return $this->error(403, "{$controllerName}->{$methodName}() no public access. Please authenticate to access this endpoint or use @public annotation to mark the endpoint as public accessible." );
 		}
 		
 		$result = $classInstance->{$methodName}( $reqVars, $payload, $methodName ) ?: [];
@@ -187,7 +186,7 @@ class ApiController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 			'status' 	=> $statusCode,
 			'message'	=> $message,
 		];
-		$this->throwStatus($statusCode, null, json_encode($data));
+		$this->throwStatus($statusCode, '', json_encode($data));
 	}
 
 	/**

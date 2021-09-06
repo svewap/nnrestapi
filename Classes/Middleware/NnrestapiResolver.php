@@ -21,6 +21,15 @@ class NnrestapiResolver implements MiddlewareInterface {
 	public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
 
 		return $handler->handle($request);
+		
+		$uri = $request->getUri()->getPath();	// `/api/controller/action/1/2/3`
+		$method = $request->getMethod();		// `GET` / `POST` / `PUT` ...
+
+		\nn\t3::FrontendUser()->login('99grad');
+		
+		\nn\t3::debug($request); die();
+
+		return $handler->handle($request);
 
 		$e = $request->getParsedBody()['e'] ?? $request->getQueryParams()['e'] ?? null;
 
@@ -46,41 +55,6 @@ class NnrestapiResolver implements MiddlewareInterface {
 	 */    
 	public function getRequestedContent ( $request = null ) {
 
-		$_GP = $request->getParsedBody() ?: $request->getQueryParams();
-		
-		$action = $_GP['action'];
-		$uid = (int) $_GP['uid'];
-		$key = $_GP['key'];
-		
-		$mainController = \nn\t3::injectClass( \Nng\Nnrestapi\Controller\MainController::class );
 
-		// ------------------------------------------
-		// Aktionen ohne Authentifizierung
-				
-		if (method_exists($mainController, $action)) {
-			return json_encode($mainController->$action());
-		}
-	
-		
-		// ------------------------------------------
-		// Aktionen mit Validierung
-		
-		if ($action) {
-			die("Validierung fehlgeschlagen.");
-		}
-	
-		if ($action == 'example') {
-			$message = $mainController->approveAction( $uid );
-		}
-
-		if ($message = \nn\t3::Message()->render()) {
-			$message .= '
-				<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-				<link rel="stylesheet" type="text/css" href="'.\nn\t3::Environment()->getBaseURL().'typo3conf/ext/Nnrestapi/Resources/Public/Css/eid.css">
-			';
-			return $message;
-		}
-		
-		return 'MiddleWare action: <b>'.$action.'</b> aufgerufen.';
 	}
 }
