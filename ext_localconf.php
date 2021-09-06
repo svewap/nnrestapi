@@ -21,22 +21,11 @@ call_user_func(
 		// Eigener RouteEnhancer
 		$GLOBALS['TYPO3_CONF_VARS']['SYS']['routing']['enhancers']['NnrestapiEnhancer'] = \Nng\Nnrestapi\Routing\NnrestapiEnhancer::class;
 
-		// Endpoint 
-		
+		// Endpoint		
 		\nn\rest::Endpoint()->register([
 			'priority' 	=> '0',
-			'slug' 		=> 'example',
+			'slug' 		=> 'nnrestapi',
 			'namespace'	=> 'Nng\Nnrestapi\Api'
-		]);
-		\nn\rest::Endpoint()->register([
-			'priority' 	=> '10',
-			'slug' 		=> 'neu',
-			'namespace'	=> 'Nng\Testapi\Api'
-		]);
-		\nn\rest::Endpoint()->register([
-			'priority' 	=> '2',
-			'slug' 		=> 'neu',
-			'namespace'	=> 'Nng\Testapi\Api'
 		]);
 	},
 'nnrestapi');

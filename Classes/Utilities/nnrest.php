@@ -16,8 +16,9 @@ class rest {
 	 * ```
 	 * @return Api
 	 */
-	public static function Api() {
-		return \nn\t3::injectClass(Api::class);
+	public static function Api( $slug = null ) {
+		if (!$slug) return \nn\t3::injectClass(Api::class);
+		return new \Nng\Nnrestapi\Utilities\Api( $slug );
 	}
 
 	/**

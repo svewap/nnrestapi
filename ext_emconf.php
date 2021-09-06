@@ -1,7 +1,7 @@
 <?php
 
 $EM_CONF[$_EXTKEY] = [
-    'title' => 'Nnrestapi',
+    'title' => 'Rest Api',
     'description' => 'Rest Api',
     'category' => 'services',
     'author' => '99grad.de',

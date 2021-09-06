@@ -11,6 +11,15 @@ class ApiController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 {
 
 	/**
+	 * Die Reihenfolge, in der Endpoint-Parameter in der URL übergeben wurden.
+	 * Kann mit `controller` oder dem `slug` beginnen
+	 * `api		/{controller}	/{action}		/{uid}		/{param1}	/...
+	 * `api		/{slug}			/{controller}	/{action}	/{uid}		/...
+     * @var array
+     */
+    protected $pathSegmentOrder = ['controller', 'action', 'uid', 'param1', 'param2', 'param3'];
+
+	/**
      * @var \Nng\Nnrestapi\Mvc\View\JsonView
      */
     protected $view;
@@ -79,13 +88,31 @@ class ApiController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 			$reqVars = \nn\t3::Arrays( $reqVars )->merge( $payload );
 		}
 
+
+		// Prüfen, ob erstes Pfadsegment der URL ein registrierter Slug war, z.B. `api/nnrestapi/test` statt `api/test`
 		$endpoints = \nn\rest::Endpoint()->getAll();
+		$controllerClassName = false;
+
+		foreach ($endpoints as $endpoint) {
+			if (strcasecmp($reqVars['controller'], $endpoint['slug']) == 0) {
+				
+				// `api/{slug}/{controller}/{action}` übergeben statt `api/{controller}/{action}?
+				foreach ($this->pathSegmentOrder as $n=>$key) {
+
+					// Dann Parameter verschieben: `action` enthält `controller`, `uid` enthält `action` etc.
+					$nextVal = $reqVars[$this->pathSegmentOrder[$n+1]] ?? '';
+					$reqVars[$key] = $nextVal;
+				}
+
+				$controllerClassName = rtrim($endpoint['namespace'], '\\') . '\\' . ucfirst( $reqVars['controller'] );
+			} 
+		}
 
 		$controllerName = ucfirst($reqVars['controller'] ?? '');
 		$actionName = $reqVars['action'] ?: false;
 		$uid = $reqVars['uid'] ?: false;
 		
-		$reqType = '';
+		$reqType = 'get';
 
 		switch ($httpMethod) {
 			case 'HEAD':
@@ -117,34 +144,29 @@ class ApiController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 		}
 
 		if ($actionName === false) {
-			if (!$uid) {
-				$reqType = '';
-				$actionName = 'index';
-			} else {
-				$actionName = 'entry';
-			}
+			$actionName = 'index';
 		}
 
 		if ($uid) $reqVars['uid'] = $uid;
 
 		// Methode, die aufgerufen werden soll, z.B. `getIndexAction` oder `postSometingAction`
 		$methodName = lcfirst($reqType . ucfirst( $actionName ) . 'Action');
-
-		$controllerClassName = false;
 		
 		// Über `\nn\rest::Endpoint()->register()` bekannten Controllername mit höchster Prio finden
-		foreach ($endpoints as $endpoint) {
-			if ($namespace = $endpoint['namespace'] ?? false) {
-				$className = rtrim($namespace, '\\') . '\\' . $controllerName;
-				if (method_exists($className, $methodName)) {
-					$controllerClassName = 	$className;
-					break;
+		if (!$controllerClassName || !method_exists($controllerClassName, $methodName)) {
+			foreach ($endpoints as $endpoint) {
+				if ($namespace = $endpoint['namespace'] ?? false) {
+					$className = rtrim($namespace, '\\') . '\\' . $controllerName;
+					if (method_exists($className, $methodName)) {
+						$controllerClassName = 	$className;
+						break;
+					}
 				}
 			}
 		}
 
 		// Methode und/oder Klasse existiert nicht. Fehlermeldung ausgeben
-		if (!$controllerClassName) {
+		if (!$controllerClassName || !method_exists($controllerClassName, $methodName)) {
 			$checked = array_map( 
 				function ( $str ) use ($controllerName, $methodName) {
 					return "\\{$str}\\{$controllerName}->{$methodName}()";
@@ -156,9 +178,10 @@ class ApiController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 
 		// Klasse instanziieren
 		$classInstance = \nn\t3::injectClass( $controllerClassName );
-		
+
 		// Rechte prüfen.
 		$ref = new \ReflectionMethod( $controllerClassName, $methodName );
+
 		preg_match_all('#@(.*?)\n#s', $ref->getDocComment(), $rawAnnotations);
 		$annotations = [];
 		foreach ($rawAnnotations as $annotation) {
@@ -171,7 +194,7 @@ class ApiController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 		if (!in_array('public', $access) && !\nn\t3::FrontendUser()->isLoggedIn()) {
 			return $this->error(403, "{$controllerName}->{$methodName}() no public access. Please authenticate to access this endpoint or use @public annotation to mark the endpoint as public accessible." );
 		}
-		
+
 		$result = $classInstance->{$methodName}( $reqVars, $payload, $methodName ) ?: [];
 		$this->view->assign('data', $result);
 	}

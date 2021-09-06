@@ -8,6 +8,7 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
  * ```
  * {rest:uri.api(controller:'test')}
  * {rest:uri.api(controller:'test', action:'index', uid:123, param1:'one', param2:'two')}
+ * {rest:uri.api(ext:'nnrestapi', controller:'test', action:'index', uid:123, param1:'one', param2:'two')}
  * {rest:uri.api(controller:'test', action:'index', uid:123, param1:'one', param2:'two', type:'20220101')}
  * {rest:uri.api(controller:'test', action:'index', additionalParams:'{a:123}')}
  * ```
@@ -20,6 +21,7 @@ class ApiViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\Uri\PageViewHelper {
 	
 	public function initializeArguments() {
 		parent::initializeArguments();
+        $this->registerArgument('ext', 'string', 'slug für Endpoint, definiert per \nn\rest::Endpoint()->register()', false);
         $this->registerArgument('controller', 'string', 'Controller', false, 'index');
         $this->registerArgument('action', 'string', 'Action', false, 'index');
         $this->registerArgument('uid', 'string', 'uid', false);
@@ -30,7 +32,7 @@ class ApiViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\Uri\PageViewHelper {
 
 	public static function renderStatic( array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext ) {
 
-		$apiArgs = ['controller', 'action', 'uid', 'param1', 'param2'];
+		$apiArgs = ['ext', 'controller', 'action', 'uid', 'param1', 'param2'];
 		$args = ['additionalParams', 'type', 'absolute'];
         
         $linkParams = [];
