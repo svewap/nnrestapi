@@ -1,6 +1,8 @@
 <?php
 
-namespace Nng\Nnrestapi\Routing;
+namespace Nng\Nnrestapi\Routing\Enhancer;
+
+use Nng\Nnrestapi\Routing\Enhancer\VariableProcessor;
 
 use TYPO3\CMS\Core\Site\SiteLanguageAwareTrait;
 use TYPO3\CMS\Core\Routing\PageArguments;
@@ -23,6 +25,11 @@ class NnrestapiEnhancer extends \TYPO3\CMS\Core\Routing\Enhancer\SimpleEnhancer
 	 * @var array
 	 */
 	protected $configuration;
+
+	/**
+     * @var VariableProcessor
+     */
+    protected $variableProcessor;
 
 	/**
 	 * `typeNum`, der für die API verwendet wird. Muss dem Wert im `setup.typoscript` entsprechen.
@@ -53,9 +60,7 @@ class NnrestapiEnhancer extends \TYPO3\CMS\Core\Routing\Enhancer\SimpleEnhancer
 		$parameters = array_intersect_key( $results, array_flip($route->compile()->getPathVariables()) );
 		$routeArguments = $variableProcessor->inflateParameters($parameters, $route->getArguments());
 
-		// Enterne den `cHash` am Ende der URL.
-		$dynamicArguments = [];
-		$staticArguments = ArrayUtility::arrayDiffKeyRecursive($routeArguments, $dynamicArguments);
+		$staticArguments = $routeArguments;
 
 		$page = $route->getOption('_page');
 		$pageId = (int)(isset($page['t3ver_oid']) && $page['t3ver_oid'] > 0 ? $page['t3ver_oid'] : $page['uid']);
@@ -78,7 +83,7 @@ class NnrestapiEnhancer extends \TYPO3\CMS\Core\Routing\Enhancer\SimpleEnhancer
 	protected function getVariant(Route $defaultPageRoute, array $configuration): Route
 	{
 		$typeNum = $this->configuration['limitToPageType'] ?? $this->defaultLimitToPageType;
-		
+
 		$variant = parent::getVariant( $defaultPageRoute, $configuration );
 
 	 	$variant->setOption( '_decoratedParameters', ['type'=>$typeNum]);
@@ -107,5 +112,17 @@ class NnrestapiEnhancer extends \TYPO3\CMS\Core\Routing\Enhancer\SimpleEnhancer
 		$variant->addOptions(['deflatedParameters' => $deflatedParameters]);
 		$collection->add('enhancer_' . spl_object_hash($variant), $variant);
 	}
+
+	/**
+     * @return VariableProcessor
+     */
+    protected function getVariableProcessor(): VariableProcessor
+    {
+        if (isset($this->variableProcessor)) {
+            return $this->variableProcessor;
+        }
+        return $this->variableProcessor = new VariableProcessor();
+    }
+
 
 }

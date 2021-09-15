@@ -2,12 +2,35 @@
 namespace Nng\Nnrestapi\Api;
 
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
+use Nng\Nnrestapi\Mvc\Request;
 
 /**
  * Nnrestapi
  * 
  */
 class AbstractApi {
+
+	/**
+	 * @var Request
+	 */
+	protected $request;
+
+	/**
+	 * @return  Request
+	 */
+	public function getRequest() {
+		return $this->request;
+	}
+
+	/**
+	 * @param   Request  $request  
+	 * @return  self
+	 */
+	public function setRequest($request) {
+		$this->request = $request;
+		return $this;
+	}
+
 
 	/**
 	 * 	Einen Fehler ausgeben
@@ -54,5 +77,6 @@ class AbstractApi {
 	public function errorUnauthorized( $message = '' ) {
 		$this->error(403, $message ?: 'Unauthorized.');
 	}
+
 
 }

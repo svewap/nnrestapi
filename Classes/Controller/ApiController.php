@@ -2,6 +2,7 @@
 namespace Nng\Nnrestapi\Controller;
 
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
+use \Nng\Nnrestapi\Mvc\Response;
 
 /**
  * Nnrestapi
@@ -11,18 +12,14 @@ class ApiController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 {
 
 	/**
-	 * Die Reihenfolge, in der Endpoint-Parameter in der URL übergeben wurden.
-	 * Kann mit `controller` oder dem `slug` beginnen
-	 * `api		/{controller}	/{action}		/{uid}		/{param1}	/...
-	 * `api		/{slug}			/{controller}	/{action}	/{uid}		/...
-     * @var array
-     */
-    protected $pathSegmentOrder = ['controller', 'action', 'uid', 'param1', 'param2', 'param3'];
-
-	/**
      * @var \Nng\Nnrestapi\Mvc\View\JsonView
      */
     protected $view;
+	
+	/**
+     * @var \Nng\Nnrestapi\Mvc\Response
+     */
+    protected $response;
 	
     /**
      * @var string
@@ -31,18 +28,25 @@ class ApiController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 
 
 	/**
+	 * Constructor und Dependeny-Injection
+	 * 
+	 * @return void
+	 */
+	public function __construct( Response $response ) {
+		$this->response = $response;
+	}
+
+	/**
 	 * Initialisierung des Requests.
-	 * Lädt Bibliotheken und Framework für Request.
 	 * 
 	 * Prüft, ob JWT-Token übergeben wurde und authentifiziert den FE-User falls möglich.
 	 * 
+	 * @return void
 	 */
 	public function initializeView( \TYPO3\CMS\Extbase\Mvc\View\ViewInterface $view ) {
 
-		// autoload.php laden
-		//\Nng\Nnrestapi\Service\AutoloadService::loadLibraries();
-
-		$this->sendHeaders();
+		// `access-control` und `content-type` header senden
+		\nn\rest::Header()->sendControls()->sendContentType();
 
 		// Falls kein Login über fe_user-Cookie passiert ist, Json Web Token (JWT) prüfen
 		if (!\nn\t3::FrontendUser()->isLoggedIn()) {
@@ -63,81 +67,24 @@ class ApiController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 	 * 	Prüft, ob der User die Rechte hat, eine Methode aufzurufen.
 	 * 	Wird über die Annotations der Klassen-Methoden gesteuert, z.B.
 	 * 
-	 * 	`@access public` -> Zugriff auch für nicht-feUser erlaubt	
-	 *	
-	 * 	Mit RouteEnhancing:
-	 * 	GET /api/feed/			=>  Nng\Nnrestapi\Api\Feed->indexAction
-	 * 	GET /api/feed/1			=>  Nng\Nnrestapi\Api\Feed->getEntryAction
-	 * 	POST /api/feed/1		=>  Nng\Nnrestapi\Api\Feed->postEntryAction
-	 * 	POST /api/feed/some/1	=>  Nng\Nnrestapi\Api\Feed->postSomeAction
-	 * 
-	 * 	Ohne RouteEnhancing:
-	 * 	GET ?type=20200505&controller=feed						=> Nng\Nnrestapi\Api\Feed->indexAction
-	 * 	GET ?type=20200505&controller=feed&uid=1				=> Nng\Nnrestapi\Api\Feed->getEntryAction
-	 * 	POST ?type=20200505&controller=feed&uid=1				=> Nng\Nnrestapi\Api\Feed->postEntryAction
-	 * 	POST ?type=20200505&controller=feed&action=some&uid=1	=> Nng\Nnrestapi\Api\Feed->postSomeAction
-	 *	
+	 * 	`@access public` -> Zugriff auch für nicht-feUser erlaubt
 	 */
 	public function indexAction() {
 
-		$httpMethod = $this->request->getMethod();
-		$reqVars = \nn\t3::Request()->GP() ?? [];
-		$payload = json_decode(file_get_contents('php://input'), true) ?: [];
+		print_r( \nn\rest::Endpoint()->getClassMap() );
+die();
+
+		$request = new \Nng\Nnrestapi\Mvc\Request( $this->request );
+
+		$reqType = $this->checkRequestType();
+		$reqVars = $request->getArguments();
+		$payload = $request->getBody();
 		
-		if (is_array($payload)) {
-			$reqVars = \nn\t3::Arrays( $reqVars )->merge( $payload );
-		}
-
-
-		// Prüfen, ob erstes Pfadsegment der URL ein registrierter Slug war, z.B. `api/nnrestapi/test` statt `api/test`
-		$endpoints = \nn\rest::Endpoint()->getAll();
-		$controllerClassName = false;
-
-		foreach ($endpoints as $endpoint) {
-			if (strcasecmp($reqVars['controller'], $endpoint['slug']) == 0) {
-				
-				// `api/{slug}/{controller}/{action}` übergeben statt `api/{controller}/{action}?
-				foreach ($this->pathSegmentOrder as $n=>$key) {
-
-					// Dann Parameter verschieben: `action` enthält `controller`, `uid` enthält `action` etc.
-					$nextVal = $reqVars[$this->pathSegmentOrder[$n+1]] ?? '';
-					$reqVars[$key] = $nextVal;
-				}
-
-				$controllerClassName = rtrim($endpoint['namespace'], '\\') . '\\' . ucfirst( $reqVars['controller'] );
-			} 
-		}
-
 		$controllerName = ucfirst($reqVars['controller'] ?? '');
 		$actionName = $reqVars['action'] ?: false;
 		$uid = $reqVars['uid'] ?: false;
+		$extSlug = $reqVars['ext'] ?: false;
 		
-		$reqType = 'get';
-
-		switch ($httpMethod) {
-			case 'HEAD':
-				$reqType = 'head';
-				break;
-			case 'GET':
-				$reqType = 'get';
-				break;
-			case 'POST':
-				$reqType = 'post';
-				break;
-			case 'PUT':
-				$reqType = 'put';
-				break;
-			case 'DELETE':
-				$reqType = 'delete';
-				break;
-			case 'OPTIONS':
-				return $this->noContent();
-				break;
-			default:
-				return $this->success();
-				//$this->error(400, "Bad Request. httpMethod {$httpMethod} not supported.");
-		}
-
 		if (is_numeric($actionName)) {
 			$uid = $actionName;
 			$actionName = false;
@@ -151,9 +98,21 @@ class ApiController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 
 		// Methode, die aufgerufen werden soll, z.B. `getIndexAction` oder `postSometingAction`
 		$methodName = lcfirst($reqType . ucfirst( $actionName ) . 'Action');
-		
+
+		// Alle Endpoints, die in `ext_localconf.php` registriert wurden
+		$endpoints = \nn\rest::Endpoint()->getAll();
+		$endpointsBySlug = \nn\t3::Arrays( $endpoints )->key('slug')->removeEmpty();
+
+		$controllerClassName = false;
+		if ($extSlug && $conf = $endpointsBySlug[$extSlug]) {
+			$controllerClassName = rtrim($conf['namespace'], '\\') . '\\' . $controllerName;
+			if (!method_exists($controllerClassName, $methodName)) {
+				$controllerClassName = false;
+			}
+		}
+
 		// Über `\nn\rest::Endpoint()->register()` bekannten Controllername mit höchster Prio finden
-		if (!$controllerClassName || !method_exists($controllerClassName, $methodName)) {
+		if (!$controllerClassName) {
 			foreach ($endpoints as $endpoint) {
 				if ($namespace = $endpoint['namespace'] ?? false) {
 					$className = rtrim($namespace, '\\') . '\\' . $controllerName;
@@ -162,25 +121,35 @@ class ApiController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 						break;
 					}
 				}
-			}
+			}	
 		}
 
 		// Methode und/oder Klasse existiert nicht. Fehlermeldung ausgeben
-		if (!$controllerClassName || !method_exists($controllerClassName, $methodName)) {
+		if (!$controllerClassName) {
 			$checked = array_map( 
 				function ( $str ) use ($controllerName, $methodName) {
 					return "\\{$str}\\{$controllerName}->{$methodName}()";
 				},
-				\nn\t3::Arrays( $endpoints )->pluck('namespace')->toArray()
+				array_column( $endpoints, 'namespace' )
 			);
 			return $this->error(404, "Endpoint controller {$controllerName}->{$methodName}() not found. Checked these namespaces: " . join( ', ', $checked ) );
 		}
 
 		// Klasse instanziieren
 		$classInstance = \nn\t3::injectClass( $controllerClassName );
+		$classInstance->setRequest( $request );
 
 		// Rechte prüfen.
 		$ref = new \ReflectionMethod( $controllerClassName, $methodName );
+
+		// Wird ein bestimmtes Object erwartet?
+		$modelName = null;
+		$model = $request->getBody();
+		if ($firstParam = array_shift($ref->getParameters())) {
+			if ($expectedClass = $firstParam->getClass()) {
+				$modelName = $expectedClass->getName();
+			}
+		}
 
 		preg_match_all('#@(.*?)\n#s', $ref->getDocComment(), $rawAnnotations);
 		$annotations = [];
@@ -195,55 +164,53 @@ class ApiController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 			return $this->error(403, "{$controllerName}->{$methodName}() no public access. Please authenticate to access this endpoint or use @public annotation to mark the endpoint as public accessible." );
 		}
 
-		$result = $classInstance->{$methodName}( $reqVars, $payload, $methodName ) ?: [];
-		$this->view->assign('data', $result);
+		// Model erzeugen?
+		if ($modelName) {
+			$model = \nn\t3::Convert( $model )->toModel( $modelName );
+		}
+
+		$result = $classInstance->{$methodName}( $model ) ?: [];
+		
+		$this->response->success( $result );
+		//$this->view->assign('data', $result);
 	}
 
-	/**
-	 * Einen Fehler ausgeben
-	 * 
-	 * @return void
-	 */
-	public function error( $statusCode, $message = '' ) {
-		$data = [
-			'status' 	=> $statusCode,
-			'message'	=> $message,
-		];
-		$this->throwStatus($statusCode, '', json_encode($data));
-	}
 
 	/**
-	 * 200 OK
+	 * Prüft den requestType (GET, POST, ...)
+	 * Gibt den requestType in lowerCase zurück.
 	 * 
-	 * @return void 
-	 */
-	public function success( $message = '' ) {
-		$this->error(200, $message ?: 'OK');
-	}
-	
-	/**
-	 * 204 No Content
+	 * Bricht ab, falls requestType unbekannt ist – oder `OPTIONS` verlangt wird.
 	 * 
-	 * @return void 
+	 * @return string
 	 */
-	public function noContent( $message = '' ) {
-		$this->error(204, $message ?: 'No Content');
+	public function checkRequestType() {
+
+		$httpMethod = $this->request->getMethod();
+
+		switch ($httpMethod) {
+			case 'HEAD':
+			case 'GET':
+			case 'POST':
+			case 'PUT':
+			case 'DELETE':
+				return strtolower($httpMethod);
+			case 'OPTIONS':
+				return $this->response->noContent();
+			default:
+				return $this->response->success();
+		}
 	}
 
-	/**
-	 * Header senden.
-	 * 
-	 */
-	public function sendHeaders () {
-		header("Access-Control-Allow-Origin: *");
-		header("Access-Control-Allow-Headers: Origin, X-Requested-With, Access-Control-Allow-Headers, Content-Type, Authorization");
-		header("Access-Control-Allow-Credentials: true");
-		header("Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS");
-		header("Allow: GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS");
-		header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
-		header("Cache-Control: post-check=0, pre-check=0", false);
-		header("Pragma: no-cache");
-		header('Access-Control-Allow-Headers: ' . ($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'] ?? 'origin, x-requested-with, content-type, cache-control'));
-	}
 
+	/**
+	 * Parsed die Annotations zu einer Klasse
+	 * 
+	 * @return array
+	 */
+	public function parseEndpointAnnotations( $className = '', $methodName = '' ) {
+
+		$ref = new \ReflectionMethod( $className, $methodName );
+		// .....
+	}
 }

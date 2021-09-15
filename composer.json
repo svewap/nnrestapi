@@ -15,5 +15,10 @@
     "psr-4": {
       "Nng\\Nnrestapi\\Tests\\": "Tests"
     }
+  },
+  "extra": {
+    "typo3/cms": {
+       "extension-key": "nnrestapi"
+    }
   }
 }

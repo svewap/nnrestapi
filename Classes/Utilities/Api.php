@@ -30,6 +30,7 @@ class Api extends \Nng\Nnhelpers\Singleton {
 
 	/**
 	 * Absoluten Link zur Api generieren.
+	 * 
 	 * Parameter können einzeln in der Reihenfolge der Methode übergeben werden - oder als assoziatives Array
 	 * Beispiele:
 	 * ```
