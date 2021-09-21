@@ -57,7 +57,7 @@ class Response {
 		$status = $this->getStatus();
 		$message = $this->getMessage();
 		
-		$json = \nn\t3::Convert($body)->toJson();
+		$json = \nn\t3::Convert($body)->toJson( 5 );
 
 		$response = $this->responseFactory->createResponse((int)$status, $message);
 		$response->getBody()->write($json);
@@ -70,7 +70,23 @@ class Response {
 	 * @return void
 	 */
 	public function error( $statusCode, $message = '' ) {
-		$this->setStatus($statusCode)->setMessage($message)->send();
+		$this->setStatus($statusCode)->setMessage($message)->send([
+			'status'	=>$statusCode, 
+			'error'		=>$message
+		]);
+	}
+	
+	/**
+	 * Unauthorized Fehler ausgeben
+	 * 
+	 * @return void
+	 */
+	public function unauthorized( $message = '' ) {
+		if (!$message) $message = 'Unauthorized. Please login.';
+		$this->setStatus(403)->setMessage( $message )->send([
+			'status'	=> 403, 
+			'error'		=> $message
+		]);
 	}
 
 	/**

@@ -88,7 +88,7 @@ class TokenService {
 	 * @return string
 	 */
 	public static function getAuthorizationHeader(){
-		
+
 		$headers = null;
 		if (isset($_SERVER['Authorization'])) {
 			$headers = trim($_SERVER['Authorization']);
@@ -103,6 +103,7 @@ class TokenService {
 				$headers = trim($requestHeaders['Authorization']);
 			}
 		}
+
 		return $headers;
 	}
 

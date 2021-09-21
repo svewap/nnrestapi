@@ -1,5 +1,6 @@
 <?php
 
+/*
 $tmpColumns = [
 	'nnrestapi_flexform' => [	
 		'label' => 'Rest-Api CMS Rechte',
@@ -19,7 +20,8 @@ $tmpColumns = [
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes(
 	'fe_groups',
-    '--div--;Rest-Api,nnrestapi_flexform',
+    '--div--;RestAPI,nnrestapi_flexform',
     '',
 	'after:subgroup'
 );
+*/

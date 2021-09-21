@@ -1,15 +1,8 @@
-{parsing off}
-
-# Either use the default configuration:
-imports:
-  - { resource: "EXT:nnrestapi/Configuration/Yaml/default.yaml" }
-
-# Or configure it yourself:
 nnrestapi:
   accessGroups:
     apiUsers: be_users[david,tanja],fe_users[3]
 
-routeEnhancers
+routeEnhancers:
   Nnrestapi:
     type: NnrestapiEnhancer
     routePath: '/api/{controller}/{action}/{uid}/{param1}/{param2}/{param3}'

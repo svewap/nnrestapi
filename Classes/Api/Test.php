@@ -8,20 +8,27 @@ use Nng\Nncalendar\Domain\Repository\EntryRepository;
 /**
  * Nnrestapi
  * 
+ * Beispiele für Routing per @request:
+ * ```
+ * @request /test/demo
+ * @request /test/demo/{uid} 
+ * @request /test/demo/{uid?}
+ * @request /test/demo/{uid}/{test}
+ * @request /test/demo/{uid?}/{test?}
+ * @request GET /test/demo/something
+ * @request GET|POST|PUT /test/demo/something
+ * ```
  */
 class Test extends AbstractApi {
 	
 	/**
 	 * Einfacher Test
 	 * 
-	 * GET test/
-	 * 
-	 * @access public
+	 * @access fe_groups[2]
 	 * @return array
 	 */
-	public function getIndexAction( $params = [], $payload = null )
+	public function getIndexAction()
 	{
-		\nn\t3::debug( $this ); die();
 		$result = ['OK'=>123];
 		return $result;
 	}

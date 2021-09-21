@@ -3,6 +3,7 @@ namespace Nng\Nnrestapi\Controller;
 
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 use \Nng\Nnrestapi\Mvc\Response;
+use TYPO3\ClassAliasLoader\ClassAliasMap;
 
 /**
  * Nnrestapi
@@ -46,7 +47,7 @@ class ApiController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 	public function initializeView( \TYPO3\CMS\Extbase\Mvc\View\ViewInterface $view ) {
 
 		// `access-control` und `content-type` header senden
-		\nn\rest::Header()->sendControls()->sendContentType();
+//		\nn\rest::Header()->sendControls()->sendContentType();
 
 		// Falls kein Login über fe_user-Cookie passiert ist, Json Web Token (JWT) prüfen
 		if (!\nn\t3::FrontendUser()->isLoggedIn()) {
@@ -71,16 +72,13 @@ class ApiController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 	 */
 	public function indexAction() {
 
-		print_r( \nn\rest::Endpoint()->getClassMap() );
-die();
-
 		$request = new \Nng\Nnrestapi\Mvc\Request( $this->request );
 
 		$reqType = $this->checkRequestType();
 		$reqVars = $request->getArguments();
 		$payload = $request->getBody();
 		
-		$controllerName = ucfirst($reqVars['controller'] ?? '');
+		$controllerName = $reqVars['controller'] ?? '';
 		$actionName = $reqVars['action'] ?: false;
 		$uid = $reqVars['uid'] ?: false;
 		$extSlug = $reqVars['ext'] ?: false;
@@ -96,83 +94,64 @@ die();
 
 		if ($uid) $reqVars['uid'] = $uid;
 
-		// Methode, die aufgerufen werden soll, z.B. `getIndexAction` oder `postSometingAction`
-		$methodName = lcfirst($reqType . ucfirst( $actionName ) . 'Action');
+		// Passenden Endpoint finden. `GET test/something` -> \Nng\Nnrestapi\Api\Test->getSomethingAction()`
+		$endpoint = \nn\rest::Endpoint()->find( $reqType, $controllerName, $actionName, $extSlug );
 
-		// Alle Endpoints, die in `ext_localconf.php` registriert wurden
-		$endpoints = \nn\rest::Endpoint()->getAll();
-		$endpointsBySlug = \nn\t3::Arrays( $endpoints )->key('slug')->removeEmpty();
-
-		$controllerClassName = false;
-		if ($extSlug && $conf = $endpointsBySlug[$extSlug]) {
-			$controllerClassName = rtrim($conf['namespace'], '\\') . '\\' . $controllerName;
-			if (!method_exists($controllerClassName, $methodName)) {
-				$controllerClassName = false;
+		if (!$endpoint) {
+			if ($route = \nn\rest::Endpoint()->findForRoute( $reqType, $request->getPath() )) {
+				$endpoint = $route['endpoint'];
+				$request->setArguments($route['arguments']);
 			}
 		}
 
-		// Über `\nn\rest::Endpoint()->register()` bekannten Controllername mit höchster Prio finden
-		if (!$controllerClassName) {
-			foreach ($endpoints as $endpoint) {
-				if ($namespace = $endpoint['namespace'] ?? false) {
-					$className = rtrim($namespace, '\\') . '\\' . $controllerName;
-					if (method_exists($className, $methodName)) {
-						$controllerClassName = 	$className;
-						break;
-					}
-				}
-			}	
+		// Kein Endpoint gefunden? Mit 404 abbrechen.
+		if (!$endpoint) {
+			$checked = array_column( \nn\rest::Endpoint()->getAll(), 'namespace' );
+			$classInfo = ucfirst($controllerName) . '->' . $reqType . ucfirst( $actionName ) . 'Action';
+			return $this->response->error(404, "Endpoint controller {$classInfo}() not found. Checked these namespaces: " . join( ', ', $checked ) );
 		}
 
-		// Methode und/oder Klasse existiert nicht. Fehlermeldung ausgeben
-		if (!$controllerClassName) {
-			$checked = array_map( 
-				function ( $str ) use ($controllerName, $methodName) {
-					return "\\{$str}\\{$controllerName}->{$methodName}()";
-				},
-				array_column( $endpoints, 'namespace' )
-			);
-			return $this->error(404, "Endpoint controller {$controllerName}->{$methodName}() not found. Checked these namespaces: " . join( ', ', $checked ) );
+		// `@api\route` und `@api\access` Annotation beim Instanziieren der Klasse ignorieren, sonst Exception!
+		$ignore = ['route', 'access', 'example'];
+		$annotationNamespace = \Nng\Nnrestapi\Utilities\Endpoint::ANNOTATION_NAMESPACE;
+
+		foreach ($ignore as $v) {
+			\Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName("{$annotationNamespace}{$v}");
 		}
 
-		// Klasse instanziieren
-		$classInstance = \nn\t3::injectClass( $controllerClassName );
+		// Instanz des Endpoints erstellen, z.B. `Nng\Nnrestapi\Api\Test`
+		$classInstance = \nn\t3::injectClass( $endpoint['class'] );
+
 		$classInstance->setRequest( $request );
-
-		// Rechte prüfen.
-		$ref = new \ReflectionMethod( $controllerClassName, $methodName );
-
-		// Wird ein bestimmtes Object erwartet?
-		$modelName = null;
-		$model = $request->getBody();
-		if ($firstParam = array_shift($ref->getParameters())) {
-			if ($expectedClass = $firstParam->getClass()) {
-				$modelName = $expectedClass->getName();
-			}
-		}
-
-		preg_match_all('#@(.*?)\n#s', $ref->getDocComment(), $rawAnnotations);
-		$annotations = [];
-		foreach ($rawAnnotations as $annotation) {
-			$p = explode(' ', $annotation[0], 2);
-			$annotations[trim($p[0])] = trim($p[1]);
-		}
+		$classInstance->setResponse( $this->response );
 
 		// Nur wenn Annotation `@access public` exisitert wird action von Nicht-Fe-User erlaubt
 		$access = \nn\t3::Arrays($annotations['@access'] ?? '')->trimExplode();
-		if (!in_array('public', $access) && !\nn\t3::FrontendUser()->isLoggedIn()) {
-			return $this->error(403, "{$controllerName}->{$methodName}() no public access. Please authenticate to access this endpoint or use @public annotation to mark the endpoint as public accessible." );
+		
+		// Prüft, ob aktueller User Zugriff auf Methode hat
+		if (!$classInstance->checkAccess( $endpoint )) {
+			return $this->response->unauthorized("{$endpoint['class']}->{$endpoint['method']}() has no public access. Please authenticate to access this endpoint or use `@access public` annotation to mark the endpoint as public accessible." );
 		}
+				
+		// Argumente für Methodenaufruf konstruieren
+		if ($arguments = $endpoint['arguments']) {
 
-		// Model erzeugen?
-		if ($modelName) {
-			$model = \nn\t3::Convert( $model )->toModel( $modelName );
+			// Methode möchte ein Argument erhalten `->getSomethingAction( $data )` 
+			$model = $request->getBody();
+
+			// Methode hat eine DI als erstes Argument definiert `->getSomethingAction( \My\Extname\Model $model )`
+			if ($modelName = $arguments[0]['class'] ?? false) {
+				$model = \nn\t3::Convert( $model )->toModel( $modelName );
+			}
+			$result = $classInstance->{$endpoint['method']}( $model ) ?: [];
+
+		} else {
+
+			// Keine Argumente gefordert `->getSomethingAction()` 
+			$result = $classInstance->{$endpoint['method']}() ?: [];
 		}
-
-		$result = $classInstance->{$methodName}( $model ) ?: [];
 		
 		$this->response->success( $result );
-		//$this->view->assign('data', $result);
 	}
 
 
@@ -193,6 +172,7 @@ die();
 			case 'GET':
 			case 'POST':
 			case 'PUT':
+			case 'PATCH':
 			case 'DELETE':
 				return strtolower($httpMethod);
 			case 'OPTIONS':

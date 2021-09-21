@@ -12,13 +12,16 @@ class File extends AbstractApi {
 	/**
 	 * Upload einer Datei
 	 * 
-	 * POST file/upload
-	 * ?type=20200505&controller=file&action=upload
-	 * 
+	 * @api\access fe_users
 	 * @return array
 	 */
 	public function postUploadAction( $params = [], $payload = null )
 	{
+		return [
+			'files' => $this->request->getUploadedFiles(),
+			'data' => $this->request->getBody(),
+		];
+
 		$settings = \nn\t3::Settings()->get('nnrestapi');
 		$filepath = $settings['upload']['filepath'];
 

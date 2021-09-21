@@ -1,0 +1,68 @@
+
+	<div class="testbed py-5 p-4  d-flex flex-column" data-url-base="{urlBase}">
+		
+		<h3>Authenticate</h3>
+
+		<div class="d-flex mb-4 pt-3 login-form" data-auth-url="{rest:uri.api(controller:'auth')}">
+			<input type="text" class="form-control auth-username mr-2" />
+			<input type="password" class="form-control auth-password mr-2" />
+			<button class="btn btn-primary">Login</button>
+		</div>
+
+		<h3>Create a Request</h3>
+
+		<div class="d-flex mb-2 pt-3 request-form">
+			<input type="hidden" class="requid" />
+			<f:form.select class="reqtype" options="{get:'GET', post:'POST', put:'PUT', delete:'DELETE'}" value="get" />
+			<input type="text" class="form-control requrl" placeholder="enter URL to test" />
+			<button class="btn btn-primary ml-2">Submit</button>
+		</div>
+
+		<div class="request-panel mb-4">
+			<ul class="nav nav-tabs">
+				<li class="nav-item">
+					<a class="nav-link active" data-toggle="tab" data-bs-toggle="tab" data-target=".compose-body" data-bs-target=".compose-body">Body</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" data-toggle="tab" data-bs-toggle="tab" data-target=".compose-files" data-bs-target=".compose-files">Files</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" data-toggle="tab" data-bs-toggle="tab" data-target=".compose-auth" data-bs-target=".compose-auth">Auth</a>
+				</li>
+			</ul>
+			<div class="tab-content">
+				<div class="tab-pane compose-body show active">
+					<div class="body">
+						<textarea class="form-control reqbody" placeholder='{"key":"value", ...}'></textarea>
+					</div>			
+				</div>
+				<div class="tab-pane compose-files show active">
+					<div class="files p-3">
+						<input type="file" multiple="1" class="form-control reqfiles" />
+					</div>			
+				</div>
+				<div class="tab-pane compose-auth">
+					<div class="auth p-3">
+						<div class="d-flex align-items-center">
+							<label>JSON Web Token (JWT)</label>
+							<input type="text" class="form-control reqtoken" value="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOjF9.ZGJkYTQ4YTI0MGZiNmIxZjg2ODYxOTE0YTk5Nzk2YTJkNjNlZDhhNGViYjEwNDBlODAzYmI3YmNlYTQ1NzVkYQ==" />
+						</div>
+						<div class="d-flex align-items-center">
+							<label>fe_typo_user Cookie</label>
+							<input type="text" class="form-control reqcookie" value="123" />
+						</div>
+					</div>			
+				</div>
+			</div>	
+		</div>
+
+		<div class="result-panel h-100 d-flex flex-column">
+			<div class="rescode px-3">
+				Status: <span></span>
+			</div>
+			<div class="result">
+				<pre class="mt-0"><code class="resbody language-json">Click „submit“ to show results.</code></pre>
+			</div>
+			<div class="exception"></div>
+		</div>
+	</div>

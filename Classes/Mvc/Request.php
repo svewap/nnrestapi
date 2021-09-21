@@ -23,6 +23,11 @@ class Request {
     protected $arguments = [];
 
     /**
+     * @var array
+     */
+    protected $uploadedFiles = [];
+
+    /**
      * @var string
      */
     protected $acceptedLanguage = '';
@@ -33,17 +38,40 @@ class Request {
     protected $mvcRequest;
 
 
+	/**
+	 * Wrapper für den Standard-Typo3-Request.
+	 * 
+	 * Wandelt den `TYPO3\CMS\Extbase\Mvc\Request` in eine für unsere Zwecke
+	 * bessere / einfachere Form um mit normalisierten gettern/settern.
+	 * 
+	 */
     public function __construct( $request ) {
+
         $this->setArguments( $request->getQueryParams() );
         $this->setMvcRequest( $request );
-        
-        $this->rawBody = $request->getBody()->getContents();
-        $this->body = json_decode( $this->rawBody, true ) ?: [];
+
+		$this->rawBody = $request->getBody()->getContents();
+
+		// Bei `multipart/form-data`: JSON befindet sich an anderer Stelle, weil auch Dateien/Filedata übertragen wurde
+		if (!$this->rawBody && $body = $request->getParsedBody()) {
+			$this->rawBody = json_decode($body['json'] ?? '', true);
+		}
+
+		$this->uploadedFiles = $request->getUploadedFiles() ?: [];
+
+        $this->body = json_decode( $this->rawBody, true ) ?: $this->rawBody ?: [];
 
         $header = $this->mvcRequest->getHeaders()['accept-language'] ?? [];
         $this->acceptedLanguage = strtolower(substr($header[0] ?? '', 0, 2));
     }
 
+	/**
+	 * @return  arguments
+	 */
+	public function getUploadedFiles() {
+		return $this->uploadedFiles;
+	}
+	
 	/**
 	 * @return  arguments
 	 */
@@ -56,7 +84,7 @@ class Request {
 	 * @return  self
 	 */
 	public function setArguments($arguments) {
-		$this->arguments = $arguments;
+		$this->arguments = array_merge( $this->arguments, $arguments );
 		return $this;
 	}
 
@@ -99,6 +127,14 @@ class Request {
 		return $this;
 	}
 
+	/**
+	 * @return string
+	 */
+	public function getPath() {
+		$path = rtrim($this->mvcRequest->getUri()->getPath(), '/');
+		return $path;
+	}
+	
 	/**
 	 * @return  array
 	 */

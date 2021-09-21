@@ -64,17 +64,22 @@ class Api extends \Nng\Nnhelpers\Singleton {
 			$mergedArgs['type'] = 20210904;
 		}
 
+		$defaultEndpoint = \nn\rest::Endpoint()->find( true, $mergedArgs['controller'], $mergedArgs['action'] );
+
 		// `param2` wird zu `param3` verschoben, `controller` wird zu `action` etc.
 		if ($mergedArgs['ext'] ?? false) {
-			$argsToShift = array_reverse(array_slice($argsOrder, 0, -1));
-			foreach ($argsToShift as $n=>$key) {
-				if ($prevKey = $argsToShift[$n+1] ?? false) {
-					$mergedArgs[$key] = $mergedArgs[$prevKey];
+						
+			if ($mergedArgs['ext'] != $defaultEndpoint['slug']) {
+				$argsToShift = array_reverse(array_slice($argsOrder, 0, -1));
+				foreach ($argsToShift as $n=>$key) {
+					if ($prevKey = $argsToShift[$n+1] ?? false) {
+						$mergedArgs[$key] = $mergedArgs[$prevKey];
+					}
 				}
-			}
-			$mergedArgs['controller'] = $mergedArgs['ext'];
-			if ($mergedArgs['uid'] == 'index') {
-				unset($mergedArgs['uid']);
+				$mergedArgs['controller'] = $mergedArgs['ext'];
+				if ($mergedArgs['uid'] == 'index') {
+					unset($mergedArgs['uid']);
+				}
 			}
 		}
 		unset($mergedArgs['ext']);

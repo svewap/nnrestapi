@@ -1,0 +1,48 @@
+
+<div class="endpoints p-4">	
+
+	<h2>Endpoints</h2>
+
+	<f:for each="{endpoints}" key="reqType" as="endpoints">
+		<f:for each="{endpoints}" key="identifier" as="registrations">
+
+			<f:for each="{registrations}" key="extname" as="config">
+
+				{f:if(condition:config.route, then:'{absApiUrlPrefix}/{config.route.path}', else:'{rest:uri.api(controller:config.controller, action:config.action, ext:extname)}')->f:variable(name:'uri')}
+
+				{f:variable(name:'relUri', value:'{uri->nnt3:format.replace(from:urlBase, to:\'\')}')}
+
+				{f:variable(name:'title', value:'{uri->nnt3:format.replace(from:urlBase, to:\'\')}')}
+
+				<div class="request mb-2" 
+					data-uid="{reqType}/{relUri}"
+					data-reqtype="{reqType}" 
+					data-requrl="{relUri}"
+					data-example="{config.annotations.example}">
+
+					<rest:widget.accordion reqType="{reqType}" title="{title}" class="nice-thing">
+
+						{config.comment->f:format.raw()}
+
+						<f:if condition="{config.annotations.example}">
+							<div class="example">
+								<b>Example data:</b>
+								<nnt3:format.code lang="json">					
+									{config.annotations.example->f:format.raw()}
+								</nnt3:format.code>		
+							</div>
+						</f:if>
+
+						<b>This endpoint is mapped to:</b>
+						<nnt3:format.code lang="none">
+							{config.class}->{config.method}()
+						</nnt3:format.code>
+
+					</rest:widget.accordion>
+			
+				</div>
+			</f:for>
+		</f:for>
+	</f:for>
+
+</div>

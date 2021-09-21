@@ -1,0 +1,30 @@
+<f:comment>
+
+        POST {rest:uri.api(controller:'user', action:'auth')}
+	
+		<h2>Authorziation Bearer Token not arriving in PHP?</h2>
+		<nnt3:format.code lang="yaml">	
+			RewriteEngine On
+			RewriteCond %{HTTP:Authorization} ^(.*)
+			RewriteRule .* - [e=HTTP_AUTHORIZATION:%1]
+		</nnt3:format.code>
+
+			
+		<h2>Configuration for the RouteEnhancer</h2>
+		<nnt3:format.code lang="yaml">
+			{f:render(partial:'RouteEnhancer')}
+		</nnt3:format.code>
+	
+		<h2>ViewHelpers</h2>
+		{f:render(partial:'ViewHelpers')}
+	
+		<h2>Utilities</h2>
+		{f:render(partial:'Utilities')}
+	
+		<h2>Tests</h2>
+		<nnt3:format.code lang="yaml">
+			<f:for each="{link}" as="uri">
+	{uri}</f:for>
+		</nnt3:format.code>
+	
+</f:comment>

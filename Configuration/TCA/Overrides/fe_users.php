@@ -17,7 +17,7 @@ $tmpColumns = [
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes(
 	'fe_users',
-    '--div--;Caligari,nnrestapi_jwt',
+    '--div--;RestAPI,nnrestapi_jwt',
     '',
 	''
 );

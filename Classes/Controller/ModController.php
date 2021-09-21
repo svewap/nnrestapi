@@ -34,12 +34,14 @@ class ModController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController {
 		if (!$view->getModuleTemplate()) return;
 		
 		$pageRenderer = $view->getModuleTemplate()->getPageRenderer();
-		
-        $pageRenderer->loadRequireJsModule('TYPO3/CMS/Nnrestapi/NnrestapiBackendModule');
 
+		$pageRenderer->loadRequireJsModule('TYPO3/CMS/Nnrestapi/Axios');
+        $pageRenderer->loadRequireJsModule('TYPO3/CMS/Nnrestapi/Nnrestapi');
+		
 		$pageRenderer->addCssFile('typo3conf/ext/nnhelpers/Resources/Public/Vendor/prism/prism.css');
+
+		$pageRenderer->addJsFile('typo3conf/ext/nnrestapi/Resources/Public/Vendor/axios.min.js');
 		$pageRenderer->addJsFile('typo3conf/ext/nnhelpers/Resources/Public/Vendor/prism/prism.js');
-		$pageRenderer->addJsFile('typo3conf/ext/nnhelpers/Resources/Public/Vendor/prism/prism.download.js');
 
         $template = $view->getModuleTemplate();
         $template->setFlashMessageQueue($this->controllerContext->getFlashMessageQueue());
@@ -66,7 +68,17 @@ class ModController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController {
 		
 // $url = $site->getRouter()->generateUri( 3, ['controller'=>'controller'.time(), 'action'=>'action', 'uid'=>'1', 'param1'=>'2', 'param2'=>'3'] );
 // \nn\t3::debug($url);
+
+		$classMap = \nn\rest::Endpoint()->getClassMapWithDocumentation();
+//\nn\t3::debug($classMap);
+
+		$urlBase = \nn\t3::Environment()->getBaseUrl();
+
 		$this->view->assignMultiple([
+			'urlBase'			=> $urlBase,
+			'absApiUrlPrefix'	=> $urlBase . rtrim(\nn\rest::Endpoint()->getApiUrlPrefix(), '/'),
+			'endpoints' 		=> $classMap,
+			/*
 			'test' 	    => 123,
 			'settings' 	=> $settings,
             'link'      => [
@@ -91,6 +103,7 @@ class ModController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController {
                 \nn\rest::Api('nnrestapi')->uri(['controller'=>'controller' ]),
                 \nn\rest::Api('nnrestapi')->uri([]),
             ]
+			*/
 		]);
 
 		return $this->view->render();

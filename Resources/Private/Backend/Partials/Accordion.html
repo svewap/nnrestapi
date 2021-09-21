@@ -1,0 +1,19 @@
+
+<article class="{class}">
+    <div class="card">
+        <div class="card-header p-0">
+            <h2 class="mb-0 d-flex align-items-center">
+                <a href="#" class="d-flex align-items-center w-100 py-2 px-3" data-toggle="collapse" data-target="#{uniqid}" data-bs-toggle="collapse" data-bs-target="#{uniqid}">
+                    <i class="req-type req-type-{reqType}"></i>
+                    {title->f:format.raw()}
+                </a>
+                <a href="#" class="compose ml-auto px-3 fas fa-share-alt"></a>
+            </h2>
+        </div>
+        <div id="{uniqid}" class="collapse">
+            <div class="card-body p-text">
+                {renderedChildren->f:format.raw()}
+            </div>
+        </div>        
+    </div>
+</article>
