@@ -20,6 +20,21 @@ class Request {
     /**
      * @var array
      */
+    protected $endpoint = [];
+
+    /**
+     * @var array
+     */
+    protected $settings = [];
+
+    /**
+     * @var array
+     */
+    protected $feUser = [];
+
+    /**
+     * @var array
+     */
     protected $arguments = [];
 
     /**
@@ -54,12 +69,13 @@ class Request {
 
 		// Bei `multipart/form-data`: JSON befindet sich an anderer Stelle, weil auch Dateien/Filedata übertragen wurde
 		if (!$this->rawBody && $body = $request->getParsedBody()) {
-			$this->rawBody = json_decode($body['json'] ?? '', true);
+			$this->rawBody = json_decode( $body['json'] ?? '', true );
+			$this->body = is_array($this->rawBody) ? $this->rawBody : json_decode( $this->rawBody, true );
+		} else {
+			$this->body = json_decode( $this->rawBody, true ) ?: $this->rawBody ?: [];
 		}
 
 		$this->uploadedFiles = $request->getUploadedFiles() ?: [];
-
-        $this->body = json_decode( $this->rawBody, true ) ?: $this->rawBody ?: [];
 
         $header = $this->mvcRequest->getHeaders()['accept-language'] ?? [];
         $this->acceptedLanguage = strtolower(substr($header[0] ?? '', 0, 2));
@@ -148,6 +164,54 @@ class Request {
 	 */
 	public function setBody($body) {
 		$this->body = $body;
+		return $this;
+	}
+
+	/**
+	 * @return  array
+	 */
+	public function getSettings() {
+		return $this->settings;
+	}
+
+	/**
+	 * @param   array  $settings  
+	 * @return  self
+	 */
+	public function setSettings($settings) {
+		$this->settings = $settings;
+		return $this;
+	}
+
+	/**
+	 * @return  array
+	 */
+	public function getEndpoint() {
+		return $this->endpoint;
+	}
+
+	/**
+	 * @param   array  $endpoint  
+	 * @return  self
+	 */
+	public function setEndpoint($endpoint) {
+		$this->endpoint = $endpoint;
+		return $this;
+	}
+
+	/**
+	 * @return  array
+	 */
+	public function getFeUser() {
+		return $this->feUser;
+	}
+
+	/**
+	 * @param   array  $feUser  
+	 * @return  self
+	 */
+	public function setFeUser($feUser) {
+		$this->feUser = $feUser;
 		return $this;
 	}
 }

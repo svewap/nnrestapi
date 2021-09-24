@@ -3,13 +3,22 @@
     border-radius: 0;
 }
 
+.form-control {
+    height: 2.25rem;
+}
+
 .form-control:focus {
     box-shadow: none;
     border-color: #ced4da;
 }
 
 h3 {
-    font-size: 1.4rem;
+    font-size: 1.1rem;
+}
+
+h2 {
+    font-size: 1.2rem;
+    font-weight: 600;
 }
 
 .testbed {
@@ -59,8 +68,9 @@ h3 {
     font-size: 0.8rem;
 }
 
-[data-target=".compose-body"], .compose-body, [data-target=".compose-files"], .compose-files {
-    
+
+.files {
+    color: #000;
 }
 
 .endpoints {
@@ -103,6 +113,11 @@ h3 {
     height: 100%;
 }
 
+.reqbody {
+    font-family: Consolas,Monaco,'Andale Mono','Ubuntu Mono',monospace;
+    font-size: 0.9rem;
+}
+
 .resbody {
     min-height: 250px;
     overflow-y: auto;
@@ -114,7 +129,7 @@ h3 {
 }
 
 .card-header {
-    background: #e9e9e9;
+    background: linear-gradient(45deg, #e8e8e8, #f4f4f4);
 }
 .card-header a {
     display: flex !important;
@@ -137,38 +152,130 @@ h3 {
     margin: 0 10px 0 0;
 }
 
-.req-type-get:before {
+.endpoints .req-type-get:before {
     content: 'get';
     background: #60aefe;
 }
-.req-type-post:before {
+.endpoints .req-type-post:before {
     content: 'post';
     background: #4acb91;
 }
-.req-type-put:before {
+.endpoints .req-type-put:before {
     content: 'put';
     background: #fba12f;
 }
-.req-type-patch:before {
+.endpoints .req-type-patch:before {
     content: 'patch';
     background: #4fe2c2;
 }
-.req-type-delete:before {
+.endpoints .req-type-delete:before {
     content: 'del';
     background: #f93f3e;
 }
-select.reqtype-get {
+.req-type-get .reqtype {
     background: #60aefe;
 }
-select.reqtype-post {
+.req-type-post .reqtype {
     background: #4acb91;
 }
-select.reqtype-put {
+.req-type-put .reqtype {
     background: #fba12f;
 }
-select.reqtype-patch {
+.req-type-patch .reqtype {
     background: #4fe2c2;
 }
-select.reqtype-delete {
+.req-type-delete .reqtype {
     background: #f93f3e;
+}
+.req-type-get [data-target=".compose-body"], 
+.req-type-get [data-target=".compose-files"] {
+    text-decoration: line-through !important;  
+    opacity: 0.6;  
+}
+.req-type-get .compose-body, 
+.req-type-get .compose-files {
+    opacity: 0.8;
+    pointer-events: none;
+}
+
+
+.url {
+    position: relative;
+}
+
+.progress-bar {
+    position: absolute;
+    z-index: 10;
+    pointer-events: none;
+    height: 4px;
+    bottom: 0;
+    left: 0;
+    display: none;
+    background: #cabf39;
+}
+
+.loading .progress-bar {
+    display: block;
+}
+
+
+.testbed .spinner {
+    display: none;
+    color: #fff;
+}
+
+.loading .spinner {
+   display: block;
+}
+
+.loading .result-panel {
+    opacity: 0.2;
+}
+
+b, strong {
+    font-weight: 600;
+}
+
+.access-list {
+    list-style: none;
+    margin: 0;
+    padding: 2px 0 0 0;
+    display: flex;
+    align-items: center;
+    font-size: 0.9rem;
+}
+
+.access-list li {
+    padding: 0 15px 0 0;
+}
+.access-list i {
+    margin-right: 5px;
+}
+
+.table-sm td, .table-sm th {
+   padding: 0.3rem 0.7rem;
+}
+
+.auth-form {
+    opacity: 0;
+    transition: 0.2s all;
+}
+
+.logout .form-control {
+    background: #000;
+    border: 1px solid #000;
+    color: #fff;
+}
+
+.feuser-loaded .auth-form {
+    opacity: 1;
+}
+.auth-form .logout {
+    display: none;
+}
+.feuser-exists .auth-form .logout {
+    display: block;
+}
+.feuser-exists .auth-form .login {
+    display: none;
 }

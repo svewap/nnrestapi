@@ -76,7 +76,6 @@ class ApiController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 
 		$reqType = $this->checkRequestType();
 		$reqVars = $request->getArguments();
-		$payload = $request->getBody();
 		
 		$controllerName = $reqVars['controller'] ?? '';
 		$actionName = $reqVars['action'] ?: false;
@@ -111,8 +110,13 @@ class ApiController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 			return $this->response->error(404, "Endpoint controller {$classInfo}() not found. Checked these namespaces: " . join( ', ', $checked ) );
 		}
 
+		// $request mit Konfigurationen anreichern
+		$request->setSettings( \nn\t3::Settings()->get('tx_nnrestapi') );
+		$request->setEndpoint( $endpoint );
+		$request->setFeUser( \nn\t3::FrontendUser()->getCurrentUser() );
+
 		// `@api\route` und `@api\access` Annotation beim Instanziieren der Klasse ignorieren, sonst Exception!
-		$ignore = ['route', 'access', 'example'];
+		$ignore = ['route', 'access', 'example', 'distiller', 'upload'];
 		$annotationNamespace = \Nng\Nnrestapi\Utilities\Endpoint::ANNOTATION_NAMESPACE;
 
 		foreach ($ignore as $v) {
@@ -132,9 +136,12 @@ class ApiController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 		if (!$classInstance->checkAccess( $endpoint )) {
 			return $this->response->unauthorized("{$endpoint['class']}->{$endpoint['method']}() has no public access. Please authenticate to access this endpoint or use `@access public` annotation to mark the endpoint as public accessible." );
 		}
-				
+
+		// Prüft, ob Dateiuploads existieren. Ersetzt `UPLOAD://file-x` mit Pfad zu Upload-Dateien
+		\nn\rest::File()->processFileUploadsInRequest( $request );
+		
 		// Argumente für Methodenaufruf konstruieren
-		if ($arguments = $endpoint['arguments']) {
+		if ($arguments = $endpoint['args']) {
 
 			// Methode möchte ein Argument erhalten `->getSomethingAction( $data )` 
 			$model = $request->getBody();
@@ -151,6 +158,13 @@ class ApiController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 			$result = $classInstance->{$endpoint['method']}() ?: [];
 		}
 		
+		// Distiller definiert?
+		if ($distiller = $endpoint['distiller'] ?? false) {
+			if ($distillerInstance = \nn\t3::injectClass( $distiller )) {
+				$distillerInstance->processData( $result );
+			}
+		}
+
 		$this->response->success( $result );
 	}
 

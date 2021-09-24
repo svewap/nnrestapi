@@ -11,11 +11,15 @@ class User extends AbstractApi {
 	
 
 	/**
-	 * GET user	-> get current fe_user
-	 * ?type=20200505&controller=user
+	 * ## Get the current FrontendUser.
 	 * 
-	 * @access fe_users
-	 * @return mixed
+	 * Returns the currently logged in `fe_user`.
+	 * If no user is logged in, an empty array will be returned.
+	 * 
+	 * @api\access public
+	 * @api\distiller Nng\Nnrestapi\Distiller\FeUserDistiller
+	 * 
+	 * @return array
 	 */
 	public function getIndexAction()
 	{

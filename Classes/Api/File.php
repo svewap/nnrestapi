@@ -12,7 +12,9 @@ class File extends AbstractApi {
 	/**
 	 * Upload einer Datei
 	 * 
+	 * @api\example {"images":[{"publicUrl":"UPLOAD:file-0"}, {"publicUrl":"UPLOAD:file-1"}]}
 	 * @api\access fe_users
+	 * 
 	 * @return array
 	 */
 	public function postUploadAction( $params = [], $payload = null )

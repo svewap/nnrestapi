@@ -75,6 +75,7 @@ class ModController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController {
 		$urlBase = \nn\t3::Environment()->getBaseUrl();
 
 		$this->view->assignMultiple([
+			'feUser'			=> \nn\t3::FrontendUser()->get(),
 			'urlBase'			=> $urlBase,
 			'absApiUrlPrefix'	=> $urlBase . rtrim(\nn\rest::Endpoint()->getApiUrlPrefix(), '/'),
 			'endpoints' 		=> $classMap,

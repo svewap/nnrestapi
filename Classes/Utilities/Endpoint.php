@@ -305,9 +305,15 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 					}
 				}
 				
-				// Wer darf die Methode aufrufen?
+				// Distiller definiert? z.B. `@api\distiller Nng\Nnrest\My\Distiller`
+				$distiller = ltrim( $annotations['distiller'] ?? '', '\\');
+
+				// Wer darf die Methode aufrufen? `@api\access fe_users`
 				$accessList = $this->parseAccessRights( $annotations['access'] );
-				
+
+				// Welche Konfiguration für Datei-Uploads? `@api\uploads myconfig`
+				$uploadConfig = $annotations['upload'] ?? 'default';
+
 				$routeDefinition = !$route ? false : [
 					'path' 	=> $route,
 					'match'	=> $routeRegex,
@@ -317,6 +323,8 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 				$routeData = [
 					'route'			=> $routeDefinition,
 					'access'		=> $accessList,
+					'distiller'		=> $distiller,
+					'uploadConfig'	=> $uploadConfig,
 					'slug'			=> $slug,
 					'method'		=> $method->name,
 					'class' 		=> $className,

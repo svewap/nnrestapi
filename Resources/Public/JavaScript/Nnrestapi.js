@@ -12,7 +12,7 @@ define(['jquery', 'TYPO3/CMS/Nnrestapi/Axios'], function($, axios) {
 	 * Authenticate
 	 * 
 	 */	
-	$('.login-form button').click(() => {
+	$('.login-btn').click(() => {
 		var url = $('[data-auth-url]').data().authUrl;
 		var username = $('.auth-username').val();
 		var password = $('.auth-password').val();
@@ -21,11 +21,39 @@ define(['jquery', 'TYPO3/CMS/Nnrestapi/Axios'], function($, axios) {
 
 		sendRequest( 'post', url, {username, password} ).then(( data ) => {
 			saveInStorage('fe_typo_user_jwt', data.token || '').then(() => {
-				updateCredentialsFromStorage();
+				updateCredentialsFromStorage().then( updateFeUserStatus );
 			});
 		});
 	});
 
+	/**
+	 * Logout
+	 * 
+	 */	
+	$('.logout-btn').click(() => {
+		var url = $('[data-logout-url]').data().logoutUrl;
+		sendRequest( 'get', url ).then(( data ) => {
+			saveInStorage('fe_typo_user_jwt', '').then(() => {
+				updateCredentialsFromStorage().then( updateFeUserStatus );
+			});
+		});	
+	});
+
+	/**
+	 * Update User Status
+	 * 
+	 */
+	function updateFeUserStatus() {
+		$testbed.removeClass('feuser-loaded');
+		var url = $('[data-user-url]').data().userUrl;
+		sendRequest( 'get', url, null, true ).then(( data ) => {
+			console.log( data );
+			$testbed.addClass('feuser-loaded');
+			$('.logout .username').text( data.username );
+			$testbed.toggleClass('feuser-exists', data.uid > 0);
+		});	
+	}
+	
 	/**
 	 * Testformular: 
 	 * Request an API senden
@@ -47,9 +75,10 @@ define(['jquery', 'TYPO3/CMS/Nnrestapi/Axios'], function($, axios) {
 	});
 
 	$testbed.find('.reqtype').change(function () {
+		var classes = 'req-type-get req-type-post req-type-put req-type-path req-type-delete';
 		var reqType = $(this).val();
-		$(this).attr({class:'reqtype'});
-		$(this).addClass('reqtype-' + reqType);
+		$testbed.removeClass(classes);
+		$testbed.addClass('req-type-' + reqType);
 	}).change();
 
 
@@ -57,11 +86,14 @@ define(['jquery', 'TYPO3/CMS/Nnrestapi/Axios'], function($, axios) {
 	 * 
 	 */
 	function updateCredentialsFromStorage() {
-		var cookieName = 'fe_typo_user';
-		var cookie = document.cookie.match('(^|;)\\s*' + cookieName + '\\s*=\\s*([^;]+)')?.pop() || '';
-		getFromStorage('fe_typo_user_jwt').then((token) => {
-			$('.reqtoken').val( token );
-			$('.reqcookie').val( cookie );	
+		return new Promise((resolve, reject) => {
+			var cookieName = 'fe_typo_user';
+			var cookie = document.cookie.match('(^|;)\\s*' + cookieName + '\\s*=\\s*([^;]+)')?.pop() || '';
+			getFromStorage('fe_typo_user_jwt').then((token) => {
+				$('.reqtoken').val( token );
+				$('.reqcookie').val( cookie );	
+				resolve();
+			});	
 		});
 	}
 
@@ -70,7 +102,7 @@ define(['jquery', 'TYPO3/CMS/Nnrestapi/Axios'], function($, axios) {
 	 * Request senden.
 	 * 
 	 */
-	function sendRequest( reqType, url, body ) {
+	function sendRequest( reqType, url, body, silent = false ) {
 
 		return new Promise((resolve, reject) => {
 
@@ -78,7 +110,8 @@ define(['jquery', 'TYPO3/CMS/Nnrestapi/Axios'], function($, axios) {
 			var cookie	= $('.reqcookie').val();
 
 			document.cookie = `fe_typo_user=${cookie}; Path=/`;
-	
+			$testbed.addClass('loading');
+
 			var config 	= {
 				headers: {
 					'Content-Type': 'multipart/form-data',
@@ -86,7 +119,7 @@ define(['jquery', 'TYPO3/CMS/Nnrestapi/Axios'], function($, axios) {
 				},
 				onUploadProgress: function (e) {
 					var percentCompleted = Math.round((e.loaded * 100) / e.total);
-					console.log(percentCompleted);
+					$('.progress-bar').css({width: `${percentCompleted}%`});
 				}
 			};
 	 
@@ -96,6 +129,8 @@ define(['jquery', 'TYPO3/CMS/Nnrestapi/Axios'], function($, axios) {
 
 			var formData = new FormData();
 			var imagefile = $('.reqfiles')[0];
+			var fileprefix = $('.reqfilekey').val();
+			
 			var uploadImages = [];
 
 			for (var i in imagefile.files) {
@@ -103,7 +138,7 @@ define(['jquery', 'TYPO3/CMS/Nnrestapi/Axios'], function($, axios) {
 				var file = imagefile.files[i];
 				var fileName = file.name;
 
-				var fileIdentifier = `file-${i}`;
+				var fileIdentifier = `${fileprefix}-${i}`;
 				formData.append( fileIdentifier , file);
 /*
 				if (typeof file == 'object') {
@@ -132,8 +167,10 @@ define(['jquery', 'TYPO3/CMS/Nnrestapi/Axios'], function($, axios) {
 					$('.rescode span').text( response.status );
 					$testbed.toggleClass('show-exception', showHtml);
 
-					showResult( response.data );
-					resolve( response.data );
+					if (!silent) {
+						showResult( response.data );
+					}
+					resolve( response.data );	
 				})
 				.catch(({response}) => {
 
@@ -142,8 +179,12 @@ define(['jquery', 'TYPO3/CMS/Nnrestapi/Axios'], function($, axios) {
 	
 					$('.rescode span').text( `[${response.status}] ${response.statusText}` );
 	
-					showResult(  response.data );
+					if (!silent) {
+						showResult( response.data );
+					}
 					resolve( response.data );
+				}).finally(() => {
+					$testbed.removeClass('loading');
 				});
 				
 		});
@@ -175,8 +216,6 @@ define(['jquery', 'TYPO3/CMS/Nnrestapi/Axios'], function($, axios) {
 		Prism.highlightElement( $('.resbody')[0] );
 	}
 
-	updateCredentialsFromStorage();
-
 
 	/**
 	 * Daten aus der localStorage laden.
@@ -201,4 +240,13 @@ define(['jquery', 'TYPO3/CMS/Nnrestapi/Axios'], function($, axios) {
 			resolve();
 		});
 	}
+
+	/**
+	 * Init
+	 * 
+	 */
+	updateCredentialsFromStorage().then(() => {
+		updateFeUserStatus();
+	});
+
 });

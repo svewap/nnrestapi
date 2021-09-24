@@ -1,4 +1,7 @@
 
+# ------------------------------------------------
+# Plugin configuration 
+
 plugin.tx_nnrestapi {
 	view {
 		templateRootPaths {
@@ -24,15 +27,38 @@ plugin.tx_nnrestapi {
 	}
 
 	settings {
-		upload {
-			filepath = fileadmin/nnrestapi/
+
+		# Default upload-paths for fileuploads
+		fileUploads {
+
+			// Use this key in your endpoint annotation "@api\upload default"
+			default {
+
+				// if nothing else fits, use fileadmin/api/
+				defaultStoragePath = 1:/api/
+
+				// Optional: Use a custom class to return configuration
+				//pathFinderClass = Nng\Nnrestapi\Helper\UploadPathHelper::getUserUidPath
+
+				// target-path for file, file-0, file-1, ...
+				file = 1:/api/tests/
+			}		
 		}
+
+		# Idea for future version: Implement a per-user configuration
+		/*
+		fe_users {
+			1.fileUploads.default.defaultStoragePath = 1:/group
+		}
+		*/
 	}
 }
 
 plugin.tx_nnrestapi_api < plugin.tx_nnrestapi
 
-# Backend Module
+
+# ---------------------------------------------------
+# Backend module
 
 module.tx_nnrestapi {
 	view {
@@ -48,6 +74,10 @@ module.tx_nnrestapi {
 		}
 	}
 }
+
+
+# ---------------------------------------------------
+# pageType definition
 
 nnrestapiApi = PAGE
 nnrestapiApi {

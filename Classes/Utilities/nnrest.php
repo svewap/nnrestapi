@@ -4,6 +4,7 @@ namespace nn;
 
 use Nng\Nnrestapi\Utilities\Api;
 use Nng\Nnrestapi\Utilities\Endpoint;
+use Nng\Nnrestapi\Utilities\File;
 use Nng\Nnrestapi\Utilities\Header;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -30,6 +31,16 @@ class rest {
 	 */
 	public static function Endpoint() {
 		return \nn\t3::injectClass(Endpoint::class);		
+	}
+	
+	/**
+	 * ```
+	 * \nn\rest::File()->methodName();
+	 * ```
+	 * @return File
+	 */
+	public static function File() {
+		return \nn\t3::injectClass(File::class);		
 	}
 	
 	/**

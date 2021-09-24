@@ -25,7 +25,7 @@
 						{config.comment->f:format.raw()}
 
 						<f:if condition="{config.annotations.example}">
-							<div class="example">
+							<div class="example mb-4">
 								<b>Example data:</b>
 								<nnt3:format.code lang="json">					
 									{config.annotations.example->f:format.raw()}
@@ -33,10 +33,31 @@
 							</div>
 						</f:if>
 
-						<b>This endpoint is mapped to:</b>
-						<nnt3:format.code lang="none">
-							{config.class}->{config.method}()
-						</nnt3:format.code>
+						<div class="classinfos mb-2">
+							<b>Class infos:</b>
+							<table class="table mt-2 table-bordered table-sm">
+								<tr>
+									<td>Access:</td>
+									<td>{config.access->rest:list.access()}</td>
+								</tr>
+								<tr>
+									<td>Target:</td>
+									<td><code>{config.class}->{config.method}()</code></td>
+								</tr>
+								<f:if condition="{config.distiller}">
+									<tr>
+										<td>Distiller:</td>
+										<td><code>{config.distiller}</code></td>
+									</tr>	
+								</f:if>
+								<f:if condition="{config.uploadConfig}">
+									<tr>
+										<td>Upload-Config:</td>
+										<td><code>{config.uploadConfig}</code></td>
+									</tr>	
+								</f:if>
+							</table>
+						</div>
 
 					</rest:widget.accordion>
 			

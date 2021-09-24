@@ -5,15 +5,20 @@ use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /**
  * Nnrestapi
- * 
+ *
  */
 class Auth extends AbstractApi {
 	
 	/**
-	 * Authenticate a frontend-user (`fe_user`).
+	 * ## Authenticate a frontend-user (`fe_user`).
+	 * 
+	 * Login of a frontend user. Returns a JWT token and sets the `fe_typo3_user`-cookie.
+	 * The RESTApi will try to login the frontend-user using the cookie. If this fails, e.g.
+	 * because of cross-domain-cookie restrictions, it will use the JWT. 
 	 *
-	 * @api\example {"username":"david", "password":"99grad"}
+	 * @api\example {"username":"david", "password":"mypassword"}
 	 * @api\access public
+	 * @api\distiller Nng\Nnrestapi\Distiller\FeUserDistiller
 	 * 
 	 * @return mixed
 	 */
@@ -27,30 +32,24 @@ class Auth extends AbstractApi {
 		}
 
 		$token = \Nng\Nnrestapi\Service\TokenService::create(['uid'=>$feUser['uid']]);
+		
 		\nn\t3::Db()->update('fe_users', ['nnrestapi_jwt'=>$token], $feUser['uid']);
+		$feUser['nnrestapi_jwt'] = $token;
 
-		$result = [
-			'token'	=> $token,
-			'user'	=> [
-				'uid' => $feUser['uid'],
-				'email' => $feUser['email'],
-				'firstname' => $feUser['first_name'],
-				'lastname' => $feUser['last_name'],
-				'username' => $feUser['username'],
-				'usergroups' => \nn\t3::Arrays($feUser['usergroup'])->intExplode(),
-			] 
-		];
-		return $result;
+		return $feUser;
 	}
 
+
 	/**
-	 * Logout a user.
+	 * ## Logout the current FrontendUser.
 	 * 
-	 * @api\route GET auth/log_me_out/{uid}/{something}
+	 * Will unset the user-session and cookie and delete the JWT token for the user in the database.
+	 * 
+	 * @api\access public
 	 * 
 	 * @return mixed
 	 */
-	public function greatLogoutAction()
+	public function getLogoutAction()
 	{
 		$feUser = \nn\t3::FrontendUser()->getCurrentUser();
 		if (!$feUser) return [];
