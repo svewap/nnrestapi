@@ -55,24 +55,24 @@ class Response {
 
 	/**
 	 * 
-	 * @throws PropagateResponseException
 	 */
 	public function render( $body = [] ) {
 
 		$body = $body ?: $this->getBody();
 		$status = $this->getStatus();
 		$message = $this->getMessage();
-		
-		$json = \nn\t3::Convert($body)->toJson( 5 );
-		$this->response->setStatus( $status, $message );
 
-		/*		
-		$response = $this->responseFactory->createResponse((int)$status, $message);
-		$response->getBody()->write($json);
-		throw new PropagateResponseException($response, 1476045871);
-		*/
-		
-		return $json;
+		$json = \nn\t3::Convert($body)->toJson( 5 );
+
+		if (\nn\t3::t3Version() < 11) {
+			$this->response->setStatus( $status, $message );
+			return $json;
+		}
+
+		$this->response->withStatus( $status, $message );
+		$this->response->getBody()->write($json);
+
+		return $this->response;		
 	}
 	
 	/**

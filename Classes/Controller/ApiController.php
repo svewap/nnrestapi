@@ -60,10 +60,12 @@ class ApiController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 	public function indexAction() {
 
 		$t3Request = \nn\t3::t3Version() < 11 ? $GLOBALS['TYPO3_REQUEST'] : $this->request; 
-		$request = new \Nng\Nnrestapi\Mvc\Request( $t3Request );
-		$response = new \Nng\Nnrestapi\Mvc\Response( $this->response );
+		$t3Response = \nn\t3::t3Version() < 11 ? $this->response : $this->responseFactory->createResponse();
 
-		$reqType = $this->checkRequestType();
+		$request = new \Nng\Nnrestapi\Mvc\Request( $t3Request );
+		$response = new \Nng\Nnrestapi\Mvc\Response( $t3Response );
+
+		$reqType = $this->checkRequestType( $request, $response );
 		$reqVars = $request->getArguments();
 		
 		$controllerName = $reqVars['controller'] ?? '';
@@ -170,34 +172,23 @@ class ApiController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 	 * 
 	 * @return string
 	 */
-	public function checkRequestType() {
+	public function checkRequestType( $request, $response ) {
 
-		$httpMethod = $this->request->getMethod();
+		$httpMethod = $request->getMethod();
 
 		switch ($httpMethod) {
-			case 'HEAD':
-			case 'GET':
-			case 'POST':
-			case 'PUT':
-			case 'PATCH':
-			case 'DELETE':
-				return strtolower($httpMethod);
-			case 'OPTIONS':
-				return $this->response->noContent();
+			case 'head':
+			case 'get':
+			case 'post':
+			case 'put':
+			case 'patch':
+			case 'delete':
+				return $httpMethod;
+			case 'options':
+				return $response->noContent();
 			default:
-				return $this->response->success();
+				return $response->success();
 		}
 	}
 
-
-	/**
-	 * Parsed die Annotations zu einer Klasse
-	 * 
-	 * @return array
-	 */
-	public function parseEndpointAnnotations( $className = '', $methodName = '' ) {
-
-		$ref = new \ReflectionMethod( $className, $methodName );
-		// .....
-	}
 }

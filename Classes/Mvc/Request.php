@@ -146,6 +146,13 @@ class Request {
 	/**
 	 * @return string
 	 */
+	public function getMethod() {
+		return strtolower( $this->mvcRequest->getMethod() );
+	}
+	
+	/**
+	 * @return string
+	 */
 	public function getPath() {
 		$path = rtrim($this->mvcRequest->getUri()->getPath(), '/');
 		return $path;

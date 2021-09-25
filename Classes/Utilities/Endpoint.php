@@ -297,7 +297,9 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 				$methodArgs = [];
 				if ($arguments = $methodReflection->getParameters()) {
 					foreach ($arguments as $argument) {
-						if ($expectedClass = $argument->getClass()) {
+						//$expectedClass = $argument->getClass();
+						$expectedClass = $argument->getType() && !$argument->getType()->isBuiltin() ? new \ReflectionClass($argument->getType()->getName()) : null;
+						if ($expectedClass) {
 							$methodArgs[] = [
 								'class' => $expectedClass->getName()
 							];
@@ -309,7 +311,7 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 				$distiller = ltrim( $annotations['distiller'] ?? '', '\\');
 
 				// Wer darf die Methode aufrufen? `@api\access fe_users`
-				$accessList = $this->parseAccessRights( $annotations['access'] );
+				$accessList = $this->parseAccessRights( $annotations['access'] ?? '' );
 
 				// Welche Konfiguration für Datei-Uploads? `@api\uploads myconfig`
 				$uploadConfig = $annotations['upload'] ?? 'default';
@@ -468,7 +470,7 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 				}
 
 				// `be_users` oder `fe_users`
-				if (!$accessList[$v]) {
+				if (!isset($accessList[$v])) {
 					$accessList[$v] = [];
 				}
 
