@@ -1,5 +1,5 @@
 <?php
-namespace Nng\Nnrestapi\ViewHelpers\List;
+namespace Nng\Nnrestapi\ViewHelpers\Format;
 
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use Nng\Nnhelpers\ViewHelpers\AbstractViewHelper;
@@ -8,8 +8,8 @@ use Nng\Nnhelpers\ViewHelpers\AbstractViewHelper;
  * Grafische Listung der Benutzergruppen / Zugriffsrechte eines Endpoints
  * 
  * ```
- * {access->rest:list.access()}
- * {rest:list.access(access:'...')}
+ * {access->rest:format.access()}
+ * {rest:format.access(access:'...')}
  * ```
  * 
  */

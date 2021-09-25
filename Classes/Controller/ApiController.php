@@ -17,25 +17,12 @@ class ApiController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
      */
     protected $view;
 	
-	/**
-     * @var \Nng\Nnrestapi\Mvc\Response
-     */
-    protected $response;
 	
     /**
      * @var string
      */
 	protected $defaultViewObjectName = \Nng\Nnrestapi\Mvc\View\JsonView::class;
 
-
-	/**
-	 * Constructor und Dependeny-Injection
-	 * 
-	 * @return void
-	 */
-	public function __construct( Response $response ) {
-		$this->response = $response;
-	}
 
 	/**
 	 * Initialisierung des Requests.
@@ -72,7 +59,9 @@ class ApiController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 	 */
 	public function indexAction() {
 
-		$request = new \Nng\Nnrestapi\Mvc\Request( $this->request );
+		$t3Request = \nn\t3::t3Version() < 11 ? $GLOBALS['TYPO3_REQUEST'] : $this->request; 
+		$request = new \Nng\Nnrestapi\Mvc\Request( $t3Request );
+		$response = new \Nng\Nnrestapi\Mvc\Response( $this->response );
 
 		$reqType = $this->checkRequestType();
 		$reqVars = $request->getArguments();
@@ -107,7 +96,7 @@ class ApiController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 		if (!$endpoint) {
 			$checked = array_column( \nn\rest::Endpoint()->getAll(), 'namespace' );
 			$classInfo = ucfirst($controllerName) . '->' . $reqType . ucfirst( $actionName ) . 'Action';
-			return $this->response->error(404, "Endpoint controller {$classInfo}() not found. Checked these namespaces: " . join( ', ', $checked ) );
+			return $response->error(404, "Endpoint controller {$classInfo}() not found. Checked these namespaces: " . join( ', ', $checked ) );
 		}
 
 		// $request mit Konfigurationen anreichern
@@ -127,45 +116,49 @@ class ApiController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 		$classInstance = \nn\t3::injectClass( $endpoint['class'] );
 
 		$classInstance->setRequest( $request );
-		$classInstance->setResponse( $this->response );
-
-		// Nur wenn Annotation `@access public` exisitert wird action von Nicht-Fe-User erlaubt
-		$access = \nn\t3::Arrays($annotations['@access'] ?? '')->trimExplode();
+		$classInstance->setResponse( $response );
 		
 		// Prüft, ob aktueller User Zugriff auf Methode hat
 		if (!$classInstance->checkAccess( $endpoint )) {
-			return $this->response->unauthorized("{$endpoint['class']}->{$endpoint['method']}() has no public access. Please authenticate to access this endpoint or use `@access public` annotation to mark the endpoint as public accessible." );
-		}
 
-		// Prüft, ob Dateiuploads existieren. Ersetzt `UPLOAD://file-x` mit Pfad zu Upload-Dateien
-		\nn\rest::File()->processFileUploadsInRequest( $request );
+			// Kein Zugriff - oder kein `@api\access public`
+			$result = $response->unauthorized("{$endpoint['class']}->{$endpoint['method']}() has no public access. Please authenticate to access this endpoint or use `@access public` annotation to mark the endpoint as public accessible." );
 		
-		// Argumente für Methodenaufruf konstruieren
-		if ($arguments = $endpoint['args']) {
-
-			// Methode möchte ein Argument erhalten `->getSomethingAction( $data )` 
-			$model = $request->getBody();
-
-			// Methode hat eine DI als erstes Argument definiert `->getSomethingAction( \My\Extname\Model $model )`
-			if ($modelName = $arguments[0]['class'] ?? false) {
-				$model = \nn\t3::Convert( $model )->toModel( $modelName );
-			}
-			$result = $classInstance->{$endpoint['method']}( $model ) ?: [];
-
 		} else {
 
-			// Keine Argumente gefordert `->getSomethingAction()` 
-			$result = $classInstance->{$endpoint['method']}() ?: [];
-		}
-		
-		// Distiller definiert?
-		if ($distiller = $endpoint['distiller'] ?? false) {
-			if ($distillerInstance = \nn\t3::injectClass( $distiller )) {
-				$distillerInstance->processData( $result );
+			// Prüft, ob Dateiuploads existieren. Ersetzt `UPLOAD://file-x` mit Pfad zu Upload-Dateien
+			\nn\rest::File()->processFileUploadsInRequest( $request );
+			
+			// Argumente für Methodenaufruf konstruieren
+			if ($arguments = $endpoint['args']) {
+
+				// Methode möchte ein Argument erhalten `->getSomethingAction( $data )` 
+				$model = $request->getBody();
+
+				// Methode hat eine DI als erstes Argument definiert `->getSomethingAction( \My\Extname\Model $model )`
+				if ($modelName = $arguments[0]['class'] ?? false) {
+					$model = \nn\t3::Convert( $model )->toModel( $modelName );
+				}
+				$result = $classInstance->{$endpoint['method']}( $model ) ?: [];
+
+			} else {
+
+				// Keine Argumente gefordert `->getSomethingAction()` 
+				$result = $classInstance->{$endpoint['method']}() ?: [];
+			}
+			
+			if ($response->getStatus() == 200) {
+				// Distiller definiert?
+				if ($distiller = $endpoint['distiller'] ?? false) {
+					if ($distillerInstance = \nn\t3::injectClass( $distiller )) {
+						$distillerInstance->processData( $result );
+					}
+				}
 			}
 		}
 
-		$this->response->success( $result );
+		$response->setBody( $result );
+		return $response->render();
 	}
 
 

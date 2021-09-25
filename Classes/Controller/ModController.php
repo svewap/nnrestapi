@@ -55,56 +55,21 @@ class ModController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController {
 		
         $settings = \nn\t3::Settings()->getPlugin('nnrestapi');
         if (!$settings) {
-            return 'No TypoScript Configuration found. Make sure you included the RestApi templates in the root page template.';
-        }
-
-		//$args = $this->request->getArguments();
-		//$isDevMode = \nn\t3::Environment()->getExtConf('nnhelpers', 'devModeEnabled');
-
-		$site = GeneralUtility::makeInstance(SiteFinder::class)->getSiteByPageId( 1 );
-
-// $url = $site->getRouter()->generateUri( 3, ['david'=>time()] );
-// \nn\t3::debug($url);
+			\nn\t3::Message()->ERROR('Where\'s my TypoScript?', 'No TypoScript Configuration found. Make sure you included the RestApi templates in the root page template.');
+			return \nn\t3::Template()->render('EXT:nnrestapi/Resources/Private/Backend/Templates/Mod/Error.html');
+		}
 		
-// $url = $site->getRouter()->generateUri( 3, ['controller'=>'controller'.time(), 'action'=>'action', 'uid'=>'1', 'param1'=>'2', 'param2'=>'3'] );
-// \nn\t3::debug($url);
+		$needsEnhancer = strpos(\nn\rest::Api()->uri(['controller'=>'controller', 'action'=>'action' ]), '&type=') !== false;
 
 		$classMap = \nn\rest::Endpoint()->getClassMapWithDocumentation();
-//\nn\t3::debug($classMap);
-
 		$urlBase = \nn\t3::Environment()->getBaseUrl();
 
 		$this->view->assignMultiple([
+			'needsEnhancer'		=> $needsEnhancer,
 			'feUser'			=> \nn\t3::FrontendUser()->get(),
 			'urlBase'			=> $urlBase,
 			'absApiUrlPrefix'	=> $urlBase . rtrim(\nn\rest::Endpoint()->getApiUrlPrefix(), '/'),
 			'endpoints' 		=> $classMap,
-			/*
-			'test' 	    => 123,
-			'settings' 	=> $settings,
-            'link'      => [
-                \nn\rest::Api()->uri(['controller'=>'controller'.time(), 'action'=>'action', 'uid'=>'1', 'param1'=>'2', 'param2'=>'3']),
-                \nn\rest::Api()->uri(['controller'=>'controller'.time(), 'action'=>'action', 'uid'=>'1', 'param1'=>'2' ]),
-                \nn\rest::Api()->uri(['controller'=>'controller'.time(), 'action'=>'action', 'uid'=>'1' ]),
-                \nn\rest::Api()->uri(['controller'=>'controller'.time(), 'action'=>'action' ]),
-                \nn\rest::Api()->uri(['controller'=>'controller' ]),
-                \nn\rest::Api()->uri([]),
-
-                \nn\rest::Api()->uri(['ext'=>'nnrestapi', 'controller'=>'controller'.time(), 'action'=>'action', 'uid'=>'1', 'param1'=>'2', 'param2'=>'3']),
-                \nn\rest::Api()->uri(['ext'=>'nnrestapi', 'controller'=>'controller'.time(), 'action'=>'action', 'uid'=>'1', 'param1'=>'2' ]),
-                \nn\rest::Api()->uri(['ext'=>'nnrestapi', 'controller'=>'controller'.time(), 'action'=>'action', 'uid'=>'1' ]),
-                \nn\rest::Api()->uri(['ext'=>'nnrestapi', 'controller'=>'controller'.time(), 'action'=>'action' ]),
-                \nn\rest::Api()->uri(['ext'=>'nnrestapi', 'controller'=>'controller' ]),
-                \nn\rest::Api()->uri([]),
-
-				\nn\rest::Api('nnrestapi')->uri(['controller'=>'controller'.time(), 'action'=>'action', 'uid'=>'1', 'param1'=>'2', 'param2'=>'3']),
-                \nn\rest::Api('nnrestapi')->uri(['controller'=>'controller'.time(), 'action'=>'action', 'uid'=>'1', 'param1'=>'2' ]),
-                \nn\rest::Api('nnrestapi')->uri(['controller'=>'controller'.time(), 'action'=>'action', 'uid'=>'1' ]),
-                \nn\rest::Api('nnrestapi')->uri(['controller'=>'controller'.time(), 'action'=>'action' ]),
-                \nn\rest::Api('nnrestapi')->uri(['controller'=>'controller' ]),
-                \nn\rest::Api('nnrestapi')->uri([]),
-            ]
-			*/
 		]);
 
 		return $this->view->render();

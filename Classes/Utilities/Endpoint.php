@@ -365,8 +365,15 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 		$endpoints = $this->getAll();
 		$namespaces = array_column( $endpoints, 'namespace' );
 
-		$composerClassLoader = \TYPO3\CMS\Core\Core\ClassLoadingInformation::getClassLoader();
-		$psr4prefixes = $composerClassLoader->getPrefixesPsr4();
+		if (\nn\t3::t3Version() >= 11) {
+			$composerClassLoader = \TYPO3\CMS\Core\Core\ClassLoadingInformation::getClassLoader();
+			$psr4prefixes = $composerClassLoader->getPrefixesPsr4();	
+		} else {
+			$psr4path = \TYPO3\CMS\Core\Core\Environment::getLegacyConfigPath() . '/' .
+						\TYPO3\CMS\Core\Core\ClassLoadingInformation::AUTOLOAD_INFO_DIR .
+						\TYPO3\CMS\Core\Core\ClassLoadingInformation::AUTOLOAD_PSR4_FILENAME;
+			$psr4prefixes = require( $psr4path );
+		}
 
 		// Pfade zu den Klassen ermitteln, deren Namespace über `register` registriert wurden
 		$pathsToParse = [];

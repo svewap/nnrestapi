@@ -1,7 +1,10 @@
 
-<div class="endpoints p-4">	
+<div class="endpoints">	
 
-	<h2>Endpoints</h2>
+	<div class="mb-4">
+		<h2>Endpoints</h2>
+		<p>The list of all registered endpoints. If you add your own Api endpoints, they will automatically appear in this list.</p>
+	</div>
 
 	<f:for each="{endpoints}" key="reqType" as="endpoints">
 		<f:for each="{endpoints}" key="identifier" as="registrations">
@@ -12,7 +15,7 @@
 
 				{f:variable(name:'relUri', value:'{uri->nnt3:format.replace(from:urlBase, to:\'\')}')}
 
-				{f:variable(name:'title', value:'{uri->nnt3:format.replace(from:urlBase, to:\'\')}')}
+				{f:variable(name:'title', value:'{uri->nnt3:format.replace(from:urlBase, to:\'\')->f:format.htmlspecialchars()}')}
 
 				<div class="request mb-2" 
 					data-uid="{reqType}/{relUri}"
@@ -38,7 +41,7 @@
 							<table class="table mt-2 table-bordered table-sm">
 								<tr>
 									<td>Access:</td>
-									<td>{config.access->rest:list.access()}</td>
+									<td>{config.access->rest:format.access()}</td>
 								</tr>
 								<tr>
 									<td>Target:</td>

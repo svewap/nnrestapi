@@ -4,6 +4,10 @@
 
 	{f:render(partial:'Testbed', arguments:_all)}
 
-	{f:render(partial:'Endpoints', arguments:_all)}
+	<main class="p-4">
+		{nnt3:flashMessages()}
+		{f:render(partial:'Messages', arguments:_all)}	
+		{f:render(partial:'Endpoints', arguments:_all)}
+	</main>
 
 </f:section>

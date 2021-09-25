@@ -28,7 +28,7 @@ class Auth extends AbstractApi {
 		$feUser = \nn\t3::FrontendUserAuthentication()->login( $params['username'], $params['password'] );
 
 		if (!$feUser) {
-			$this->response->unauthorized('Invalid credentials.');
+			return $this->response->unauthorized('Invalid credentials.');
 		}
 
 		$token = \Nng\Nnrestapi\Service\TokenService::create(['uid'=>$feUser['uid']]);

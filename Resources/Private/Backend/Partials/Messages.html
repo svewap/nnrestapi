@@ -1,0 +1,10 @@
+<f:if condition="{needsEnhancer}">
+    <div class="alert alert-danger mb-5">
+        <h4 class="alert-title">Ugly urls?</h4>
+        <p class="alert-message">Make them shine by adding the following two lines to the end of your <b>YAML site-configuration!</b></p>
+<nnt3:format.code lang="yaml">
+imports:
+  - { resource: "EXT:nnrestapi/Configuration/Yaml/default.yaml" }	
+</nnt3:format.code>
+    </div>
+</f:if>

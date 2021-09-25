@@ -7,6 +7,7 @@ use TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException;
 use TYPO3\CMS\Core\Http\PropagateResponseException;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Response
@@ -15,7 +16,8 @@ use Psr\Http\Message\ResponseInterface;
  * use \Nng\Nnrestapi\Mvc\Response;
  * 
  * $response = new Response();
- * $response->setStatus( Response::OK )->setBody( $data )->send();
+ * $response->setStatus( Response::OK )->setBody( $data );
+ * return $response->render();
  * ```
  */
 class Response {
@@ -40,11 +42,14 @@ class Response {
 	 */
 	protected $responseFactory;
 
+	/**
+	 * @var \TYPO3\CMS\Core\Http\Response
+	 */
+	protected $response;
 
-	public function __construct(
-		ResponseFactoryInterface $responseFactory
-	) {
-		$this->responseFactory = $responseFactory;
+
+	public function __construct( $response = null ) {
+		$this->response = $response;
 		return $this;
 	}
 
@@ -52,28 +57,35 @@ class Response {
 	 * 
 	 * @throws PropagateResponseException
 	 */
-	public function send( $body = [] ) {
+	public function render( $body = [] ) {
+
 		$body = $body ?: $this->getBody();
 		$status = $this->getStatus();
 		$message = $this->getMessage();
 		
 		$json = \nn\t3::Convert($body)->toJson( 5 );
+		$this->response->setStatus( $status, $message );
 
+		/*		
 		$response = $this->responseFactory->createResponse((int)$status, $message);
 		$response->getBody()->write($json);
 		throw new PropagateResponseException($response, 1476045871);
+		*/
+		
+		return $json;
 	}
-
+	
 	/**
 	 * Einen Fehler ausgeben
 	 * 
 	 * @return void
 	 */
 	public function error( $statusCode, $message = '' ) {
-		$this->setStatus($statusCode)->setMessage($message)->send([
+		return $this->setStatus($statusCode)->setMessage($message);
+		return [
 			'status'	=>$statusCode, 
 			'error'		=>$message
-		]);
+		];
 	}
 	
 	/**
@@ -83,10 +95,11 @@ class Response {
 	 */
 	public function unauthorized( $message = '' ) {
 		if (!$message) $message = 'Unauthorized. Please login.';
-		$this->setStatus(403)->setMessage( $message )->send([
+		$this->setStatus(403)->setMessage( $message );
+		return [
 			'status'	=> 403, 
 			'error'		=> $message
-		]);
+		];
 	}
 
 	/**
@@ -95,7 +108,8 @@ class Response {
 	 * @return void 
 	 */
 	public function success( $body = [], $message = 'OK' ) {
-		$this->setStatus(200)->setMessage($message)->send( $body );
+		$this->setStatus(200)->setMessage($message);
+		return $body;
 	}
 	
 	/**
@@ -104,7 +118,7 @@ class Response {
 	 * @return void 
 	 */
 	public function noContent( $message = 'No Content' ) {
-		$this->setStatus(204)->setMessage( $message )->send();
+		return $this->setStatus(204)->setMessage( $message );
 	}
 
 	/**

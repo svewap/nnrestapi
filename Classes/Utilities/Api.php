@@ -84,9 +84,14 @@ class Api extends \Nng\Nnhelpers\Singleton {
 		}
 		unset($mergedArgs['ext']);
 
+		foreach ($mergedArgs as $k=>$v) {
+			if ($v == '') unset($mergedArgs[$k]);
+		}
+
 		$pageUid = $this->getApiPageUid();
 		$uri = \nn\t3::Page()->getLink( $pageUid, $mergedArgs, true );
 
+		$uri = preg_replace('/(.*)(&cHash=[^&]*)(.*)/i', '\1', $uri);
 		return $uri;
 	}
 

@@ -116,7 +116,7 @@ class NnrestapiEnhancer extends \TYPO3\CMS\Core\Routing\Enhancer\SimpleEnhancer
 	/**
      * @return VariableProcessor
      */
-    protected function getVariableProcessor(): VariableProcessor
+    protected function getVariableProcessor(): \TYPO3\CMS\Core\Routing\Enhancer\VariableProcessor
     {
         if (isset($this->variableProcessor)) {
             return $this->variableProcessor;
