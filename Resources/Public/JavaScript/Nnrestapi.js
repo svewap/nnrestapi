@@ -109,13 +109,11 @@ define(['jquery', 'TYPO3/CMS/Nnrestapi/Axios'], function($, axios) {
 			var token	= $('.reqtoken').val();
 			var cookie	= $('.reqcookie').val();
 
-			document.cookie = `fe_typo_user=${cookie}; Path=/`;
 			$testbed.addClass('loading');
 
 			var config 	= {
 				headers: {
-					'Content-Type': 'multipart/form-data',
-					Authorization: `Bearer ${token}`,
+					'Content-Type': 'multipart/form-data'
 				},
 				onUploadProgress: function (e) {
 					var percentCompleted = Math.round((e.loaded * 100) / e.total);
@@ -123,6 +121,13 @@ define(['jquery', 'TYPO3/CMS/Nnrestapi/Axios'], function($, axios) {
 				}
 			};
 	 
+			if (token) {
+				config.headers.Authorization = `Bearer ${token}`; 
+			}
+			if (cookie) {
+				document.cookie = `fe_typo_user=${cookie}; Path=/`;
+			}
+			
 			axios.defaults.withCredentials = true;
 			axios.defaults.headers.common = config.headers;
 //*---	

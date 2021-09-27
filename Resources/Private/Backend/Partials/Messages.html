@@ -1,4 +1,20 @@
-<f:if condition="{needsEnhancer}">
+
+<f:if condition="!{rewriteCondExists}">
+  <div class="alert alert-danger mb-5">
+      <h4 class="alert-title">Problems with the login / web-token?</h4>
+      <p class="alert-message">
+        If there are problems with the authorization of a frontend-user, make sure your server is configured to forward 
+        the HTTP-Authorization header. In most cases, simply add this to your <code>.htaccess</code> after the <code>RewriteEngine On</code> line:</p>
+<nnt3:format.code lang="yaml">
+# Put this directly after the "RewriteEngine On" command
+RewriteCond %{HTTP:Authorization} ^(.*)
+RewriteRule .* - [e=HTTP_AUTHORIZATION:%1]
+</nnt3:format.code>
+  </div>
+</f:if>
+
+
+<f:if condition="!{enhancerExists}">
     <div class="alert alert-danger mb-5">
         <h4 class="alert-title">Ugly urls?</h4>
         <p class="alert-message">Make them shine by adding the following two lines to the end of your <b>YAML site-configuration!</b></p>

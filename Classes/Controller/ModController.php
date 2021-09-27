@@ -59,13 +59,13 @@ class ModController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController {
 			return \nn\t3::Template()->render('EXT:nnrestapi/Resources/Private/Backend/Templates/Mod/Error.html');
 		}
 		
-		$needsEnhancer = strpos(\nn\rest::Api()->uri(['controller'=>'controller', 'action'=>'action' ]), '&type=') !== false;
 
 		$classMap = \nn\rest::Endpoint()->getClassMapWithDocumentation();
 		$urlBase = \nn\t3::Environment()->getBaseUrl();
 
 		$this->view->assignMultiple([
-			'needsEnhancer'		=> $needsEnhancer,
+			'enhancerExists'	=> \Nng\Nnrestapi\Service\EnvironmentService::enhancerExists(),
+			'rewriteCondExists'	=> \Nng\Nnrestapi\Service\EnvironmentService::rewriteCondExists(),
 			'feUser'			=> \nn\t3::FrontendUser()->get(),
 			'urlBase'			=> $urlBase,
 			'absApiUrlPrefix'	=> $urlBase . rtrim(\nn\rest::Endpoint()->getApiUrlPrefix(), '/'),
