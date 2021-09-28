@@ -31,7 +31,7 @@ class AbstractApi {
 	 * @param   Request  $request  
 	 * @return  self
 	 */
-	public function setRequest($request) {
+	public function setRequest( &$request ) {
 		$this->request = $request;
 		return $this;
 	}
@@ -47,7 +47,7 @@ class AbstractApi {
 	 * @param   Response  $response  
 	 * @return  self
 	 */
-	public function setResponse($response) {
+	public function setResponse( &$response ) {
 		$this->response = $response;
 		return $this;
 	}

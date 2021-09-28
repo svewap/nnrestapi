@@ -21,7 +21,8 @@ class Header extends \Nng\Nnhelpers\Singleton {
 	 * @return void
 	 */
 	public function sendControls() {
-		header("Access-Control-Allow-Origin: *");
+		$origin = $_SERVER['HTTP_ORIGIN'] ?? '*';
+		header("Access-Control-Allow-Origin: ${origin}");
 		header("Access-Control-Allow-Headers: Origin, X-Requested-With, Access-Control-Allow-Headers, Content-Type, Authorization");
 		header("Access-Control-Allow-Credentials: true");
 		header("Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS");

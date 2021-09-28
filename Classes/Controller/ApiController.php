@@ -1,9 +1,12 @@
 <?php
+declare(strict_types = 1);
+
 namespace Nng\Nnrestapi\Controller;
 
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 use \Nng\Nnrestapi\Mvc\Response;
 use TYPO3\ClassAliasLoader\ClassAliasMap;
+use TYPO3\CMS\Core\Http\PropagateResponseException;
 
 /**
  * Nnrestapi
@@ -34,7 +37,7 @@ class ApiController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 	public function initializeView( \TYPO3\CMS\Extbase\Mvc\View\ViewInterface $view ) {
 
 		// `access-control` und `content-type` header senden
-//		\nn\rest::Header()->sendControls()->sendContentType();
+		\nn\rest::Header()->sendControls()->sendContentType();
 
 		// Falls kein Login über fe_user-Cookie passiert ist, Json Web Token (JWT) prüfen
 		if (!\nn\t3::FrontendUser()->isLoggedIn()) {
@@ -69,28 +72,16 @@ class ApiController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 		$reqVars = $request->getArguments();
 		
 		$controllerName = $reqVars['controller'] ?? '';
-		$actionName = $reqVars['action'] ?: false;
+		$actionName = $reqVars['action'] ?: 'index';
 		$uid = $reqVars['uid'] ?: false;
 		$extSlug = $reqVars['ext'] ?: false;
-		
-		if (is_numeric($actionName)) {
-			$uid = $actionName;
-			$actionName = false;
-		}
-
-		if ($actionName === false) {
-			$actionName = 'index';
-		}
-
-		if ($uid) $reqVars['uid'] = $uid;
 
 		// Passenden Endpoint finden. `GET test/something` -> \Nng\Nnrestapi\Api\Test->getSomethingAction()`
 		$endpoint = \nn\rest::Endpoint()->find( $reqType, $controllerName, $actionName, $extSlug );
 
 		if (!$endpoint) {
-			if ($route = \nn\rest::Endpoint()->findForRoute( $reqType, $request->getPath() )) {
-				$endpoint = $route['endpoint'];
-				$request->setArguments($route['arguments']);
+			if ($endpoint = \nn\rest::Endpoint()->findForRoute( $reqType, $request->getPath() )) {
+				$request->setArguments($endpoint['route']['args'] ?? []);
 			}
 		}
 
@@ -137,10 +128,34 @@ class ApiController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 				// Methode möchte ein Argument erhalten `->getSomethingAction( $data )` 
 				$model = $request->getBody();
 
+				// Kein JSON übergeben, aber uid als GET-Parameter
+				if (!$model && $uid = $request->getArguments()['uid'] ?? false) {
+					$model = ['uid'=>$uid];
+				}
+
 				// Methode hat eine DI als erstes Argument definiert `->getSomethingAction( \My\Extname\Model $model )`
 				if ($modelName = $arguments[0]['class'] ?? false) {
-					$model = \nn\t3::Convert( $model )->toModel( $modelName );
+
+					if ($uid = $model['uid'] ?: $request->getArguments()['uid'] ?? false) {
+						
+						// uid des Models übergeben. Bestehendes Model aus Repo holen
+						$repository = \nn\t3::Db()->getRepositoryForModel( $modelName );
+						\nn\t3::Db()->ignoreEnableFields( $repository );
+						
+						if ($existingModel = $repository->findByUid( $uid )) {
+							$model = \nn\t3::Obj( $existingModel )->merge( $model );
+						} else {
+							$model = null;
+						}
+
+					} else {
+
+						// Keine uid übergeben. Neues Model erzeugen
+						$model = \nn\t3::Convert( $model )->toModel( $modelName );
+					}
+
 				}
+
 				$result = $classInstance->{$endpoint['method']}( $model ) ?: [];
 
 			} else {
@@ -160,7 +175,7 @@ class ApiController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 		}
 
 		$response->setBody( $result );
-		return $response->render();
+		throw new PropagateResponseException($response->render(), 1476045871);
 	}
 
 

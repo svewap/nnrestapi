@@ -27,5 +27,9 @@ call_user_func(
 			'slug' 		=> 'nnrestapi',
 			'namespace'	=> 'Nng\Nnrestapi\Api'
 		]);
+
+		// Eigender HTTP handler zum Verarbeiten von RequestMethods, die standardmäßig nicht unterstützt werden
+		$GLOBALS['TYPO3_CONF_VARS']['HTTP']['handler'][] = 
+			(\TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\Nng\Nnrestapi\Middleware\NnrestapiRequestParser::class))->handler();
 	},
 'nnrestapi');

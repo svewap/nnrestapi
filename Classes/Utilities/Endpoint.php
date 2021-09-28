@@ -180,12 +180,17 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 	 */
 	public function findForRoute( $reqType = '', $path = '' ) {
 		$classMap = $this->getClassMap();
-		$routes = $classMap['routes'][$reqType] ?? [];
+		$routes = $classMap[$reqType] ?? [];
+
 		foreach ($routes as $route) {
-			if (preg_match($route['match'], $path, $matches)) {
-				$args = array_slice($matches, 2);
-				$route['arguments'] = array_combine($route['arguments'], $args);
-				return $route;
+			foreach ($route as $config) {
+				if ($match = $config['route']['match'] ?? false) {
+					if (preg_match($match, $path, $matches)) {
+						$args = array_slice( $matches, 2 );
+						$config['route']['args'] = array_combine(array_keys($config['route']['args']), $args);
+						return $config;
+					}	
+				}
 			}
 		}
 		return [];
@@ -208,7 +213,8 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 
 		if ($cache = $this->classMapCache) return $cache;
 
-		if (!\nn\t3::BackendUser()->isLoggedIn() && $cache = \nn\t3::Cache()->read( $cacheIdentifier )) {
+		//if (!\nn\t3::BackendUser()->isLoggedIn() && $cache = \nn\t3::Cache()->read( $cacheIdentifier )) {
+		if ($cache = \nn\t3::Cache()->read( $cacheIdentifier )) {
 			return $cache;
 		}
 

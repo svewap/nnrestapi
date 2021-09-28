@@ -20,6 +20,11 @@ class VariableProcessor extends \TYPO3\CMS\Core\Routing\Enhancer\VariableProcess
 	 * `/api/test/run` 				=> `['controller'=>'test', 'action'=>'run']`
 	 * `/api/nnbeispiel/test/run` 	=> `['ext'=>'nnbeispiel', 'controller'=>'test', 'action'=>'run']`
 	 * 
+	 * Ist die `action` ein intval, dann wird es als `uid` verwendet.
+	 * 
+	 * `/api/entry/1`				=> `['controller'=>'entry', 'action'=>'index', 'uid'=>1]`
+	 * `/api/nnbeispiel/entry/1`	=> `['ext'=>'nnbeispiel', 'controller'=>'entry', 'action'=>'index', 'uid'=>1]`
+	 * 
 	 * @param array $items
 	 * @param string|null $namespace
 	 * @param array $arguments
@@ -48,6 +53,12 @@ class VariableProcessor extends \TYPO3\CMS\Core\Routing\Enhancer\VariableProcess
 
 			// damit sind alle Parameter um eine Position verschoben und `controller` und `action` bekommen die korrekten Werte
 			$params = array_combine( $keys, $items );
+		}
+
+		// Ist die `action` ein intval? Dann als `uid` verwenden.
+		if (is_numeric($params['action']) && intval($params['action']) == $params['action']) {
+			$params['uid'] = intval($params['action']);
+			$params['action'] = 'index';
 		}
 
 		return $params;

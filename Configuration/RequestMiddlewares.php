@@ -2,6 +2,12 @@
 
 return [
     'frontend' => [
+        'nnrestapi/requestparser' => [
+            'target' => \Nng\Nnrestapi\Middleware\NnrestapiRequestParser::class,
+            'before' => [
+                'typo3/cms-frontend/timetracker',
+            ],
+        ],
         'nnrestapi' => [
             'target' => \Nng\Nnrestapi\Middleware\NnrestapiResolver::class,
             'before' => [

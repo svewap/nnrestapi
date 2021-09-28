@@ -48,8 +48,8 @@ class Response {
 	protected $response;
 
 
-	public function __construct( $response = null ) {
-		$this->response = $response;
+	public function __construct( &$response = null ) {
+		$this->setResponse( $response );
 		return $this;
 	}
 
@@ -69,12 +69,19 @@ class Response {
 			return $json;
 		}
 
-		$this->response->withStatus( $status, $message );
+		$this->response = $this->response->withStatus( $status, $message );
 		$this->response->getBody()->write($json);
-
 		return $this->response;		
 	}
 	
+	/**
+	 * 
+	 */
+	public function exit( $body = null ) {
+		$this->render( $body );
+		throw new PropagateResponseException($this->response, 1476045871);
+	}
+
 	/**
 	 * Einen Fehler ausgeben
 	 * 
@@ -101,6 +108,20 @@ class Response {
 			'error'		=> $message
 		];
 	}
+	
+	/**
+	 * Not found ausgeben
+	 * 
+	 * @return void
+	 */
+	public function notFound( $message = '' ) {
+		if (!$message) $message = 'Not found.';
+		$this->setStatus(404)->setMessage( $message );
+		return [
+			'status'	=> 404, 
+			'error'		=> $message
+		];
+	}
 
 	/**
 	 * 200 OK
@@ -118,7 +139,7 @@ class Response {
 	 * @return void 
 	 */
 	public function noContent( $message = 'No Content' ) {
-		return $this->setStatus(204)->setMessage( $message );
+		return $this->setStatus(204)->setMessage( $message )->exit();
 	}
 
 	/**
@@ -166,6 +187,22 @@ class Response {
 	 */
 	public function setMessage($message) {
 		$this->message = $message;
+		return $this;
+	}
+
+	/**
+	 * @return  \TYPO3\CMS\Core\Http\Response
+	 */
+	public function getResponse() {
+		return $this->response;
+	}
+
+	/**
+	 * @param   \TYPO3\CMS\Core\Http\Response $response  
+	 * @return  self
+	 */
+	public function setResponse( &$response ) {
+		$this->response = $response;
 		return $this;
 	}
 }
