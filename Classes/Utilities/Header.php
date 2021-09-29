@@ -2,6 +2,8 @@
 
 namespace Nng\Nnrestapi\Utilities;
 
+use \TYPO3\CMS\Core\Http\Response;
+
 /**
  * Helper zum Senden von Headern
  * 
@@ -9,41 +11,45 @@ namespace Nng\Nnrestapi\Utilities;
 class Header extends \Nng\Nnhelpers\Singleton {
 
 	/**
-	 * Header senden, die allgemein für jeden Response wichtig sind.
+	 * Response mit Headern anreichern, die allgemein für jeden Response wichtig sind.
 	 * 
 	 * Legt fest, von welcher Domain aus die Api aufgerufen werden darf, welche Request-Methods erlaubt sind
 	 * und wie mit dem Cache umzugehen ist.
 	 * 
 	 * ```
-	 * \nn\rest::Header()->sendControls();
+	 * \nn\rest::Header()->addControls( $response );
 	 * ```
 	 * 
+	 * @param Response $response
 	 * @return void
 	 */
-	public function sendControls() {
+	public function addControls( Response &$response = null ) {
+
 		$origin = $_SERVER['HTTP_ORIGIN'] ?? '*';
-		header("Access-Control-Allow-Origin: ${origin}");
-		header("Access-Control-Allow-Headers: Origin, X-Requested-With, Access-Control-Allow-Headers, Content-Type, Authorization");
-		header("Access-Control-Allow-Credentials: true");
-		header("Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS");
-		header("Allow: GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS");
-		header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
-		header("Cache-Control: post-check=0, pre-check=0", false);
-		header("Pragma: no-cache");
-		header('Access-Control-Allow-Headers: ' . ($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'] ?? 'origin, x-requested-with, content-type, cache-control'));
+
+		$response = $response->withHeader('Access-Control-Allow-Origin', $origin)
+			->withHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Access-Control-Allow-Headers, Content-Type, Authorization')
+			->withHeader('Access-Control-Allow-Credentials', 'true')
+			->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS')
+			->withHeader('Allow', 'GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS')
+			->withHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+			->withHeader('Cache-Control', 'post-check=0, pre-check=0, false')
+			->withHeader('Pragma', 'no-cache')
+			->withHeader('Access-Control-Allow-Headers', $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'] ?? 'origin, x-requested-with, content-type, cache-control');
 
 		return $this;
 	}
 
 	/**
-	 * Sende json header
+	 * Response mit JSON header anreichern
 	 * ```
-	 * \nn\rest::Header()->sendContentType();
+	 * \nn\rest::Header()->addContentType( $response );
 	 * ```
+	 * @param Response $response
 	 * @return self
 	 */
-	public function sendContentType( $type = 'application/json' ) {
-		header("Content-Type: {$type}");
+	public function addContentType( Response &$response, $type = 'application/json; charset=utf-8' ) {
+		$response = $response->withHeader('Content-Type', $type);
 		return $this;
 	}
 

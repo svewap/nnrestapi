@@ -27,6 +27,13 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 	 * @var array
 	 */
 	private $supportedMethodPrefixes = ['get', 'post', 'put', 'patch', 'delete'];
+	
+	/**
+	 * Reihenfolge Keys für das Mapping der Parameter in der URL
+	 * 
+	 * @var array
+	 */
+	private $uriToParameterMapping = ['controller', 'action', 'uid', 'param1', 'param2', 'param3'];
 
 	/**
 	 * Liste aller registrierten Endpoints
@@ -53,33 +60,36 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 	private $siteIdentifier = '';
 
 	/**
-	 * Site Configuration (Array der siteConfig-yaml)
+	 * Api Configuration (Array aus der siteConfig-yaml)
 	 * @var string
 	 */
-	private $siteConfiguration = [];
-
+	private $apiConfiguration = [];
+	
 
 	/**
 	 * Initialisieren.
+	 * Lädt die `nnrestapi` Konfiguration aus der YAML.
 	 * 
 	 * @return void
 	 */
-	public function initialize() {
+	public function initialize( $request = null ) {
 
 		if ($this->siteIdentifier) return;
 
-		$siteIdentifier = '';
-		$siteConfiguration = [];
+		$request = $request ?: $GLOBALS['TYPO3_REQUEST'];
+		if (!$request) return;
 
-		if ($GLOBALS['TYPO3_REQUEST'] && $site = $GLOBALS['TYPO3_REQUEST']->getAttribute('site')) {
-			$siteIdentifier = $site->getIdentifier();
-			if (!is_a($site, \TYPO3\CMS\Core\Site\Entity\NullSite::class)) {
-				$siteConfiguration = $site->getConfiguration();
-			}
+		$siteIdentifier = '';
+		$apiConfiguration = [];
+
+		$site = $request->getAttribute('site');
+		$siteIdentifier = $site->getIdentifier();
+		if (!is_a($site, \TYPO3\CMS\Core\Site\Entity\NullSite::class)) {
+			$apiConfiguration = $site->getConfiguration()['nnrestapi'] ?? [];
 		}
 
 		$this->siteIdentifier = $siteIdentifier;
-		$this->siteConfiguration = $siteConfiguration;
+		$this->apiConfiguration = $apiConfiguration;
 	}
 
 	/**
@@ -135,22 +145,112 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 	}
 	
 	/**
-	 * Prefix des aktuellen RouteEnhancers holen, z.B. `api/`
+	 * Endpoint für übergebenen Request finden.
 	 * ```
-	 * \nn\rest::Endpoint()->getApiUrlPrefix()
+	 * \nn\rest::Endpoint()->findForRequest('/api/test/2');
 	 * ```
-	 * @ToDo: Echten Präfix anhand ausgewählter siteConfig ermitteln
+	 * @param string $uri
+	 * @return array
+	 */
+	public function findForRequest( $request = null ) {
+
+		$this->initialize( $request );
+
+		// `GET`, `POST`, ...
+		$reqType = strtolower($request->getMethod());
+
+		// `/api/`
+		$apiPrefix = $this->getApiUrlPrefix();
+
+		// `/en`
+		$languagePath = $request->getAttribute('language', null)->getBase()->getPath();
+
+		// `/api/test/123` oder `/en/api/test/123`
+		$uri = $request->getUri()->getPath();
+
+		// `/en/api/test/123` ==> `/api/test/123`
+		if ($languagePath != '/' && strpos($uri, $languagePath) === 0) {
+			$uri = substr( $uri, strlen($languagePath) );
+		};
+
+		// Prefix in URL nicht vorhanden? Dann Abbruch.
+		if (strpos($uri, $apiPrefix) !== 0) return null;
+
+		// `/api/test/something/1/2/3/4` => ['controller'=>'test', 'action'=>'something', 'uid'=>1, 'param1'=>'2', ...]
+		$numParamsToParse = count($this->uriToParameterMapping);
+		
+		$parts = array_slice(explode('/', substr($uri, strlen($apiPrefix))), 0, $numParamsToParse);
+		
+		$paramKeys = $this->uriToParameterMapping;
+		$paramValues = array_pad( $parts, $numParamsToParse, '' );
+
+		// Slugs, die über `\nn\rest::Endpoint()->register()` registriert wurden, z.B. ['nnrestdemo', 'nnrestapi']
+		$endpointSlugs = array_column( $this->getAll(), 'slug' );
+
+		// War der URL-Pfad `api/{slug}/...` statt `api/{controller}/...`?
+		if (in_array($paramValues[0] ?? '', $endpointSlugs)) {
+
+			// dann schieben wir noch ein `ext` vor die keys. Und einen leeren Wert in die Values
+			array_unshift( $paramKeys, 'ext' );
+			array_push( $paramValues, '' );
+		}
+
+		$params = array_combine( $paramKeys, $paramValues );
+		
+		if (!($params['controller'] ?? false)) {
+			$params['controller'] = 'index';
+		}
+		if (!($params['action'] ?? false)) {
+			$params['action'] = 'index';
+		}
+		if (!($params['ext'] ?? false)) {
+			$params['ext'] = '';
+		}
+
+		// Ist der `controller` ein intval? Dann als `uid` verwenden.
+		if (is_numeric($params['controller']) && intval($params['controller']) == $params['controller']) {
+			$params['uid'] = intval($params['controller']);
+			$params['controller'] = 'index';
+		}
+
+		// Ist die `action` ein intval? Dann als `uid` verwenden.
+		if (is_numeric($params['action']) && intval($params['action']) == $params['action']) {
+			$params['uid'] = intval($params['action']);
+			$params['action'] = 'index';
+		}
+
+		// Passenden Endpoint finden. `GET test/something` -> \Nng\Nnrestapi\Api\Test->getSomethingAction()`
+		$endpoint = $this->find( $reqType, $params['controller'], $params['action'], $params['ext'] );
+
+		if (!$endpoint) {
+			$endpoint = $this->findForRoute( $reqType, $uri );
+		}
+
+		if (!$endpoint) {
+			$endpoint = ['args'=>$params];
+		}
+		
+		return $endpoint;
+	}
+
+	/**
+	 * Prefix des aktuellen RouteEnhancers holen, z.B. `/api/`
+	 * ```
+	 * \nn\rest::Endpoint()->getApiUrlPrefix();
+	 * ```
 	 * @return string
 	 */
 	public function getApiUrlPrefix() {
 		$this->initialize();
-		return 'api/';
+		$basePath = $this->apiConfiguration['routing']['basePath'] ?? '/api';
+		return '/' . trim($basePath, '/') . '/';
 	}
 
 	/**
 	 * Endpoint mit Klassenname und Methode für ReqType, Controller und Methode finden
 	 * ```
 	 * \nn\rest::Endpoint()->find( 'get', 'controller', 'action' );
+	 * \nn\rest::Endpoint()->find( true, 'controller', 'action' );
 	 * ```
 	 * @return array
 	 */
@@ -449,7 +549,7 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 		$accessList = [];
 
 		// Definition der Gruppen aus der siteConfig-Yaml
-		$groupConfigurations = $this->siteConfiguration['nnrestapi']['accessGroups'] ?? [];
+		$groupConfigurations = $this->apiConfiguration['accessGroups'] ?? [];
 
 		if (preg_match_all('/([^\[,]*)(\[([^\]]*)\])?/i', $accessStr, $matches)) {
 			foreach ($matches[1] as $n=>$v) {

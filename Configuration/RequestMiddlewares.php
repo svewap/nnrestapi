@@ -8,13 +8,17 @@ return [
                 'typo3/cms-frontend/timetracker',
             ],
         ],
-        'nnrestapi' => [
-            'target' => \Nng\Nnrestapi\Middleware\NnrestapiResolver::class,
-            'before' => [
-                'typo3/cms-frontend/prepare-tsfe-rendering',
-                'typo3/cms-frontend/tsfe',
-                'typo3/cms-frontend/page-resolver',
-            ],
-        ]
+        // 'nnrestapi/auth' => [
+        //     'target' => \Nng\Nnrestapi\Middleware\NnrestapiAuthenticator::class,
+        //     'before' => [
+        //         'typo3/cms-frontend/page-resolver',
+        //     ]
+        // ],
+        // 'nnrestapi/resolver' => [
+        //     'target' => \Nng\Nnrestapi\Middleware\NnrestapiResolver::class,
+        //     'after' => [
+        //         'nnrestapi/auth'
+        //     ],
+        // ]
     ]
 ];

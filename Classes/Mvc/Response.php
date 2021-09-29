@@ -48,9 +48,12 @@ class Response {
 	protected $response;
 
 
-	public function __construct( &$response = null ) {
-		$this->setResponse( $response );
-		return $this;
+	public function __construct( \Psr\Http\Message\ResponseFactoryInterface $responseFactory = null ) {
+		$this->responseFactory = $responseFactory;
+		$this->response = $responseFactory ? $responseFactory->createResponse() : \nn\t3::injectClass(\TYPO3\CMS\Core\Http\Response::class );
+		
+		\nn\rest::Header()->addControls( $this->response )->addContentType( $this->response );
+		
 	}
 
 	/**
@@ -114,13 +117,11 @@ class Response {
 	 * 
 	 * @return void
 	 */
-	public function notFound( $message = '' ) {
-		if (!$message) $message = 'Not found.';
-		$this->setStatus(404)->setMessage( $message );
-		return [
+	public function notFound( $message = 'Not found.' ) {
+		return $this->setStatus(404)->setMessage($message)->render([
 			'status'	=> 404, 
 			'error'		=> $message
-		];
+		]);
 	}
 
 	/**
@@ -129,17 +130,16 @@ class Response {
 	 * @return void 
 	 */
 	public function success( $body = [], $message = 'OK' ) {
-		$this->setStatus(200)->setMessage($message);
-		return $body;
+		return $this->setStatus(200)->setMessage($message)->render( $body );
 	}
 	
 	/**
 	 * 204 No Content
 	 * 
-	 * @return void 
+	 * @return \TYPO3\CMS\Core\Http\Response 
 	 */
 	public function noContent( $message = 'No Content' ) {
-		return $this->setStatus(204)->setMessage( $message )->exit();
+		return $this->setStatus(204)->setMessage( $message )->render();
 	}
 
 	/**

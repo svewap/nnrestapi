@@ -12,61 +12,42 @@ use TYPO3\CMS\Core\Http\PropagateResponseException;
  * Nnrestapi
  * 
  */
-class ApiController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
-{
+class ApiController {
 
 	/**
-     * @var \Nng\Nnrestapi\Mvc\View\JsonView
-     */
-    protected $view;
-	
-	
-    /**
-     * @var string
-     */
-	protected $defaultViewObjectName = \Nng\Nnrestapi\Mvc\View\JsonView::class;
-
-
-	/**
-	 * Initialisierung des Requests.
-	 * 
-	 * Prüft, ob JWT-Token übergeben wurde und authentifiziert den FE-User falls möglich.
-	 * 
-	 * @return void
+	 * @var \Nng\Nnrestapi\Mvc\Request
 	 */
-	public function initializeView( \TYPO3\CMS\Extbase\Mvc\View\ViewInterface $view ) {
-
-		// `access-control` und `content-type` header senden
-		\nn\rest::Header()->sendControls()->sendContentType();
-
-		// Falls kein Login über fe_user-Cookie passiert ist, Json Web Token (JWT) prüfen
-		if (!\nn\t3::FrontendUser()->isLoggedIn()) {
-			$tokenData = \Nng\Nnrestapi\Service\TokenService::getFromRequest();
-			if ($uid = $tokenData['uid'] ?? false) {
-				\nn\t3::FrontendUserAuthentication()->loginField( $tokenData['token'], 'nnrestapi_jwt' );
-			}
-		}
-
-		$this->view->setVariablesToRender(['data']);
-	}
-
+	public $request;
 
 	/**
-	 * 	Basis-Endpoint für alle Requests an die REST-Api
-	 * 	Übernimmt die Delegation an den entsprechenden Controller unter Classes/Api
+	 * @var \Nng\Nnrestapi\Mvc\Response
+	 */
+	public $response;
+
+	/**
+	 * Basis-Endpoint für alle Requests an die REST-Api
+	 * Übernimmt die Delegation an den entsprechenden Controller unter Classes/Api
 	 * 
-	 * 	Prüft, ob der User die Rechte hat, eine Methode aufzurufen.
-	 * 	Wird über die Annotations der Klassen-Methoden gesteuert, z.B.
+	 * Wird über die Middleware `NnrestapiResolver` instanziiert.
 	 * 
-	 * 	`@access public` -> Zugriff auch für nicht-feUser erlaubt
+	 * Prüft, ob der User die Rechte hat, eine Methode aufzurufen.
+	 * Wird über die Annotations der Klassen-Methoden gesteuert, z.B.
+	 * 
+	 * `@access public` -> Zugriff auch für nicht-feUser erlaubt
+	 * 
+	 * @return
 	 */
 	public function indexAction() {
 
-		$t3Request = \nn\t3::t3Version() < 11 ? $GLOBALS['TYPO3_REQUEST'] : $this->request; 
-		$t3Response = \nn\t3::t3Version() < 11 ? $this->response : $this->responseFactory->createResponse();
+		\nn\t3::debug( $this->response );
+		die();
 
-		$request = new \Nng\Nnrestapi\Mvc\Request( $t3Request );
-		$response = new \Nng\Nnrestapi\Mvc\Response( $t3Response );
+		
+		// $t3Request = \nn\t3::t3Version() < 11 ? $GLOBALS['TYPO3_REQUEST'] : $this->request; 
+		// $t3Response = \nn\t3::t3Version() < 11 ? $this->response : $this->responseFactory->createResponse();
+
+		$request = $this->request;
+		$response = $this->response;
 
 		$reqType = $this->checkRequestType( $request, $response );
 		$reqVars = $request->getArguments();
@@ -180,30 +161,34 @@ class ApiController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 
 
 	/**
-	 * Prüft den requestType (GET, POST, ...)
-	 * Gibt den requestType in lowerCase zurück.
-	 * 
-	 * Bricht ab, falls requestType unbekannt ist – oder `OPTIONS` verlangt wird.
-	 * 
-	 * @return string
+	 * @return  \Nng\Nnrestapi\Mvc\Request
 	 */
-	public function checkRequestType( $request, $response ) {
-
-		$httpMethod = $request->getMethod();
-
-		switch ($httpMethod) {
-			case 'head':
-			case 'get':
-			case 'post':
-			case 'put':
-			case 'patch':
-			case 'delete':
-				return $httpMethod;
-			case 'options':
-				return $response->noContent();
-			default:
-				return $response->success();
-		}
+	public function getRequest() {
+		return $this->request;
 	}
 
+	/**
+	 * @param   \Nng\Nnrestapi\Mvc\Request  $request  
+	 * @return  self
+	 */
+	public function setRequest($request) {
+		$this->request = $request;
+		return $this;
+	}
+
+	/**
+	 * @return  \Nng\Nnrestapi\Mvc\Response
+	 */
+	public function getResponse() {
+		return $this->response;
+	}
+
+	/**
+	 * @param   \Nng\Nnrestapi\Mvc\Response  $response  
+	 * @return  self
+	 */
+	public function setResponse($response) {
+		$this->response = $response;
+		return $this;
+	}
 }

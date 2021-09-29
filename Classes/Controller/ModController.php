@@ -68,7 +68,7 @@ class ModController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController {
 			'rewriteCondExists'	=> \Nng\Nnrestapi\Service\EnvironmentService::rewriteCondExists(),
 			'feUser'			=> \nn\t3::FrontendUser()->get(),
 			'urlBase'			=> $urlBase,
-			'absApiUrlPrefix'	=> $urlBase . rtrim(\nn\rest::Endpoint()->getApiUrlPrefix(), '/'),
+			'absApiUrlPrefix'	=> $urlBase . \nn\rest::Endpoint()->getApiUrlPrefix(),
 			'endpoints' 		=> $classMap,
 		]);
 

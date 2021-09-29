@@ -27,5 +27,4 @@ class EnvironmentService {
 		return strpos( $htaccess, '{HTTP:Authorization}') !== false;
 	}
 
-
 }

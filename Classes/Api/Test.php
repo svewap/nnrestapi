@@ -48,6 +48,24 @@ class Test extends AbstractApi {
 
 	
 	/**
+	 * ## Test with custom routing
+	 * 
+	 * This endpoint will be accessible via the URL `/test/route`.
+	 * The route was defined using the `@api\route` annotation. The name of the
+	 * method can then have any arbitrary name and must not follow the scheme
+	 * `{reqMethod}{actionName}Action`
+	 * 
+	 * @api\route GET /test/route
+	 * @api\access be_users
+	 * 
+	 * @return array
+	 */
+	public function customRoutingTest()
+	{
+		return ['message'=>'customRoutingTest() - routing with @api\route works! '];
+	}
+
+	/**
 	 * ## Test with FileReferences
 	 * 
 	 * Will copy the uploaded file(s) to the `fileadmin` and create a `ApiTestModel`

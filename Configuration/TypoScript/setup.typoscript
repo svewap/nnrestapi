@@ -74,24 +74,3 @@ module.tx_nnrestapi {
 		}
 	}
 }
-
-
-# ---------------------------------------------------
-# pageType definition
-
-nnrestapiApi = PAGE
-nnrestapiApi {
-	typeNum = 20210904
-	config {
-		disableAllHeaderCode = 1
-		admPanel = 0
-		debug = 0
-		additionalHeaders {
-			10 {
-				header = Content-Type: application/json
-				replace = 1
-			}
-		}
-	}
-	10 =< tt_content.list.20.nnrestapi_api
-}
