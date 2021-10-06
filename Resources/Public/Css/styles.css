@@ -190,11 +190,15 @@ main {
 .req-type-delete .reqtype {
     background: #f93f3e;
 }
+.req-type-delete [data-target=".compose-body"], 
+.req-type-delete [data-target=".compose-files"],
 .req-type-get [data-target=".compose-body"], 
 .req-type-get [data-target=".compose-files"] {
     text-decoration: line-through !important;  
     opacity: 0.6;  
 }
+.req-type-delete .compose-body, 
+.req-type-delete .compose-files,
 .req-type-get .compose-body, 
 .req-type-get .compose-files {
     opacity: 0.8;

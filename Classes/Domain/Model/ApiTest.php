@@ -12,6 +12,13 @@ class ApiTest extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
     /**
      * title
      *
+     * @var int
+     */
+    protected $uid;
+   
+	/**
+     * title
+     *
      * @var string
      */
     protected $title = '';
@@ -80,5 +87,14 @@ class ApiTest extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 		}
 		$this->files->attach($files);
         return $this;
+	}
+
+	/**
+	 * @param   int  $uid  title
+	 * @return  self
+	 */
+	public function setUid($uid) {
+		$this->uid = $uid;
+		return $this;
 	}
 }

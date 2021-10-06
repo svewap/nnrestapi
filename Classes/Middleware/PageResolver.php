@@ -3,6 +3,7 @@
 namespace Nng\Nnrestapi\Middleware;
 
 use Nng\Nnrestapi\Mvc\Response;
+use TYPO3\CMS\Core\Context\Context;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -15,7 +16,7 @@ use Psr\Http\Message\ResponseFactoryInterface;
  * https://docs.typo3.org/m/typo3/reference-coreapi/master/en-us/ApiOverview/RequestHandling/Index.html
  * 
  */
-class NnrestapiResolver implements MiddlewareInterface {
+class PageResolver implements MiddlewareInterface {
 	
 	/** 
 	 * @var ResponseFactoryInterface 
@@ -28,15 +29,20 @@ class NnrestapiResolver implements MiddlewareInterface {
     private $response;
 
 	/**
+	 * @var Context
+	 */
+	protected $context;
+
+	/**
 	 * 
 	 * @return void
 	 */
-    public function __construct() {
+    public function __construct(Context $context) {
         $this->response = \nn\t3::injectClass( Response::class );
+        $this->context = $context;
     }
 
 	/**
-	 *  Wird aufgerufen
 	 * 
 	 *	@param ServerRequestInterface $request
 	 *	@param RequestHandlerInterface $handler
@@ -64,79 +70,18 @@ class NnrestapiResolver implements MiddlewareInterface {
 			return $this->response->notFound('RestApi-endpoint not found. Based on your request the endpoint would be `' . $classMethodInfo . '`' );
 		}
 
-\nn\t3::debug('RESOLVER');
-
 		$apiRequest = new \Nng\Nnrestapi\Mvc\Request( $request );
+		$apiRequest->setFeUser( \nn\t3::FrontendUser()->get() );
+		$apiRequest->setEndpoint( $endpoint );
+		$apiRequest->setSettings( \nn\t3::Settings()->get('tx_nnrestapi') );
 
 		$controller = \nn\t3::injectClass( \Nng\Nnrestapi\Controller\ApiController::class );
 		$controller->setRequest( $apiRequest );
 		$controller->setResponse( $this->response );
 		$response = $controller->indexAction();
 
-		return $this->response->success(['ok'=>'nice!']);
+		return $response;
 
-
-die('NOPE');
-
-		// '/api/{controller}/{action}/{uid}/{param1}/{param2}/{param3}'
-
-		//$response = $this->responseFactory->createResponse();
-		$apiRequest = new \Nng\Nnrestapi\Mvc\Request( $request );
-		$apiResponse = new \Nng\Nnrestapi\Mvc\Response( $response );
-
-		$apiRequest->setEndpoint( $endpoint );
-
-		// $controller = new \Nng\Nnrestapi\Controller\ApiController( $apiRequest, $apiResponse );
-		// $response = $controller->indexAction();
-		
-		//\nn\t3::debug( $uri ); die();
-		\nn\t3::debug( $apiRequest ); die();
-
-		// $response = new \TYPO3\CMS\Core\Http\Response();
-		// $response->getBody()->write( $this->getRequestedContent( $request ) );
-		
-		//return $this->getResponse( $request );
-	}
-	
-	
-	/**
-	 * Prüft den requestType (GET, POST, ...)
-	 * Gibt den requestType in lowerCase zurück.
-	 * 
-	 * Bricht ab, falls requestType unbekannt ist – oder `OPTIONS` verlangt wird.
-	 * 
-	 * @return string
-	 */
-	public function checkRequestType( $request, $response ) {
-
-		$httpMethod = $request->getMethod();
-
-		switch ($httpMethod) {
-			case 'head':
-			case 'get':
-			case 'post':
-			case 'put':
-			case 'patch':
-			case 'delete':
-				return $httpMethod;
-			case 'options':
-				return $response->noContent();
-			default:
-				return $response->success();
-		}
-	}
-
-
-	/**
-	 *
-	 */    
-	public function getResponse ( $request = null ) {
-
-		$controller = \nn\t3::injectClass( \Nng\Nnrestapi\Controller\ApiController::class );
-		$controller->request = $request;
-		$response = $controller->indexAction();
-
-		\nn\t3::debug( $response ); die();
 	}
 
 }

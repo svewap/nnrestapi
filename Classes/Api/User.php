@@ -23,7 +23,7 @@ class User extends AbstractApi {
 	 */
 	public function getIndexAction()
 	{
-		$feUser = \nn\t3::FrontendUser()->getCurrentUser();
+		$feUser = \nn\t3::FrontendUser()->get();
 		return $feUser;
 	}
 	

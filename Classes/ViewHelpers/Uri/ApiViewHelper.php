@@ -27,12 +27,12 @@ class ApiViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\Uri\PageViewHelper {
         $this->registerArgument('uid', 'string', 'uid', false);
         $this->registerArgument('param1', null, 'Parameter 1', false, '');
         $this->registerArgument('param2', null, 'Parameter 2', false, '');
-        $this->registerArgument('type', 'string', 'pageType', false, '20210904');
+        $this->registerArgument('param3', null, 'Parameter 3', false, '');
    }
 
 	public static function renderStatic( array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext ) {
 
-		$apiArgs = ['ext', 'controller', 'action', 'uid', 'param1', 'param2'];
+		$apiArgs = ['ext', 'controller', 'action', 'uid', 'param1', 'param2', 'param3'];
 		$args = ['additionalParams', 'type', 'absolute'];
         
         $linkParams = [];
@@ -43,9 +43,6 @@ class ApiViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\Uri\PageViewHelper {
 		foreach ($args as $arg) {
 			${$arg} = $arguments[$arg] ?? '';
 		}
-
-        // type ist als default `20210904` - siehe TypoScript Setup bzw. yaml siteconfig
-        $linkParams['type'] = $type;
 
         return \nn\rest::Api()->uri( $linkParams, $additionalParams );
 	}

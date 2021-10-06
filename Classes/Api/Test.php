@@ -110,18 +110,82 @@ class Test extends AbstractApi {
 	public function postUploadAction( ApiTest $apiTest = null )
 	{
 		return $apiTest;
+	}
 
-		$files = [];
-		foreach ($this->request->getUploadedFiles() as $k=>$file) {
-			$files[$k] = $file->getClientFilename();
+
+	/**
+	 * ## Simple test with DELETE
+	 * 
+	 * Endpoint for the RequestType `DELETE`.
+	 *
+	 * @api\route DELETE /test/{uid}
+	 * @api\access be_users
+	 * 
+	 * @return array
+	 */
+	public function deleteIndexAction( ApiTest $apiTest = null )
+	{
+		$uid = $this->request->getArguments()['uid'] ?? null;
+
+		if (!$apiTest) {
+			$apiTest = new ApiTest();
+			$apiTest->setUid( $uid );
 		}
 
 		$result = [
-			'body' 	=> $this->request->getBody() ?: 'Put a JSON in the body-field to test!',
-			'files'	=> $files ?: 'Select a file to test!'
+			'message' => 'DELETE Action successfully called.',
+			'body' 	=> $uid ? 'The model to delete would have the uid [' . $uid . ']' : 'uid not passed in URL.',
 		];
 		return $result;
 	}
-
+	
+	/**
+	 * ## Simple test with GET
+	 * 
+	 * Endpoint for the RequestType `GET`.
+	 *
+	 * @api\access be_users
+	 * 
+	 * @return array
+	 */
+	public function getIndexAction( $params = [] )
+	{
+		return [
+			'message' => 'GET Action successfully called.',
+			'params' => $params
+		];
+	}
+	
+	/**
+	 * ## Simple test with PUT
+	 * 
+	 * Endpoint for the RequestType `PUT`.
+	 *
+	 * @api\upload default
+	 * @api\example {"title":"My Test Model", "files":["UPLOAD:/file-0", "UPLOAD:/file-1"]}
+	 * @api\access be_users
+	 * 
+	 * @return array
+	 */
+	public function putIndexAction( ApiTest $apiTest = null )
+	{
+		return $apiTest;
+	}
+	
+	/**
+	 * ## Simple test with PATCH
+	 * 
+	 * Endpoint for the RequestType `PATCH`.
+	 *
+	 * @api\upload default
+	 * @api\example {"title":"My Test Model", "files":["UPLOAD:/file-0", "UPLOAD:/file-1"]}
+	 * @api\access be_users
+	 * 
+	 * @return array
+	 */
+	public function patchIndexAction( ApiTest $apiTest = null )
+	{
+		return $apiTest;
+	}
 
 }

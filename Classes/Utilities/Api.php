@@ -60,10 +60,6 @@ class Api extends \Nng\Nnhelpers\Singleton {
 			$mergedArgs = array_merge( $mergedArgs, $arr );
 		}
 
-		if (!($mergedArgs['type'] ?? false)) {
-			$mergedArgs['type'] = 20210904;
-		}
-
 		$defaultEndpoint = \nn\rest::Endpoint()->find( true, $mergedArgs['controller'], $mergedArgs['action'] );
 
 		// `param2` wird zu `param3` verschoben, `controller` wird zu `action` etc.
@@ -88,10 +84,24 @@ class Api extends \Nng\Nnhelpers\Singleton {
 			if ($v == '') unset($mergedArgs[$k]);
 		}
 
-		$pageUid = $this->getApiPageUid();
-		$uri = \nn\t3::Page()->getLink( $pageUid, $mergedArgs, true );
+		if ($mergedArgs['action'] == 'index') {
+			unset($mergedArgs['action']);
+		}
 
-		$uri = preg_replace('/(.*)(&cHash=[^&]*)(.*)/i', '\1', $uri);
+		$urlBase = \nn\t3::Environment()->getBaseUrl();
+		$apiUrlPrefix = \nn\rest::Endpoint()->getApiUrlPrefix();
+
+		$uriParts = [];
+		if ($additionalParams['absolute'] ?? false) {
+			$uriParts[] = $urlBase;
+		}
+		if ($apiUrlPrefix) {
+			$uriParts[] = rtrim($apiUrlPrefix, '/');
+		}
+		$uriParts += $mergedArgs;
+
+		$uri = join('/', $uriParts);
+
 		return $uri;
 	}
 

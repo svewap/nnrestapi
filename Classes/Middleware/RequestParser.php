@@ -19,7 +19,7 @@ use TYPO3\CMS\Core\Http\Response;
  * Handler für HTTP-Request. Wir im Boot-Prozess vor allen anderen Middlewares aufgerufen.
  *  
  */
-class NnrestapiRequestParser implements MiddlewareInterface {
+class RequestParser implements MiddlewareInterface {
 	
 	/**
 	 * RequestMethods, die zusätzlich geparsed werden sollen.

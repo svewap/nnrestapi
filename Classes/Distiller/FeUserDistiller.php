@@ -32,7 +32,6 @@ class FeUserDistiller extends AbstractDistiller {
 	 */
 	public function process( &$data = [] ) {
 		$data['usergroup'] 	= \nn\t3::Arrays($data['usergroup'])->intExplode();
-		$data['token'] 		= $data['nnrestapi_jwt'];
 	}
 
 }

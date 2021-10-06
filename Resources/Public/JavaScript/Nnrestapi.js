@@ -75,7 +75,7 @@ define(['jquery', 'TYPO3/CMS/Nnrestapi/Axios'], function($, axios) {
 	});
 
 	$testbed.find('.reqtype').change(function () {
-		var classes = 'req-type-get req-type-post req-type-put req-type-path req-type-delete';
+		var classes = 'req-type-get req-type-post req-type-put req-type-patch req-type-path req-type-delete';
 		var reqType = $(this).val();
 		$testbed.removeClass(classes);
 		$testbed.addClass('req-type-' + reqType);

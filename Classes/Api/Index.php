@@ -10,20 +10,17 @@ use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 class Index extends AbstractApi {
 	
 	/**
-	 * Einfacher Test
+	 * Simple test.
+	 * A public endpoint reachable it 
 	 * 
-	 * GET api/
-	 * ?type=20200505
+	 * @api\access public
 	 * 
-	 * @access public
 	 * @return array
 	 */
 	public function getIndexAction( $params = [], $payload = null )
 	{
-		$result = ['message'=>'Successfully called /api. This is mapped to endpoint Index->getIndexAction(). Use /api/{controller}/{action} syntax to connect to an endpoint.'];
+		$result = ['message'=>'Successfully called /api. This is mapped to the public endpoint Index->getIndexAction(). Use /api/{controller}/{action} syntax to connect to an endpoint.'];
 		return $result;
 	}
-
-	
 
 }

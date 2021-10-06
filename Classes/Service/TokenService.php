@@ -115,7 +115,7 @@ class TokenService {
 	 * @return string|null
 	 */
 	public static function getBearerToken() {
-return 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOjF9.ZGJkYTQ4YTI0MGZiNmIxZjg2ODYxOTE0YTk5Nzk2YTJkNjNlZDhhNGViYjEwNDBlODAzYmI3YmNlYTQ1NzVkYQ==';
+//return 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOjF9.ZGJkYTQ4YTI0MGZiNmIxZjg2ODYxOTE0YTk5Nzk2YTJkNjNlZDhhNGViYjEwNDBlODAzYmI3YmNlYTQ1NzVkYQ==';
 		$headers = self::getAuthorizationHeader();
 		if (!empty($headers)) {
 			if (preg_match('/Bearer\s(\S+)/', $headers, $matches)) {

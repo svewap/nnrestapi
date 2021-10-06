@@ -3,12 +3,23 @@
 namespace nn;
 
 use Nng\Nnrestapi\Utilities\Api;
+use Nng\Nnrestapi\Utilities\Auth;
 use Nng\Nnrestapi\Utilities\Endpoint;
 use Nng\Nnrestapi\Utilities\File;
 use Nng\Nnrestapi\Utilities\Header;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class rest {
+	
+	/**
+	 * ```
+	 * \nn\rest::Auth()->methodName();
+	 * ```
+	 * @return Auth
+	 */
+	public static function Auth() {
+		return \nn\t3::injectClass(Auth::class);		
+	}
 
 	/**
 	 * Zugriff auf Utilities vereinfachen.
@@ -22,6 +33,7 @@ class rest {
 		if (!$slug) return \nn\t3::injectClass(Api::class);
 		return new \Nng\Nnrestapi\Utilities\Api( $slug );
 	}
+
 
 	/**
 	 * ```

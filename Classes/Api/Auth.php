@@ -2,6 +2,8 @@
 namespace Nng\Nnrestapi\Api;
 
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 
 /**
  * Nnrestapi
@@ -31,11 +33,14 @@ class Auth extends AbstractApi {
 			return $this->response->unauthorized('Invalid credentials.');
 		}
 
-		$token = \Nng\Nnrestapi\Service\TokenService::create(['uid'=>$feUser['uid']]);
+		$token = \Nng\Nnrestapi\Service\TokenService::create([
+			'uid' 		=> $feUser['uid'], 
+			'ses_id' 	=> \nn\t3::FrontendUser()->getSessionId(),
+			'tstamp' 	=> time(),
+			'ip'		=> $_SERVER['REMOTE_ADDR']
+		]);
 		
-		\nn\t3::Db()->update('fe_users', ['nnrestapi_jwt'=>$token], $feUser['uid']);
-		$feUser['nnrestapi_jwt'] = $token;
-
+		$feUser['token'] = $token;
 		return $feUser;
 	}
 
@@ -43,7 +48,7 @@ class Auth extends AbstractApi {
 	/**
 	 * ## Logout the current FrontendUser.
 	 * 
-	 * Will unset the user-session and cookie and delete the JWT token for the user in the database.
+	 * Will unset the user-session and cookie.
 	 * 
 	 * @api\access public
 	 * 
@@ -52,10 +57,10 @@ class Auth extends AbstractApi {
 	public function getLogoutAction()
 	{
 		$feUser = \nn\t3::FrontendUser()->getCurrentUser();
-		if (!$feUser) return [];
+		if (!$feUser) return ['message'=>'User already logged out.'];
 		
-		\nn\t3::Db()->update('fe_users', ['nnrestapi_jwt'=>''], $feUser['uid']);
 		\nn\t3::FrontendUser()->logout();
+		return ['message'=>'User successfully logged out.'];
 	}
 
 }

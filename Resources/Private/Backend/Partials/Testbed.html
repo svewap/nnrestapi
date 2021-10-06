@@ -7,7 +7,7 @@
 
 		<div class="d-flex mb-2 pt-3 request-form">
 			<input type="hidden" class="requid" />
-			<f:form.select class="reqtype" options="{get:'GET', post:'POST', put:'PUT', delete:'DELETE'}" value="post" />
+			<f:form.select class="reqtype" options="{get:'GET', post:'POST', put:'PUT', patch:'PATCH', delete:'DELETE'}" value="post" />
 			<div class="url w-100">
 				<i class="progress-bar"></i>
 				<input type="text" class="form-control requrl" placeholder="enter URL to test" value="{rest:uri.api(controller:'test', ext:'nnrestapi')->nnt3:format.replace(from:urlBase, to:'')}" />

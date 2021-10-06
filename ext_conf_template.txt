@@ -1,0 +1,2 @@
+# cat=basic/auth; type=user[Nng\Nnhelpers\Helpers\ExtConfTemplateHelper->textfield]; label=API-Keys for BasicAuth. One user with key per line, user and key separeted with a colon
+apiKeys = examplefeUserName:exampleApiKey

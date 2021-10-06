@@ -11,7 +11,7 @@
 
 			<f:for each="{registrations}" key="extname" as="config">
 
-				{f:if(condition:config.route, then:'{absApiUrlPrefix}/{config.route.path}', else:'{rest:uri.api(controller:config.controller, action:config.action, ext:extname)}')->f:variable(name:'uri')}
+				{f:if(condition:config.route, then:'{absApiUrlPrefix}{config.route.path}', else:'{rest:uri.api(controller:config.controller, action:config.action, ext:extname)}')->f:variable(name:'uri')}
 
 				{f:variable(name:'relUri', value:'{uri->nnt3:format.replace(from:urlBase, to:\'\')}')}
 

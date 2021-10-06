@@ -7,6 +7,7 @@ use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 use \Nng\Nnrestapi\Mvc\Response;
 use TYPO3\ClassAliasLoader\ClassAliasMap;
 use TYPO3\CMS\Core\Http\PropagateResponseException;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Nnrestapi
@@ -28,7 +29,7 @@ class ApiController {
 	 * Basis-Endpoint für alle Requests an die REST-Api
 	 * Übernimmt die Delegation an den entsprechenden Controller unter Classes/Api
 	 * 
-	 * Wird über die Middleware `NnrestapiResolver` instanziiert.
+	 * Wird über die Middleware `PageResolver` dieser Extension instanziiert.
 	 * 
 	 * Prüft, ob der User die Rechte hat, eine Methode aufzurufen.
 	 * Wird über die Annotations der Klassen-Methoden gesteuert, z.B.
@@ -39,44 +40,26 @@ class ApiController {
 	 */
 	public function indexAction() {
 
-		\nn\t3::debug( $this->response );
+		/*
+		$frontendUser = GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication::class);
+		$frontendUser->start();
+		$frontendUser->logoff();
+		*/
+		/*
+		\nn\t3::debug( $sessionId );
+		\nn\t3::debug( \nn\t3::FrontendUser()->getGroups( ) );
+		\nn\t3::debug( \nn\t3::FrontendUser()->get() );
+		\nn\t3::debug( $this->request->getFeUser() );
+		\nn\t3::debug( $this->request );
 		die();
-
+		//*/
 		
-		// $t3Request = \nn\t3::t3Version() < 11 ? $GLOBALS['TYPO3_REQUEST'] : $this->request; 
-		// $t3Response = \nn\t3::t3Version() < 11 ? $this->response : $this->responseFactory->createResponse();
-
 		$request = $this->request;
 		$response = $this->response;
-
-		$reqType = $this->checkRequestType( $request, $response );
+		$endpoint = $request->getEndpoint();
 		$reqVars = $request->getArguments();
 		
-		$controllerName = $reqVars['controller'] ?? '';
-		$actionName = $reqVars['action'] ?: 'index';
 		$uid = $reqVars['uid'] ?: false;
-		$extSlug = $reqVars['ext'] ?: false;
-
-		// Passenden Endpoint finden. `GET test/something` -> \Nng\Nnrestapi\Api\Test->getSomethingAction()`
-		$endpoint = \nn\rest::Endpoint()->find( $reqType, $controllerName, $actionName, $extSlug );
-
-		if (!$endpoint) {
-			if ($endpoint = \nn\rest::Endpoint()->findForRoute( $reqType, $request->getPath() )) {
-				$request->setArguments($endpoint['route']['args'] ?? []);
-			}
-		}
-
-		// Kein Endpoint gefunden? Mit 404 abbrechen.
-		if (!$endpoint) {
-			$checked = array_column( \nn\rest::Endpoint()->getAll(), 'namespace' );
-			$classInfo = ucfirst($controllerName) . '->' . $reqType . ucfirst( $actionName ) . 'Action';
-			return $response->error(404, "Endpoint controller {$classInfo}() not found. Checked these namespaces: " . join( ', ', $checked ) );
-		}
-
-		// $request mit Konfigurationen anreichern
-		$request->setSettings( \nn\t3::Settings()->get('tx_nnrestapi') );
-		$request->setEndpoint( $endpoint );
-		$request->setFeUser( \nn\t3::FrontendUser()->getCurrentUser() );
 
 		// `@api\route` und `@api\access` Annotation beim Instanziieren der Klasse ignorieren, sonst Exception!
 		$ignore = ['route', 'access', 'example', 'distiller', 'upload'];
@@ -156,7 +139,8 @@ class ApiController {
 		}
 
 		$response->setBody( $result );
-		throw new PropagateResponseException($response->render(), 1476045871);
+
+		return $response->render();
 	}
 
 

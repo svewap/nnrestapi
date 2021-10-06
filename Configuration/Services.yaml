@@ -4,7 +4,8 @@ services:
     autoconfigure: true
     public: false
 
-  Nng\Nnrestapi\Middleware\NnrestapiAuthenticator:
+  Nng\Nnrestapi\Middleware\:
+    resource: '../Classes/Middleware/*'
     autowire: true
     autoconfigure: true
     public: true

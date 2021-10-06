@@ -55,22 +55,22 @@ class AbstractApi {
 	/**
 	 * Prüft, ob aktueller fe_user Rechte hat, den gewünschten Endpoint aufzurufen.
 	 * Als nicht-eingeloggter User dürfen nur Methoden aufgerufen werden, die in 
-	 * den Annotations als `@access public` markiert sind.
+	 * den Annotations als `@api\access public` markiert sind.
 	 * 
-	 * Folgende Rechte existieren für `@access ...`:
+	 * Folgende Rechte existieren für `@api\access ...`:
 	 * 
 	 * | ---------------------------------- | ----------------------------------------------------- |
 	 * | Annotation 						| Rechte: Aufrufbar von...							 	|
 	 * | ---------------------------------- | ----------------------------------------------------- |
-	 * | @access public						| jedem, ohne Authentifizierung	 					 	|
-	 * | @access fe_users					| jedem eingeloggten Frontend-User	 				 	|
-	 * | @access fe_users[1]				| Nur eingeloggten Frontend-User mit uid 1	 		 	|
-	 * | @access fe_users[david]			| Nur eingeloggten Frontend-User mit username `david`	|
-	 * | @access be_users					| jedem eingeloggten Backend-User	 			 	    |
-	 * | @access be_admins					| jedem eingeloggten Backend-Admin	 	 			    |
-	 * | @access fe_group[1,2]				| fe_user-group mit uid 1 und 2	 				        |
-	 * | @access fe_group[api]				| fe_user-group 'api'				 			        |
-	 * | @access config[myconf]				| Yaml config für die site/API verwenden				|
+	 * | @api\access public					| jedem, ohne Authentifizierung	 					 	|
+	 * | @api\access fe_users				| jedem eingeloggten Frontend-User	 				 	|
+	 * | @api\access fe_users[1]			| Nur eingeloggten Frontend-User mit uid 1	 		 	|
+	 * | @api\access fe_users[david]		| Nur eingeloggten Frontend-User mit username `david`	|
+	 * | @api\access be_users				| jedem eingeloggten Backend-User	 			 	    |
+	 * | @api\access be_admins				| jedem eingeloggten Backend-Admin	 	 			    |
+	 * | @api\access fe_group[1,2]			| fe_user-group mit uid 1 und 2	 				        |
+	 * | @api\access fe_group[api]			| fe_user-group 'api'				 			        |
+	 * | @api\access config[myconf]			| Yaml config für die site/API verwenden				|
 	 * | ---------------------------------- | ----------------------------------------------------- |
 	 * 
 	 * @return boolean

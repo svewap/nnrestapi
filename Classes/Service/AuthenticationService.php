@@ -5,7 +5,12 @@ namespace Nng\Nnrestapi\Service;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
-class AuthentificationService extends \TYPO3\CMS\Core\Authentication\AuthenticationService {
+/**
+ * Wird nur aufgerufen bei
+ * ?logintype=login
+ * 
+ */
+class AuthenticationService extends \TYPO3\CMS\Core\Authentication\AuthenticationService {
 	
 	/**
 	 * @var array
@@ -14,27 +19,27 @@ class AuthentificationService extends \TYPO3\CMS\Core\Authentication\Authenticat
 	protected $settings;
 	protected $formData;
 
+	/**
+     * Login type, used for services.
+     * @var string
+     */
+    public $loginType = 'FE';
+
 	var $localLoginData;
 	var $prefixId = 'tx_nnrestapi';
 	var $scriptRelPath = 'Classes/Service/AuthenticationService.php';
 	var $extKey = 'nnrestapi';    
 	var $igldapssoauth;
 	var $contentElementUid;
-
-	/**
-	 * @var \TYPO3\CMS\Extbase\Domain\Repository\FrontendUserRepository
-	 * @TYPO3\CMS\Extbase\Annotation\Inject
-	 */
-	protected $frontendUserRepository;
 	
 	/**
 	 * 	Default constructor
 	 * 	POST-Daten parsen und entschlüsseln, falls erforderlich
 	 */
 	public function __construct() {
-		die('OK');
+		die('YEAH!');
 		$this->config = $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$this->extKey] ?? [];
-		$this->frontendUserRepository = \nn\t3::injectClass( \TYPO3\CMS\Extbase\Domain\Repository\FrontendUserRepository::class );
+		//$this->frontendUserRepository = \nn\t3::injectClass( \TYPO3\CMS\Extbase\Domain\Repository\FrontendUserRepository::class );
 	}
 
 	/**
@@ -47,6 +52,7 @@ class AuthentificationService extends \TYPO3\CMS\Core\Authentication\Authenticat
 	 * 
 	 */
 	public function initAuth($mode, $loginData, $authInfo, $pObj) {
+		file_put_contents('/var/www/vhosts/99grad.dev/tetronik-web2print.99grad.dev/public/typo3conf/ext/nnrestapi/Classes/Service/test.txt', 'HALLO!');
 		
 		/*
 		// nnfelogin verwendet eine komplett eigene Verschlüsselung...
@@ -88,18 +94,15 @@ class AuthentificationService extends \TYPO3\CMS\Core\Authentication\Authenticat
 		foreach ($usernameFields as $field) {
 			$authOptions[$field] = $uname;
 		}
-*/
+
 		$authOptions = [
 			'nnrestapi_jwt' => \Nng\Nnrestapi\Services\AuthentificationService::getBearerToken()
 		];
 		$users = \nn\t3::Db()->findByValues( 'fe_users', $authOptions, true, true );
-
-\nn\t3::debug($users);die();
-
-		// Mehr als ein Benutzer unter angegebenen Kriterien. Abbruch!
-		if (count($users) > 1) return false; 
 		
 		return array_shift($users);
+		*/
+		return [];
 	}
 
 
@@ -118,7 +121,7 @@ class AuthentificationService extends \TYPO3\CMS\Core\Authentication\Authenticat
 	 * @return int|false
 	 */
 	public function authUser(array $user): int {
-
+/*
 		// Kein Passwort übergeben? Dann ist dieser Service nicht verantwortlich.
 		if (!($this->loginData['uident_text'] ?? false)) return 100;
 
@@ -126,6 +129,8 @@ class AuthentificationService extends \TYPO3\CMS\Core\Authentication\Authenticat
 		$authResult = true;
 
 		return $authResult ? 200 : 100;
+		*/
+		return 100;
 	}
 
 }
