@@ -1,6 +1,9 @@
 <?php
 namespace Nng\Nnrestapi\Api;
 
+use Nng\Nnrestapi\Annotations as Api;
+use Nng\Nnrestapi\Distiller\FeUserDistiller;
+
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
@@ -18,9 +21,9 @@ class Auth extends AbstractApi {
 	 * The RESTApi will try to login the frontend-user using the cookie. If this fails, e.g.
 	 * because of cross-domain-cookie restrictions, it will use the JWT. 
 	 *
-	 * @api\example {"username":"david", "password":"mypassword"}
-	 * @api\access public
-	 * @api\distiller Nng\Nnrestapi\Distiller\FeUserDistiller
+	 * @Api\Example("{'username':'david', 'password':'mypassword'}")
+	 * @Api\Access("*")
+	 * @Api\Distiller( FeUserDistiller::class )
 	 * 
 	 * @return mixed
 	 */
@@ -50,7 +53,7 @@ class Auth extends AbstractApi {
 	 * 
 	 * Will unset the user-session and cookie.
 	 * 
-	 * @api\access public
+	 * @Api\Access("*")
 	 * 
 	 * @return mixed
 	 */

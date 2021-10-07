@@ -2,14 +2,28 @@
 
 namespace nn;
 
+use Nng\Nnrestapi\Utilities\Access;
 use Nng\Nnrestapi\Utilities\Api;
 use Nng\Nnrestapi\Utilities\Auth;
+use Nng\Nnrestapi\Utilities\Annotations;
 use Nng\Nnrestapi\Utilities\Endpoint;
 use Nng\Nnrestapi\Utilities\File;
 use Nng\Nnrestapi\Utilities\Header;
+use Nng\Nnrestapi\Utilities\Settings;
+
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class rest {
+	
+	/**
+	 * ```
+	 * \nn\rest::Access()->methodName();
+	 * ```
+	 * @return Access
+	 */
+	public static function Access() {
+		return \nn\t3::injectClass(Access::class);		
+	}
 	
 	/**
 	 * ```
@@ -34,7 +48,16 @@ class rest {
 		return new \Nng\Nnrestapi\Utilities\Api( $slug );
 	}
 
-
+	/**
+	 * ```
+	 * \nn\rest::Annotations()->methodName();
+	 * ```
+	 * @return Annotations
+	 */
+	public static function Annotations() {
+		return \nn\t3::injectClass(Annotations::class);		
+	}
+	
 	/**
 	 * ```
 	 * \nn\rest::Endpoint()->methodName();
@@ -65,4 +88,13 @@ class rest {
 		return \nn\t3::injectClass(Header::class);		
 	}
 
+	/**
+	 * ```
+	 * \nn\rest::Settings( $request )->methodName();
+	 * ```
+	 * @return Settings
+	 */
+	public static function Settings( $request = null ) {
+		return Settings::makeInstance( $request );
+	}
 }

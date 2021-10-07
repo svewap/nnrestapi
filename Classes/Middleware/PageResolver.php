@@ -49,7 +49,7 @@ class PageResolver implements MiddlewareInterface {
 	 *	@return ResponseInterface
 	 */
 	public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
-		
+				
 		$method = strtolower($request->getMethod());
 		$endpoint = \nn\rest::Endpoint()->findForRequest( $request );
 
@@ -73,6 +73,7 @@ class PageResolver implements MiddlewareInterface {
 		$apiRequest = new \Nng\Nnrestapi\Mvc\Request( $request );
 		$apiRequest->setFeUser( \nn\t3::FrontendUser()->get() );
 		$apiRequest->setEndpoint( $endpoint );
+		$apiRequest->setArguments( $endpoint['route']['arguments'] ?? [] );
 		$apiRequest->setSettings( \nn\t3::Settings()->get('tx_nnrestapi') );
 
 		$controller = \nn\t3::injectClass( \Nng\Nnrestapi\Controller\ApiController::class );

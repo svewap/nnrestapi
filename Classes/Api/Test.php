@@ -1,23 +1,15 @@
 <?php
 namespace Nng\Nnrestapi\Api;
 
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 use Nng\Nnrestapi\Domain\Model\ApiTest;
+use Nng\Nnrestapi\Annotations as Api;
+
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
+use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 
 /**
  * Nnrestapi
  * 
- * Beispiele für Routing per @api\route:
- * ```
- * @api\route /test/demo
- * @api\route /test/demo/{uid} 
- * @api\route /test/demo/{uid?}
- * @api\route /test/demo/{uid}/{test}
- * @api\route /test/demo/{uid?}/{test?}
- * @api\route GET /test/demo/something
- * @api\route GET|POST|PUT /test/demo/something
- * @api\route GET auth/log_me_out/{uid}/{something}
- * ```
  */
 class Test extends AbstractApi {
 
@@ -28,7 +20,7 @@ class Test extends AbstractApi {
 	 * Will not copy any files to server. For testing a real file-upload and the
 	 * conversion to a FileReference: Use `api/test/upload/`.
 	 * 
-	 * @api\access be_users
+	 * @Api\Access("be_users")
 	 * 
 	 * @return array
 	 */
@@ -51,18 +43,18 @@ class Test extends AbstractApi {
 	 * ## Test with custom routing
 	 * 
 	 * This endpoint will be accessible via the URL `/test/route`.
-	 * The route was defined using the `@api\route` annotation. The name of the
+	 * The route was defined using the `@Api\Route` annotation. The name of the
 	 * method can then have any arbitrary name and must not follow the scheme
 	 * `{reqMethod}{actionName}Action`
 	 * 
-	 * @api\route GET /test/route
-	 * @api\access be_users
+	 * @Api\Route("GET /test/route")
+	 * @Api\Access("be_users")
 	 * 
 	 * @return array
 	 */
 	public function customRoutingTest()
 	{
-		return ['message'=>'customRoutingTest() - routing with @api\route works! '];
+		return ['message'=>'customRoutingTest() - routing with @Api\Route works! '];
 	}
 
 	/**
@@ -80,12 +72,12 @@ class Test extends AbstractApi {
 	 * {"file":{"publicUrl":"UPLOAD:/file-0"}}
 	 * {"file":[{"publicUrl":"UPLOAD:/file-0"}, {"publicUrl":"UPLOAD:/file-1"}, ...]}
 	 * ```
-	 * You can define the target path/folder by using the `@api\upload myconf` __annoation__ 
+	 * You can define the target path/folder by using the `@Api\Upload("myconf")` __annoation__ 
 	 * in the comment of your endpoint's method. The configuration is set in the
 	 * TypoScript setup: 
 	 * ```
 	 * plugin.tx_nnrestapi.settings.fileUploads {
-	 * 	// Use this key for "UPLOAD:myconf:/..." and "@api\upload myconf"
+	 * 	// Use this key in @Api\Upload("myconf")
 	 * 	myconf {
 	 * 		// if nothing else fits, use fileadmin/
 	 * 		defaultStoragePath = 1:/
@@ -101,9 +93,9 @@ class Test extends AbstractApi {
 	 * 	}
 	 * }
 	 * 
-	 * @api\upload default
-	 * @api\example {"title":"My Test Model", "files":["UPLOAD:/file-0", "UPLOAD:/file-1"]}
-	 * @api\access be_users
+	 * @Api\Upload("default")
+	 * @Api\Example("{'title':'My Test Model', 'files':['UPLOAD:/file-0', 'UPLOAD:/file-1']}")
+	 * @Api\Access("be_users")
 	 * 
 	 * @return array
 	 */
@@ -114,27 +106,40 @@ class Test extends AbstractApi {
 
 
 	/**
+	 * ## Insert TestApi Model
+	 * 
+	 * Inserts a new TestApi Model in the database.
+	 *
+	 * @Api\Example("{'title':'My Test Model', 'files':['UPLOAD:/file-0', 'UPLOAD:/file-1']}")
+	 * @Api\Access("be_users")
+	 * 
+	 * @param Nng\Nnrestapi\Domain\Model\ApiTest $apiTest
+	 * @return array
+	 */
+	public function postAddAction( $apiTest = null )
+	{
+		\nn\t3::Db()->insert( $apiTest );
+		return $apiTest;
+	}
+
+	/**
 	 * ## Simple test with DELETE
 	 * 
 	 * Endpoint for the RequestType `DELETE`.
 	 *
-	 * @api\route DELETE /test/{uid}
-	 * @api\access be_users
+	 * @Api\Route("DELETE /test/{uid}")
+	 * @Api\Access("be_users")
 	 * 
+	 * @param Nng\Nnrestapi\Domain\Model\ApiTest $apiTest
 	 * @return array
 	 */
-	public function deleteIndexAction( ApiTest $apiTest = null )
+	public function deleteIndexAction( $apiTest = null )
 	{
-		$uid = $this->request->getArguments()['uid'] ?? null;
-
-		if (!$apiTest) {
-			$apiTest = new ApiTest();
-			$apiTest->setUid( $uid );
-		}
+		\nn\t3::Db()->delete( $apiTest );
 
 		$result = [
 			'message' => 'DELETE Action successfully called.',
-			'body' 	=> $uid ? 'The model to delete would have the uid [' . $uid . ']' : 'uid not passed in URL.',
+			'body' 	=> $apiTest ? "Entry with uid [" . $apiTest->getUid() . "] was deleted in database" : 'Entry to delete was not found in database.',
 		];
 		return $result;
 	}
@@ -143,32 +148,39 @@ class Test extends AbstractApi {
 	 * ## Simple test with GET
 	 * 
 	 * Endpoint for the RequestType `GET`.
-	 *
-	 * @api\access be_users
+	 * 
+	 * @Api\Route("GET /test/{uid}")
+	 * @Api\Access("be_users")
 	 * 
 	 * @return array
 	 */
-	public function getIndexAction( $params = [] )
+	public function getIndexAction( ApiTest $apiTest = null, $uid = null )
 	{
 		return [
-			'message' => 'GET Action successfully called.',
-			'params' => $params
+			'message' => "GET Action successfully called with uid [{$uid}]",
+			'apiTest' => $apiTest
 		];
 	}
 	
 	/**
-	 * ## Simple test with PUT
+	 * ## PUT Example
 	 * 
-	 * Endpoint for the RequestType `PUT`.
+	 * Updates an existing ApiModel. You can create a new ApiModel by calling
+	 * `POST /api/test/add`
 	 *
-	 * @api\upload default
-	 * @api\example {"title":"My Test Model", "files":["UPLOAD:/file-0", "UPLOAD:/file-1"]}
-	 * @api\access be_users
+	 * @Api\Route("PUT /test/{uid}")
+	 * @Api\Upload("default")
+	 * @Api\Example("{'title':'My Test Model', 'files':['UPLOAD:/file-0', 'UPLOAD:/file-1']}")
+	 * @Api\Access("be_users")
 	 * 
 	 * @return array
 	 */
 	public function putIndexAction( ApiTest $apiTest = null )
 	{
+		$uid = $this->request->getArguments()['uid'];
+		if (!$apiTest) return $this->response->notFound('Model with uid [' . $uid . '] was not found.');
+
+		\nn\t3::Db()->update( $apiTest );
 		return $apiTest;
 	}
 	
@@ -177,9 +189,9 @@ class Test extends AbstractApi {
 	 * 
 	 * Endpoint for the RequestType `PATCH`.
 	 *
-	 * @api\upload default
-	 * @api\example {"title":"My Test Model", "files":["UPLOAD:/file-0", "UPLOAD:/file-1"]}
-	 * @api\access be_users
+	 * @Api\Upload default
+	 * @Api\Example("{'title':'My Test Model', 'files':['UPLOAD:/file-0', 'UPLOAD:/file-1']}")
+	 * @Api\Access("be_users")
 	 * 
 	 * @return array
 	 */

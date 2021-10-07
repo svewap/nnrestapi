@@ -3,6 +3,7 @@ namespace Nng\Nnrestapi\Api;
 
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 use Nng\Nnrestapi\Mvc\Request;
+use Nng\Nnrestapi\Annotations as Api;
 
 /**
  * Nnrestapi
@@ -53,25 +54,11 @@ class AbstractApi {
 	}
 	
 	/**
-	 * Prüft, ob aktueller fe_user Rechte hat, den gewünschten Endpoint aufzurufen.
-	 * Als nicht-eingeloggter User dürfen nur Methoden aufgerufen werden, die in 
-	 * den Annotations als `@api\access public` markiert sind.
+	 * Checks, if the current frontend/backend user has privileges to call
+	 * the endpoint. This method can be overriden with custom methods in your
+	 * own endpoint if you wish to implement your own logic.
 	 * 
-	 * Folgende Rechte existieren für `@api\access ...`:
-	 * 
-	 * | ---------------------------------- | ----------------------------------------------------- |
-	 * | Annotation 						| Rechte: Aufrufbar von...							 	|
-	 * | ---------------------------------- | ----------------------------------------------------- |
-	 * | @api\access public					| jedem, ohne Authentifizierung	 					 	|
-	 * | @api\access fe_users				| jedem eingeloggten Frontend-User	 				 	|
-	 * | @api\access fe_users[1]			| Nur eingeloggten Frontend-User mit uid 1	 		 	|
-	 * | @api\access fe_users[david]		| Nur eingeloggten Frontend-User mit username `david`	|
-	 * | @api\access be_users				| jedem eingeloggten Backend-User	 			 	    |
-	 * | @api\access be_admins				| jedem eingeloggten Backend-Admin	 	 			    |
-	 * | @api\access fe_group[1,2]			| fe_user-group mit uid 1 und 2	 				        |
-	 * | @api\access fe_group[api]			| fe_user-group 'api'				 			        |
-	 * | @api\access config[myconf]			| Yaml config für die site/API verwenden				|
-	 * | ---------------------------------- | ----------------------------------------------------- |
+	 * See `Annotations\Access` for more information.
 	 * 
 	 * @return boolean
 	 */

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2019-12-11T11:47:07Z" product-name="nnrestapi">
+		<header/>
+		<body>			
+			<trans-unit id="tx_nnrestapi_domain_model_apitest">
+				<source>RestApi Demo Model</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

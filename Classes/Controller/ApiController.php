@@ -61,14 +61,6 @@ class ApiController {
 		
 		$uid = $reqVars['uid'] ?: false;
 
-		// `@api\route` und `@api\access` Annotation beim Instanziieren der Klasse ignorieren, sonst Exception!
-		$ignore = ['route', 'access', 'example', 'distiller', 'upload'];
-		$annotationNamespace = \Nng\Nnrestapi\Utilities\Endpoint::ANNOTATION_NAMESPACE;
-
-		foreach ($ignore as $v) {
-			\Doctrine\Common\Annotations\AnnotationReader::addGlobalIgnoredName("{$annotationNamespace}{$v}");
-		}
-
 		// Instanz des Endpoints erstellen, z.B. `Nng\Nnrestapi\Api\Test`
 		$classInstance = \nn\t3::injectClass( $endpoint['class'] );
 
@@ -86,8 +78,10 @@ class ApiController {
 			// Prüft, ob Dateiuploads existieren. Ersetzt `UPLOAD://file-x` mit Pfad zu Upload-Dateien
 			\nn\rest::File()->processFileUploadsInRequest( $request );
 			
+			$requestArguments = $request->getArguments();
+
 			// Argumente für Methodenaufruf konstruieren
-			if ($arguments = $endpoint['args']) {
+			if ($arguments = $endpoint['methodArgs']) {
 
 				// Methode möchte ein Argument erhalten `->getSomethingAction( $data )` 
 				$model = $request->getBody();
@@ -97,31 +91,47 @@ class ApiController {
 					$model = ['uid'=>$uid];
 				}
 
-				// Methode hat eine DI als erstes Argument definiert `->getSomethingAction( \My\Extname\Model $model )`
-				if ($modelName = $arguments[0]['class'] ?? false) {
+				$argumentsToApply = [];
 
-					if ($uid = $model['uid'] ?: $request->getArguments()['uid'] ?? false) {
+				foreach ($arguments as $varName=>$varDefinition) {
+
+					$valueToApply = '';
+
+					// ToDO: ObjectStorage und Array berücksichtigen
+					if ($modelName = $varDefinition['element'] ?? false) {
+
+						if ($uid = $model['uid'] ?: $request->getArguments()['uid'] ?? false) {
 						
-						// uid des Models übergeben. Bestehendes Model aus Repo holen
-						$repository = \nn\t3::Db()->getRepositoryForModel( $modelName );
-						\nn\t3::Db()->ignoreEnableFields( $repository );
-						
-						if ($existingModel = $repository->findByUid( $uid )) {
-							$model = \nn\t3::Obj( $existingModel )->merge( $model );
+							// uid des Models übergeben. Bestehendes Model aus Repo holen
+							$repository = \nn\t3::Db()->getRepositoryForModel( $modelName );
+							\nn\t3::Db()->ignoreEnableFields( $repository );
+							
+							if ($existingModel = $repository->findByUid( $uid )) {
+								$model = \nn\t3::Obj( $existingModel )->merge( $model );
+							} else {
+								$model = null;
+							}
+	
 						} else {
-							$model = null;
-						}
+	
+							// Keine uid übergeben. Neues Model erzeugen
+							$model = \nn\t3::Convert( $model )->toModel( $modelName );
+
+						}	
+
+						$valueToApply = $model;
 
 					} else {
 
-						// Keine uid übergeben. Neues Model erzeugen
-						$model = \nn\t3::Convert( $model )->toModel( $modelName );
+						// Map `/path/{uid}` to `methodName( $uid )`
+						$valueToApply = $requestArguments[$varName] ?? null;
+						
 					}
 
+					$argumentsToApply[] = $valueToApply;
 				}
 
-				$result = $classInstance->{$endpoint['method']}( $model ) ?: [];
-
+				$result = $classInstance->{$endpoint['method']}( ...$argumentsToApply ) ?: [];
 			} else {
 
 				// Keine Argumente gefordert `->getSomethingAction()` 
@@ -138,8 +148,12 @@ class ApiController {
 			}
 		}
 
-		$response->setBody( $result );
+		// Result was already rendered (e.g. a 404 or 403 was returned)
+		if (is_a($result, \TYPO3\CMS\Core\Http\Response::class)) {
+			return $result;
+		}
 
+		$response->setBody( $result );
 		return $response->render();
 	}
 

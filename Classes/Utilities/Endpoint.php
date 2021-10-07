@@ -12,21 +12,13 @@ use Composer\Autoload\ClassMapGenerator;
 class Endpoint extends \Nng\Nnhelpers\Singleton {
 
 	/**
-	 * Nur Annotations berücksichtigen, die mit diesem
-	 * Prefix beginnen, z.B. `@api\access`
-	 * 
-	 * @var string
-	 */
-	const ANNOTATION_NAMESPACE = 'api\\';
-
-	/**
 	 * Methodennamen, die mit diesem Prefix beginnen (und mit `Action` enden) 
 	 * werden automatisch als Endpoints berücksichtigt. Beispiel:
 	 * `getSomethingAction()` oder `deleteSomethingAction()`
 	 * 
 	 * @var array
 	 */
-	private $supportedMethodPrefixes = ['get', 'post', 'put', 'patch', 'delete'];
+	const SUPPORTED_METHOD_PREFIXES = ['get', 'post', 'put', 'patch', 'delete'];
 	
 	/**
 	 * Reihenfolge Keys für das Mapping der Parameter in der URL
@@ -42,28 +34,10 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 	private $endpoints = [];
 	
 	/**
-	 * Cache der User (`fe_users`, `be_users`)
-	 * @var array
-	 */
-	private $userCache = [];
-	
-	/**
 	 * Cache der Endpoints zu Klassen Maps
 	 * @var array
 	 */
 	private $classMapCache = [];
-
-	/**
-	 * Site identifier (= Name der siteConfig-yaml)
-	 * @var string
-	 */
-	private $siteIdentifier = '';
-
-	/**
-	 * Api Configuration (Array aus der siteConfig-yaml)
-	 * @var string
-	 */
-	private $apiConfiguration = [];
 	
 
 	/**
@@ -74,22 +48,24 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 	 */
 	public function initialize( $request = null ) {
 
-		if ($this->siteIdentifier) return;
+		// \nn\t3::debug( \nn\rest::Settings()->getConfiguration() );
 
-		$request = $request ?: $GLOBALS['TYPO3_REQUEST'];
-		if (!$request) return;
+		// if ($this->siteIdentifier) return;
 
-		$siteIdentifier = '';
-		$apiConfiguration = [];
+		// $request = $request ?: $GLOBALS['TYPO3_REQUEST'];
+		// if (!$request) return;
 
-		$site = $request->getAttribute('site');
-		$siteIdentifier = $site->getIdentifier();
-		if (!is_a($site, \TYPO3\CMS\Core\Site\Entity\NullSite::class)) {
-			$apiConfiguration = $site->getConfiguration()['nnrestapi'] ?? [];
-		}
+		// $siteIdentifier = '';
+		// $apiConfiguration = [];
 
-		$this->siteIdentifier = $siteIdentifier;
-		$this->apiConfiguration = $apiConfiguration;
+		// $site = $request->getAttribute('site');
+		// $siteIdentifier = $site->getIdentifier();
+		// if (!is_a($site, \TYPO3\CMS\Core\Site\Entity\NullSite::class)) {
+		// 	$apiConfiguration = $site->getConfiguration()['nnrestapi'] ?? [];
+		// }
+
+		// $this->siteIdentifier = $siteIdentifier;
+		// $this->apiConfiguration = $apiConfiguration;
 	}
 
 	/**
@@ -160,7 +136,7 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 		$reqType = strtolower($request->getMethod());
 
 		// `/api/`
-		$apiPrefix = $this->getApiUrlPrefix();
+		$apiPrefix = \nn\rest::Settings()->getApiUrlPrefix();
 
 		// `/en`
 		$languagePath = $request->getAttribute('language', null)->getBase()->getPath();
@@ -183,7 +159,7 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 		
 		$paramKeys = $this->uriToParameterMapping;
 		$paramValues = array_pad( $parts, $numParamsToParse, '' );
-
+		
 		// Slugs, die über `\nn\rest::Endpoint()->register()` registriert wurden, z.B. ['nnrestdemo', 'nnrestapi']
 		$endpointSlugs = array_column( $this->getAll(), 'slug' );
 
@@ -197,6 +173,21 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 
 		$params = array_combine( $paramKeys, $paramValues );
 		
+
+		// Ist der `controller` oder `action` ein intval? Dann Ergebnis verschieben.
+		$search = ['controller', 'action'];
+		foreach ($search as $key) {
+			if (is_numeric($params[$key]) && intval($params[$key]) == $params[$key]) {
+				$keys = array_keys( $params );
+				$values = array_values( $params );
+				$index = array_search( $key, $keys );
+				array_splice( $values, $index, 0, '');
+				array_pop( $values );
+				$params = array_combine( $keys, $values );
+				$params[$key] = 'index';
+			}	
+		}
+
 		if (!($params['controller'] ?? false)) {
 			$params['controller'] = 'index';
 		}
@@ -205,18 +196,6 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 		}
 		if (!($params['ext'] ?? false)) {
 			$params['ext'] = '';
-		}
-
-		// Ist der `controller` ein intval? Dann als `uid` verwenden.
-		if (is_numeric($params['controller']) && intval($params['controller']) == $params['controller']) {
-			$params['uid'] = intval($params['controller']);
-			$params['controller'] = 'index';
-		}
-
-		// Ist die `action` ein intval? Dann als `uid` verwenden.
-		if (is_numeric($params['action']) && intval($params['action']) == $params['action']) {
-			$params['uid'] = intval($params['action']);
-			$params['action'] = 'index';
 		}
 
 		// Passenden Endpoint finden. `GET test/something` -> \Nng\Nnrestapi\Api\Test->getSomethingAction()`
@@ -229,21 +208,8 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 		if (!$endpoint) {
 			$endpoint = ['args'=>$params];
 		}
-		
-		return $endpoint;
-	}
 
-	/**
-	 * Prefix des aktuellen RouteEnhancers holen, z.B. `/api/`
-	 * ```
-	 * \nn\rest::Endpoint()->getApiUrlPrefix();
-	 * ```
-	 * @return string
-	 */
-	public function getApiUrlPrefix() {
-		$this->initialize();
-		$basePath = $this->apiConfiguration['routing']['basePath'] ?? '/api';
-		return '/' . trim($basePath, '/') . '/';
+		return $endpoint;
 	}
 
 	/**
@@ -287,7 +253,7 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 				if ($match = $config['route']['match'] ?? false) {
 					if (preg_match($match, $path, $matches)) {
 						$args = array_slice( $matches, 2 );
-						$config['route']['args'] = array_combine(array_keys($config['route']['args']), $args);
+						$config['route']['arguments'] = array_combine(array_keys($config['route']['arguments']), $args);
 						return $config;
 					}	
 				}
@@ -309,7 +275,7 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 	public function getClassMap() {
 
 		$this->initialize();
-		$cacheIdentifier = 'nnrestapi_endpoints_' . $this->siteIdentifier;
+		$cacheIdentifier = 'nnrestapi_endpoints_' . \nn\rest::Settings()->getSiteIdentifier();
 
 		if ($cache = $this->classMapCache) return $cache;
 
@@ -337,57 +303,52 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 			$classReflection = new \ReflectionClass( $className );
 			$methods = $classReflection->getMethods();
 			$classShortName = lcfirst($classReflection->getShortName());
-			
+
 			// Der RegEx, der für das automatische parsen der Methodennamen verwendet wird, z.B. `getSomethingAction`
-			$methodNameRegex = '/(' . join('|', $this->supportedMethodPrefixes) . ')(.*)(Action)/i';
-
-			// Der RegEx, der für das parsen der `@api\route ...` Annotation verwendet wird, z.B. `@api\route GET some/path/...`
-			$routeAnnotationRegex = '/((' . join('\|?|', $this->supportedMethodPrefixes) . ')*)\s*\/*(.*)/i';
-
+			$methodNameRegex = '/(' . join('|', self::SUPPORTED_METHOD_PREFIXES) . ')(.*)(Action)/i';
 
 			foreach ($methods as $method) {
 
 				$methodReflection = new \ReflectionMethod( $className, $method->name );
 
-				// Annotations parsen, z.B. nach `@api\access`
-				$annotations = \Nng\Nnhelpers\Helpers\AnnotationHelper::parse($method->getDocComment(), self::ANNOTATION_NAMESPACE)['@'] ?? [];
+				// Alle Annotations parsen
+				$annotationReader = new \Doctrine\Common\Annotations\AnnotationReader();
+				$annotations = $annotationReader->getMethodAnnotations( $method ) ?: [];
 
-				// Route definiert? z.B. `@api\route /test/this/{so}/{uid}/so` oder `@api\route /test/eins/zwei`
-				$route = $annotations['route'] ?? '';
-
+				
 				$reqTypes = [];
 				$action = '';
-				$routeRegex = '';
 				$arguments = [];
 
-				if ($route) {
+				$endpointData = [
+					'slug'			=> $slug,
+					'method'		=> $method->name,
+					'class' 		=> $className,
+					'controller' 	=> $classShortName,
+				];
 
-					// `@api\route ...` wurde als Annotation definiert
-					preg_match($routeAnnotationRegex, $route, $matches);
+				// Call `mergeDataForEndpoint()` in the annotation-class, if exists
+				foreach ($annotations as $annotation) {
+					if (method_exists($annotation, 'mergeDataForEndpoint')) {
+						$annotation->mergeDataForEndpoint( $endpointData );
+					}
+				}
 
-					// get`, `post`... kommt aus `@api\route GET|POST ...`
-					$reqTypes = $matches[1] ? \nn\t3::Arrays(strtolower($matches[1]))->trimExplode('|') : $this->supportedMethodPrefixes;
+				if ($route = &$endpointData['route'] ?? false) {
+
+					// Custom Route was defined in annotation
+
+					$reqTypesFromRoute = $route['reqTypes'] ?? [];
+					array_push( $reqTypes, ...$reqTypesFromRoute );
 					
-					$route = $matches[3];
-					
-					// `path/to/{uid?}/{test?}` => `path/to[/]?([^/]*)[/]?([^/]*)`
-					$pattern = preg_replace('/\/\{[^\?\}]*\?\}/i', '[/]*([^/]*)', $route);
-
-					// `path/to/{uid}/{test}` => `path/to/([^\/]*)/([^\/]*)`
-					$pattern = preg_replace('/\{[^\}]*\}/i', '([^/]*)', $pattern);
-
-					$routeRegex = '/(.*)' . str_replace('/', '\/', $pattern) . '$/i';
-
-					// Argumente ermitteln
-					preg_match_all( '/\{([^\?\}]*)[\?]*\}/i', $route, $matches );
-					$routeArguments = $matches[1] ?? [];
-					$routeArguments = array_combine( $routeArguments, array_fill(0, count($routeArguments), '') );
+					$action = $route['path'];
+					unset($route['reqTypes']);
 
 				} else if (preg_match($methodNameRegex, $method->name, $matches)) {
 
-					// Standard-Name für die Methode wurde verwendet (`getSomethingAction`)
+					// Standard name for action was used (`getSomethingAction`)
 
-					// `get`, `post`... kommt aus Methoden-Name Prefix
+					// `get`, `post`... comes from the method-name prefix
 					$reqTypes[] = strtolower( $matches[1] );
 
 					// `IndexSomewhere` => `indexSomewhere`
@@ -395,58 +356,33 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 
 				} else {
 
-					// Keines von beiden? Dann ignorieren.
+					// Not a route - and not a standard name. Ignore!
 					continue;
 				}
 
-				// Methode parsen: Welche DI-Objects / Models erwartet die Methode?
+
+				// Parse method arguments: Which DI-Objects / Models are expected as arguments?
+				$arguments = \nn\t3::Obj()->getMethodArguments( $className, $method->name );
+
 				$methodArgs = [];
-				if ($arguments = $methodReflection->getParameters()) {
-					foreach ($arguments as $argument) {
-						//$expectedClass = $argument->getClass();
-						$expectedClass = $argument->getType() && !$argument->getType()->isBuiltin() ? new \ReflectionClass($argument->getType()->getName()) : null;
-						if ($expectedClass) {
-							$methodArgs[] = [
-								'class' => $expectedClass->getName()
-							];
-						}
-					}
+				foreach ($arguments as $variableName=>$argument) {
+					$methodArgs[$variableName] = $argument['simple'] ? [] : [
+						'element' 	=> $argument['elementType'],
+						'storage' 	=> $argument['storageType'],
+					];	
 				}
-				
-				// Distiller definiert? z.B. `@api\distiller Nng\Nnrest\My\Distiller`
-				$distiller = ltrim( $annotations['distiller'] ?? '', '\\');
 
-				// Wer darf die Methode aufrufen? `@api\access fe_users`
-				$accessList = $this->parseAccessRights( $annotations['access'] ?? '' );
-
-				// Welche Konfiguration für Datei-Uploads? `@api\uploads myconfig`
-				$uploadConfig = $annotations['upload'] ?? 'default';
-
-				$routeDefinition = !$route ? false : [
-					'path' 	=> $route,
-					'match'	=> $routeRegex,
-					'args' 	=> $routeArguments,
-				];
-
-				$routeData = [
-					'route'			=> $routeDefinition,
-					'access'		=> $accessList,
-					'distiller'		=> $distiller,
-					'uploadConfig'	=> $uploadConfig,
-					'slug'			=> $slug,
-					'method'		=> $method->name,
-					'class' 		=> $className,
-					'controller' 	=> $classShortName,
+				$endpointData = array_merge( $endpointData, [
 					'action' 		=> $action,
-					'args'			=> $methodArgs,
-				];
+					'methodArgs'	=> $methodArgs,
+				]);
 
-				$path = ltrim($route ?: "{$classShortName}/{$action}", '/');
+				$path = ltrim("{$classShortName}/{$action}", '/');
 
 				foreach ($reqTypes as $reqType) {
 					if (!isset($routingMap[$reqType])) $routingMap[$reqType] = [];
 					if (!isset($routingMap[$reqType][$path])) $routingMap[$reqType][$path] = [];
-					$routingMap[$reqType][$path][$slug] = $routeData;
+					$routingMap[$reqType][$path][$slug] = $endpointData;
 				}
 				
 			}
@@ -510,123 +446,5 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 
 		return $classesToParse;
 	}
-
-	/**
-	 * Funktioniert wie `getClassMap()` – ergänzt aber noch die Kommentare aus
-	 * dem DocComment der einzelnen Klassen-Methoden. Wird verwendet für das Backend-Modul
-	 * und die Doku der einzelnen Endpoints im Backend.
-	 * ```
-	 * \nn\rest::Endpoint()->getClassMapWithDocumentation();
-	 * ```
-	 * @return array
-	 */
-	public function getClassMapWithDocumentation( &$arr = null ) {
-		if ($arr === null) {
-			$arr = $this->getClassMap();
-		}
-		foreach ($arr as &$v) {
-			if (!is_array($v)) continue;
-			if (($className = $v['class'] ?? false) && ($methodName = $v['method'] ?? false)) {
-				$method = new \ReflectionMethod( $className, $methodName );
-				$comment = \Nng\Nnhelpers\Helpers\AnnotationHelper::parse($method->getDocComment(), self::ANNOTATION_NAMESPACE);
-				$v += $comment;
-				$v['annotations'] = $v['@'] ?? [];
-				continue;
-			}
-			$this->getClassMapWithDocumentation( $v );
-		}
-		return $arr;
-	}
-
-	/**
-	 * Parsed eine `@access ...` Angabe zu den Zugriffsrechten.
-	 * Gibt ein "schönes" Array mit `fe_users`, `be_users` etc. zurück.
-	 * 
-	 * @return array
-	 */
-	public function parseAccessRights( $accessStr = '' ) {
-
-		$accessList = [];
-
-		// Definition der Gruppen aus der siteConfig-Yaml
-		$groupConfigurations = $this->apiConfiguration['accessGroups'] ?? [];
-
-		if (preg_match_all('/([^\[,]*)(\[([^\]]*)\])?/i', $accessStr, $matches)) {
-			foreach ($matches[1] as $n=>$v) {
-				$v = trim($v);
-				if (!$v) continue;
-				
-				// Liste der uids oder usernamen in den Klammern, z.B. `fe_users[...]`
-				$userList = \nn\t3::Arrays($matches[3][$n] ?? '')->trimExplode();
-				
-				// Keine Einschränkungen auf bestimmte uids oder usernamen bedeutet: ALLE dieses Typs dürfen!
-				if (!count($userList)) {
-					$userList = ['*'=>'*'];
-				}
-
-				// `config` nehmen aus der YAML site-Konfiguration
-				if ($v == 'config') {
-					foreach ($userList as $configKey) {
-						$accessStrFromConfig = $groupConfigurations[$configKey] ?? false;
-						if (!$accessStrFromConfig) continue;
-						$parsedAccessList = $this->parseAccessRights( $accessStrFromConfig );
-						$accessList = \nn\t3::Arrays($accessList)->merge($parsedAccessList, true, true);
-					}
-					continue;
-				}
-
-				// `be_users` oder `fe_users`
-				if (!isset($accessList[$v])) {
-					$accessList[$v] = [];
-				}
-
-				$accessList[$v] = array_merge( $accessList[$v], $userList );
-			}
-		}
-
-		$accessList = $this->convertUserNamesToUids( $accessList );
-
-		return $accessList;
-	}
-
-
-	/**
-	 * `username` in `uid` umwandeln.
-	 * 
-	 * @return array
-	 */
-	public function convertUserNamesToUids( $accessList ) {
-
-		// Diese Tabellen werden für die Konvertierung berücksichtigt
-		$tables = ['fe_users'=>'username', 'be_users'=>'username', 'public'=>''];
-
-		foreach ($tables as $table=>$field) {
-			if (!isset($accessList[$table])) continue;
-
-			// Bereits ALLE User erlaubt? z.B. über `@access fe_users` ohne `[1,2,...]`
-			$anyUserAllowed = $accessList[$table]['*'] ?? false;
-
-			// Leeres Array bedeutet hier: In der `@access`-Annotation wurden ALLE User der Gruppe erlaubt
-			if ($anyUserAllowed || count($accessList[$table]) == 0) {
-				$accessList[$table] = ['*'=>'*'];
-				continue;
-			}
-
-			foreach ($accessList[$table] as $k=>$uidOrUsername) {
-				if (is_numeric($uidOrUsername)) continue;
-				$user = $this->userCache[$table][$uidOrUsername] ?? false;
-				if (!$user) $user = \nn\t3::Db()->findOneByValues($table, [$field=>$uidOrUsername]);
-				if (!$user) {
-					unset($accessList[$table][$k]);
-					continue;
-				};
-				$this->userCache[$table][$uidOrUsername] = $user;
-				$accessList[$table][$k] = $user['uid'];
-			}
-			$vals = $accessList[$table];
-			$accessList[$table] = array_combine( $vals, $vals );
-		}
-
-		return $accessList;
-	}
+	
 }

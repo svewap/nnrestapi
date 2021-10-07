@@ -89,7 +89,7 @@ class Api extends \Nng\Nnhelpers\Singleton {
 		}
 
 		$urlBase = \nn\t3::Environment()->getBaseUrl();
-		$apiUrlPrefix = \nn\rest::Endpoint()->getApiUrlPrefix();
+		$apiUrlPrefix = \nn\rest::Settings()->getApiUrlPrefix();
 
 		$uriParts = [];
 		if ($additionalParams['absolute'] ?? false) {

@@ -1,6 +1,8 @@
 <?php
 namespace Nng\Nnrestapi\Api;
 
+use Nng\Nnrestapi\Annotations as Api;
+
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /**
@@ -11,13 +13,12 @@ class Index extends AbstractApi {
 	
 	/**
 	 * Simple test.
-	 * A public endpoint reachable it 
 	 * 
-	 * @api\access public
+	 * @Api\Access("*")
 	 * 
 	 * @return array
 	 */
-	public function getIndexAction( $params = [], $payload = null )
+	public function getIndexAction()
 	{
 		$result = ['message'=>'Successfully called /api. This is mapped to the public endpoint Index->getIndexAction(). Use /api/{controller}/{action} syntax to connect to an endpoint.'];
 		return $result;

@@ -60,7 +60,7 @@ class ModController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController {
 		}
 		
 
-		$classMap = \nn\rest::Endpoint()->getClassMapWithDocumentation();
+		$classMap = \nn\rest::Annotations()->getClassMapWithDocumentation();
 		$urlBase = \nn\t3::Environment()->getBaseUrl();
 
 		$this->view->assignMultiple([
@@ -68,7 +68,7 @@ class ModController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController {
 			'rewriteCondExists'	=> \Nng\Nnrestapi\Service\EnvironmentService::rewriteCondExists(),
 			'feUser'			=> \nn\t3::FrontendUser()->get(),
 			'urlBase'			=> $urlBase,
-			'absApiUrlPrefix'	=> $urlBase . \nn\rest::Endpoint()->getApiUrlPrefix(),
+			'absApiUrlPrefix'	=> $urlBase . \nn\rest::Settings()->getApiUrlPrefix(),
 			'endpoints' 		=> $classMap,
 		]);
 
