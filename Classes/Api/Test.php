@@ -133,14 +133,19 @@ class Test extends AbstractApi {
 	 * @param Nng\Nnrestapi\Domain\Model\ApiTest $apiTest
 	 * @return array
 	 */
-	public function deleteIndexAction( $apiTest = null )
+	public function deleteIndexAction( $apiTest = null, $uid = null )
 	{
+		if (!$apiTest) {
+			return $this->response->notFound("Entry with uid {$uid} was not found in database.");
+		}
+
 		\nn\t3::Db()->delete( $apiTest );
 
 		$result = [
 			'message' => 'DELETE Action successfully called.',
-			'body' 	=> $apiTest ? "Entry with uid [" . $apiTest->getUid() . "] was deleted in database" : 'Entry to delete was not found in database.',
+			'body' 	=> "Entry with uid [{$uid}] was deleted in database",
 		];
+
 		return $result;
 	}
 	
@@ -156,10 +161,11 @@ class Test extends AbstractApi {
 	 */
 	public function getIndexAction( ApiTest $apiTest = null, $uid = null )
 	{
-		return [
-			'message' => "GET Action successfully called with uid [{$uid}]",
-			'apiTest' => $apiTest
-		];
+		if (!$apiTest) {
+			return $this->response->notFound("Entry with uid {$uid} was not found in database.");
+		}
+
+		return $apiTest;
 	}
 	
 	/**
@@ -178,8 +184,9 @@ class Test extends AbstractApi {
 	public function putIndexAction( ApiTest $apiTest = null )
 	{
 		$uid = $this->request->getArguments()['uid'];
-		if (!$apiTest) return $this->response->notFound('Model with uid [' . $uid . '] was not found.');
-
+		if (!$apiTest) {
+			return $this->response->notFound('Model with uid [' . $uid . '] was not found.');
+		}
 		\nn\t3::Db()->update( $apiTest );
 		return $apiTest;
 	}

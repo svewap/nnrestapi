@@ -107,7 +107,16 @@ class ApiController {
 							\nn\t3::Db()->ignoreEnableFields( $repository );
 							
 							if ($existingModel = $repository->findByUid( $uid )) {
+
+
 								$model = \nn\t3::Obj( $existingModel )->merge( $model );
+\nn\t3::debug( $existingModel->getFiles(), 'OLD');
+\nn\t3::debug( $model->getFiles(), 'NEW');
+// $result = $existingModel;
+// //$existingModel->setFiles( new \TYPO3\CMS\Extbase\Persistence\ObjectStorage() );
+// $repository->update( $existingModel );
+// \nn\t3::Db()->persistAll();
+//\nn\t3::debug($model);die();
 							} else {
 								$model = null;
 							}
@@ -130,8 +139,8 @@ class ApiController {
 
 					$argumentsToApply[] = $valueToApply;
 				}
-
-				$result = $classInstance->{$endpoint['method']}( ...$argumentsToApply ) ?: [];
+// WIEDER REIN!
+//				$result = $classInstance->{$endpoint['method']}( ...$argumentsToApply ) ?: [];
 			} else {
 
 				// Keine Argumente gefordert `->getSomethingAction()` 

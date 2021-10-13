@@ -3,6 +3,7 @@ declare(strict_types = 1);
 
 namespace Nng\Nnrestapi\Middleware;
 
+use Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -56,6 +57,16 @@ class RequestParser implements MiddlewareInterface {
 	 * Nutzt externe Library, um den `multipart/form-data` des `PUT` und `PATCH` Requests zu parsen
 	 * und in den `$_POST`-Container zu verschieben.
 	 * 
+	 * If you are sending a `PUT` oder `PATCH` request and are only receiving a truncated part (e.g. 8192 bytes) 
+	 * or are getting this error message: 
+	 * ```
+	 * Deprecated: TYPO3\CMS\Core\Database\ConnectionPool can not be injected/instantiated during 
+	 * ext_localconf.php/TCA/ext_tables.php loading. Use lazy loading instead.
+	 * ```
+	 * Try checking the following things:
+	 * - are there problems writing to the PHP-`/tmp` folder?
+	 * - is there a `post_max_size` limit set? 
+	 * 
 	 * @return void
 	 */
 	public function handler() {
@@ -63,6 +74,14 @@ class RequestParser implements MiddlewareInterface {
 		// Ist es ein relevanter RequestType?
 		$reqMethod = $_SERVER['REQUEST_METHOD'];
 		if (!in_array($reqMethod, $this->requestMethodsToParse)) return;
+
+		// Check if there was a problem with the content-length, e.g. stream or tmp-file could not be written
+		$expectedLength = intval($_SERVER["CONTENT_LENGTH"]);
+		$realLength = strlen(file_get_contents('php://input', false, stream_context_get_default(), 0, $expectedLength));
+
+		if ($realLength < $expectedLength) {
+			throw new Exception('There seems to be a problem with the multipart-formdata - less bytes were reveived than expected. Is the `/tmp` folder writeable?');
+		}
 
 		require_once( \TYPO3\CMS\Core\Core\Environment::getPublicPath() . '/typo3conf/ext/nnrestapi/Resources/Libraries/vendor/autoload.php' );
 

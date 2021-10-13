@@ -136,6 +136,8 @@ define(['jquery', 'TYPO3/CMS/Nnrestapi/Axios'], function($, axios) {
 			var imagefile = $('.reqfiles')[0];
 			var fileprefix = $('.reqfilekey').val();
 			
+			formData.append('json', JSON.stringify(body));
+
 			var uploadImages = [];
 
 			for (var i in imagefile.files) {
@@ -144,7 +146,7 @@ define(['jquery', 'TYPO3/CMS/Nnrestapi/Axios'], function($, axios) {
 				var fileName = file.name;
 
 				var fileIdentifier = `${fileprefix}-${i}`;
-				formData.append( fileIdentifier , file);
+				formData.append( fileIdentifier, file);
 /*
 				if (typeof file == 'object') {
 					var reader = new FileReader();
@@ -159,7 +161,7 @@ define(['jquery', 'TYPO3/CMS/Nnrestapi/Axios'], function($, axios) {
 				}
 */
 			}
-			formData.append('json', JSON.stringify(body));
+			
 			body = formData;
 
 //---*/
