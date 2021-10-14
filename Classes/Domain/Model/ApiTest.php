@@ -23,10 +23,27 @@ class ApiTest extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      */
     protected $title = '';
 
+	/**
+     * image
+     *
+     * @var \TYPO3\CMS\Extbase\Domain\Model\FileReference
+     */
+    protected $image;
+
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\CMS\Extbase\Domain\Model\FileReference>
      */
     protected $files;
+
+    /**
+     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Nng\Nnrestapi\Domain\Model\ApiTest>
+     */
+    protected $children;
+
+    /**
+     * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\CMS\Extbase\Domain\Model\Category>
+     */
+    protected $categories;
 
     /**
 	 * constructor
@@ -43,6 +60,7 @@ class ApiTest extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 	 */
 	protected function initStorageObjects() {
 		$this->files = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
+		$this->categories = new \TYPO3\CMS\Extbase\Persistence\ObjectStorage();
 	}
 
 	/**
@@ -95,6 +113,54 @@ class ApiTest extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 	 */
 	public function setUid($uid) {
 		$this->uid = $uid;
+		return $this;
+	}
+
+	/**
+	 * @return  \TYPO3\CMS\Extbase\Domain\Model\FileReference
+	 */
+	public function getImage() {
+		return $this->image;
+	}
+
+	/**
+	 * @param   \TYPO3\CMS\Extbase\Domain\Model\FileReference  $image  image
+	 * @return  self
+	 */
+	public function setImage($image) {
+		$this->image = $image;
+		return $this;
+	}
+
+	/**
+	 * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\Nng\Nnrestapi\Domain\Model\ApiTest>
+	 */
+	public function getChildren() {
+		return $this->children;
+	}
+
+	/**
+	 * @param  \TYPO3\CMS\Extbase\Persistence\ObjectStorage  $children  
+	 * @return  self
+	 */
+	public function setChildren($children) {
+		$this->children = $children;
+		return $this;
+	}
+
+	/**
+	 * @return  \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\CMS\Extbase\Domain\Model\Category>
+	 */
+	public function getCategories() {
+		return $this->categories;
+	}
+
+	/**
+	 * @param   \TYPO3\CMS\Extbase\Persistence\ObjectStorage $categories  
+	 * @return  self
+	 */
+	public function setCategories($categories) {
+		$this->categories = $categories;
 		return $this;
 	}
 }

@@ -15,7 +15,12 @@ CREATE TABLE tx_nnrestapi_domain_model_apitest (
 	pid int(11) DEFAULT 0 NOT NULL,
 
 	title varchar(255) NOT NULL,
+	image int(11) NOT NULL,
 	files int(11) NOT NULL,
+	children int(11) NOT NULL,
+	parentid int(11) NOT NULL,
+	parenttable VARCHAR(255) NOT NULL,
+	categories int(11) NOT NULL,
 
 	tstamp int(11) unsigned DEFAULT 0 NOT NULL,
 	crdate int(11) unsigned DEFAULT 0 NOT NULL,

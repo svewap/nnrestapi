@@ -29,7 +29,10 @@
                     --palette--;;1,
                     sys_language_uid,l10n_parent,l10n_diffsource,
                     title, 
+                    image,
                     files,
+                    children,
+                    categories,
                 --div--;Access,
                     --palette--;;2
             '],
@@ -52,9 +55,34 @@
                         'rows' => '1',
                     ]
                 ],
+                'image' => [
+                    'label' => 'Single FAL test',
+                    'config' => \nn\t3::TCA()->getFileFieldTCAConfig('image', ['maxitems'=>1])
+                ],
                 'files' => [
-                    'label' => 'Dateien',
+                    'label' => 'ObjectStorage FAL test',
                     'config' => \nn\t3::TCA()->getFileFieldTCAConfig('files')
+                ],
+                'children' => [
+                    'exclude' => 1,
+                    'label' => 'Children',
+                    'config' => [
+                        'type' => 'inline',
+                        'foreign_table' => 'tx_nnrestapi_domain_model_apitest',
+                        'foreign_field' => 'parentid',
+                        'foreign_table_field' => 'parenttable',
+                        'maxitems' => 10,
+                        'appearance' => [
+                            'collapseAll' => 1,
+                            'expandSingle' => 1,
+                        ],
+                    ],
+                ],            
+                'categories' => [
+                    'label' => 'Category test',
+                    'config' => [
+                        'type' => 'category'
+                     ]
                 ],
             ]
         ),

@@ -4,6 +4,10 @@ defined('TYPO3_MODE') || die('Access denied.');
 call_user_func(
 	function( $extKey )
 	{
+		
+		// Allow table
+		\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages('tx_nnrestapi_domain_model_apitest');
+
 		// Backend-Module registrieren
 		\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
 			\nn\t3::Registry()->getVendorExtensionName($extKey),
