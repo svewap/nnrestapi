@@ -18,6 +18,7 @@ CREATE TABLE tx_nnrestapi_domain_model_apitest (
 	image int(11) NOT NULL,
 	files int(11) NOT NULL,
 	children int(11) NOT NULL,
+	child int(11) NOT NULL,
 	parentid int(11) NOT NULL,
 	parenttable VARCHAR(255) NOT NULL,
 	categories int(11) NOT NULL,

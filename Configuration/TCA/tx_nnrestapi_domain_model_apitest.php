@@ -32,6 +32,7 @@
                     image,
                     files,
                     children,
+                    child,
                     categories,
                 --div--;Access,
                     --palette--;;2
@@ -56,22 +57,35 @@
                     ]
                 ],
                 'image' => [
-                    'label' => 'Single FAL test',
+                    'label' => 'Single FAL test (image)',
                     'config' => \nn\t3::TCA()->getFileFieldTCAConfig('image', ['maxitems'=>1])
                 ],
                 'files' => [
-                    'label' => 'ObjectStorage FAL test',
+                    'label' => 'ObjectStorage FAL test (files)',
                     'config' => \nn\t3::TCA()->getFileFieldTCAConfig('files')
                 ],
                 'children' => [
                     'exclude' => 1,
-                    'label' => 'Children',
+                    'label' => 'Multiple Children (children)',
                     'config' => [
                         'type' => 'inline',
                         'foreign_table' => 'tx_nnrestapi_domain_model_apitest',
                         'foreign_field' => 'parentid',
                         'foreign_table_field' => 'parenttable',
                         'maxitems' => 10,
+                        'appearance' => [
+                            'collapseAll' => 1,
+                            'expandSingle' => 1,
+                        ],
+                    ],
+                ],            
+                'child' => [
+                    'exclude' => 1,
+                    'label' => 'Single Child (child)',
+                    'config' => [
+                        'type' => 'inline',
+                        'foreign_table' => 'tx_nnrestapi_domain_model_apitest',
+                        'maxitems' => 1,
                         'appearance' => [
                             'collapseAll' => 1,
                             'expandSingle' => 1,

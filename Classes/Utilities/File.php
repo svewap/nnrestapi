@@ -103,10 +103,12 @@ class File extends \Nng\Nnhelpers\Singleton {
 				}
 			}
 
-			if ($processedFile = $this->processFileUpload( $v, $this->uploadedFiles, $configuration )) {
-				$arr[$k] = $processedFile;
-			} else {
-				unset( $arr[$k] );
+			if (strpos($v, $this->uploadPrefix) === 0) {
+				if ($processedFile = $this->processFileUpload( $v, $this->uploadedFiles, $configuration )) {
+					$arr[$k] = $processedFile;
+				} else {
+					unset( $arr[$k] );
+				}
 			}
 		}
 	}

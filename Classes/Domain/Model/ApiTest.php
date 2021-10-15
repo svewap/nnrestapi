@@ -40,6 +40,11 @@ class ApiTest extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
      */
     protected $children;
 
+	/**
+     * @var \Nng\Nnrestapi\Domain\Model\ApiTest
+     */
+    protected $child;
+
     /**
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<\TYPO3\CMS\Extbase\Domain\Model\Category>
      */
@@ -161,6 +166,22 @@ class ApiTest extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 	 */
 	public function setCategories($categories) {
 		$this->categories = $categories;
+		return $this;
+	}
+
+	/**
+	 * @return  \Nng\Nnrestapi\Domain\Model\ApiTest
+	 */
+	public function getChild() {
+		return $this->child;
+	}
+
+	/**
+	 * @param   \Nng\Nnrestapi\Domain\Model\ApiTest  $child  
+	 * @return  self
+	 */
+	public function setChild($child) {
+		$this->child = $child;
 		return $this;
 	}
 }

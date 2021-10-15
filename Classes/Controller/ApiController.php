@@ -58,7 +58,7 @@ class ApiController {
 		$response = $this->response;
 		$endpoint = $request->getEndpoint();
 		$reqVars = $request->getArguments();
-		
+
 		$uid = $reqVars['uid'] ?: false;
 
 		// Instanz des Endpoints erstellen, z.B. `Nng\Nnrestapi\Api\Test`
@@ -69,12 +69,12 @@ class ApiController {
 		
 		// Prüft, ob aktueller User Zugriff auf Methode hat
 		if (!$classInstance->checkAccess( $endpoint )) {
-
+			
 			// Kein Zugriff - oder kein `@api\access public`
 			$result = $response->unauthorized("{$endpoint['class']}->{$endpoint['method']}() has no public access. Please authenticate to access this endpoint or use `@access public` annotation to mark the endpoint as public accessible." );
-		
+			
 		} else {
-
+			
 			// Prüft, ob Dateiuploads existieren. Ersetzt `UPLOAD://file-x` mit Pfad zu Upload-Dateien
 			\nn\rest::File()->processFileUploadsInRequest( $request );
 			
@@ -82,7 +82,6 @@ class ApiController {
 
 			// Argumente für Methodenaufruf konstruieren
 			if ($arguments = $endpoint['methodArgs']) {
-
 				// Methode möchte ein Argument erhalten `->getSomethingAction( $data )` 
 				$model = $request->getBody();
 				$nothingToMerge = !$model;
@@ -109,18 +108,12 @@ class ApiController {
 							
 							if ($existingModel = $repository->findByUid( $uid )) {
 								
-
 								if ($nothingToMerge) {
 									$model = $existingModel;
 								} else {
 									$model = \nn\t3::Obj( $existingModel )->merge( $model );
 								}
 
-// $result = $existingModel;
-// //$existingModel->setFiles( new \TYPO3\CMS\Extbase\Persistence\ObjectStorage() );
-// $repository->update( $existingModel );
-// \nn\t3::Db()->persistAll();
-\nn\t3::debug($model);die();
 							} else {
 								$model = null;
 							}
