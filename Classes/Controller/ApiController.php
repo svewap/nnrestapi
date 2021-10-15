@@ -105,7 +105,7 @@ class ApiController {
 							// uid des Models übergeben. Bestehendes Model aus Repo holen
 							$repository = \nn\t3::Db()->getRepositoryForModel( $modelName );
 							\nn\t3::Db()->ignoreEnableFields( $repository );
-							
+
 							if ($existingModel = $repository->findByUid( $uid )) {
 								
 								if ($nothingToMerge) {

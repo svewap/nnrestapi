@@ -1,2 +1,5 @@
 # cat=basic/auth; type=user[Nng\Nnhelpers\Helpers\ExtConfTemplateHelper->textfield]; label=API-Keys for BasicAuth. One user with key per line, user and key separeted with a colon
 apiKeys = examplefeUserName:exampleApiKey
+
+# cat=basic/tsfe; type=boolean; label=Process request AFTER the Frontend (TSFE) has been initialized
+tsfe = 0

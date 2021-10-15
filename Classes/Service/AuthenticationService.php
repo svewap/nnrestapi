@@ -37,7 +37,6 @@ class AuthenticationService extends \TYPO3\CMS\Core\Authentication\Authenticatio
 	 * 	POST-Daten parsen und entschlüsseln, falls erforderlich
 	 */
 	public function __construct() {
-		die('YEAH!');
 		$this->config = $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$this->extKey] ?? [];
 		//$this->frontendUserRepository = \nn\t3::injectClass( \TYPO3\CMS\Extbase\Domain\Repository\FrontendUserRepository::class );
 	}

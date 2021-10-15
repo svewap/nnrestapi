@@ -3,7 +3,6 @@
 namespace Nng\Nnrestapi\Middleware;
 
 use Nng\Nnrestapi\Mvc\Response;
-use TYPO3\CMS\Core\Context\Context;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -28,18 +27,13 @@ class PageResolver implements MiddlewareInterface {
 	 */
     private $response;
 
-	/**
-	 * @var Context
-	 */
-	protected $context;
 
 	/**
 	 * 
 	 * @return void
 	 */
-    public function __construct(Context $context) {
+    public function __construct() {
         $this->response = \nn\t3::injectClass( Response::class );
-        $this->context = $context;
     }
 
 	/**

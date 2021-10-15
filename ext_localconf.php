@@ -39,6 +39,7 @@ call_user_func(
 			(\TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\Nng\Nnrestapi\Middleware\RequestParser::class))->handler();
 
 		// AUTH-Service Registrierung. Delegiert an alle Auth-Services, die mit `\nn\rest::Auth()->register()` registiert wurden
+		/*
 		\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addService(
 			$extKey,
 			'auth',
@@ -55,6 +56,9 @@ call_user_func(
 				'className' => \Nng\Nnrestapi\Service\AuthenticationService::class,
 			]
 		);
-
+		*/
+		
+		// Nur für Typo3 < 11 erforderlich
+		$GLOBALS['TYPO3_CONF_VARS']['SYS']['routing']['enhancers'][\Nng\Nnrestapi\Routing\Enhancer\NnrestapiEnhancer::ENHANCER_NAME] = \Nng\Nnrestapi\Routing\Enhancer\NnrestapiEnhancer::class;
 	},
 'nnrestapi');

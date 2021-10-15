@@ -48,12 +48,13 @@ class Response {
 	protected $response;
 
 
-	public function __construct( \Psr\Http\Message\ResponseFactoryInterface $responseFactory = null ) {
+	public function __construct( $responseFactory = null ) {
+		
+		$responseFactory = \nn\t3::injectClass( ResponseFactoryInterface::class );
 		$this->responseFactory = $responseFactory;
 		$this->response = $responseFactory ? $responseFactory->createResponse() : \nn\t3::injectClass(\TYPO3\CMS\Core\Http\Response::class );
 		
 		\nn\rest::Header()->addControls( $this->response )->addContentType( $this->response );
-		
 	}
 
 	/**
@@ -68,8 +69,8 @@ class Response {
 		$json = \nn\t3::Convert($body)->toJson( 5 );
 
 		if (\nn\t3::t3Version() < 11) {
-			$this->response->setStatus( $status, $message );
-			return $json;
+			// $this->response->setStatus( $status, $message );
+			// return $json;
 		}
 
 		$this->response = $this->response->withStatus( $status, $message );

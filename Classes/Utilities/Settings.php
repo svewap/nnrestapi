@@ -2,6 +2,11 @@
 
 namespace Nng\Nnrestapi\Utilities;
 
+use TYPO3\CMS\Core\Routing\SiteMatcher;
+use TYPO3\CMS\Core\Routing\SiteRouteResult;
+use TYPO3\CMS\Core\Site\SiteFinder;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * Settings for the rest-api
  * 
@@ -33,13 +38,19 @@ class Settings extends \Nng\Nnhelpers\Singleton {
 	 */
 	public function initialize() {
 		
-		$request = $this->request ?: $GLOBALS['TYPO3_REQUEST'];
+		$request = $this->request ?: $GLOBALS['TYPO3_REQUEST'] ?? false;
 		if (!$request) return;
 
 		$siteIdentifier = '';
 		$apiConfiguration = [];
 
 		$site = $request->getAttribute('site');
+
+		// Fallback for TYPO3 v9
+		if (!$site) {
+			$site = \nn\t3::Environment()->getSite( $request );
+		}
+
 		$siteIdentifier = $site->getIdentifier();
 		if (!is_a($site, \TYPO3\CMS\Core\Site\Entity\NullSite::class)) {
 			$apiConfiguration = $site->getConfiguration()['nnrestapi'] ?? [];
