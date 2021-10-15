@@ -21,17 +21,17 @@
 					data-uid="{reqType}/{relUri}"
 					data-reqtype="{reqType}" 
 					data-requrl="{relUri}"
-					data-example="{config.annotations.example}">
+					data-example="{config.example}">
 
 					<rest:widget.accordion reqType="{reqType}" title="{title}" class="nice-thing">
 
 						{config.comment->f:format.raw()}
 
-						<f:if condition="{config.annotations.example}">
+						<f:if condition="{config.example}">
 							<div class="example mb-4">
 								<b>Example data:</b>
 								<nnt3:format.code lang="json">					
-									{config.annotations.example->f:format.raw()}
+									{config.example->f:format.raw()}
 								</nnt3:format.code>		
 							</div>
 						</f:if>

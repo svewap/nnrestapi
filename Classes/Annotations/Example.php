@@ -23,4 +23,8 @@ class Example
     public function __construct( $arr ) {
         $this->value = $arr['value'];
     }
+
+    public function mergeDataForDocumentation ( &$data ) {
+		$data['example'] = json_encode( \Nng\Nnhelpers\Helpers\JsonHelper::decode( $this->value ) );
+	}
 }

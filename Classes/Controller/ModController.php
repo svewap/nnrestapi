@@ -58,7 +58,6 @@ class ModController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController {
 			\nn\t3::Message()->ERROR('Where\'s my TypoScript?', 'No TypoScript Configuration found. Make sure you included the RestApi templates in the root page template.');
 			return \nn\t3::Template()->render('EXT:nnrestapi/Resources/Private/Backend/Templates/Mod/Error.html');
 		}
-		
 
 		$classMap = \nn\rest::Annotations()->getClassMapWithDocumentation();
 		$urlBase = \nn\t3::Environment()->getBaseUrl();

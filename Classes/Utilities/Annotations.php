@@ -36,10 +36,24 @@ class Annotations extends \Nng\Nnhelpers\Singleton {
 		foreach ($arr as &$v) {
 			if (!is_array($v)) continue;
 			if (($className = $v['class'] ?? false) && ($methodName = $v['method'] ?? false)) {
+
 				$method = new \ReflectionMethod( $className, $methodName );
+
+				// Alle Annotations parsen
+				$annotationReader = new \Doctrine\Common\Annotations\AnnotationReader();
+				$annotations = $annotationReader->getMethodAnnotations( $method ) ?: [];
+
+				// Call `mergeDataForDocumentation()` in the annotation-class, if exists
+				foreach ($annotations as $annotation) {
+					if (method_exists($annotation, 'mergeDataForDocumentation')) {
+						$annotation->mergeDataForDocumentation( $v );
+					}
+				}
+
 				$comment = \Nng\Nnhelpers\Helpers\AnnotationHelper::parse($method->getDocComment(), self::ANNOTATION_NAMESPACE);
+				unset( $comment['@'] );
 				$v += $comment;
-				$v['annotations'] = $v['@'] ?? [];
+
 				continue;
 			}
 			$this->getClassMapWithDocumentation( $v );
