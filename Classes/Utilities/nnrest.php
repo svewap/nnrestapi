@@ -10,6 +10,7 @@ use Nng\Nnrestapi\Utilities\Endpoint;
 use Nng\Nnrestapi\Utilities\File;
 use Nng\Nnrestapi\Utilities\Header;
 use Nng\Nnrestapi\Utilities\Settings;
+use Nng\Nnrestapi\Utilities\Session;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -96,5 +97,15 @@ class rest {
 	 */
 	public static function Settings( $request = null ) {
 		return Settings::makeInstance( $request );
+	}
+	
+	/**
+	 * ```
+	 * \nn\rest::Session( $request )->methodName();
+	 * ```
+	 * @return Session
+	 */
+	public static function Session( $request = null ) {
+		return Session::makeInstance( $request );
 	}
 }

@@ -4,10 +4,6 @@ namespace Nng\Nnrestapi\Api;
 use Nng\Nnrestapi\Annotations as Api;
 use Nng\Nnrestapi\Distiller\FeUserDistiller;
 
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
-
 /**
  * Nnrestapi
  *
@@ -36,11 +32,15 @@ class Auth extends AbstractApi {
 			return $this->response->unauthorized('Invalid credentials.');
 		}
 
-		$token = \Nng\Nnrestapi\Service\TokenService::create([
-			'uid' 		=> $feUser['uid'], 
-			'ses_id' 	=> \nn\t3::FrontendUser()->getSessionId(),
-			'tstamp' 	=> time(),
+		// this data will be exposed publicly if the JWT is base64_decoded
+		$token = \nn\t3::Encrypt()->jwt([
+			'uid' 		=> $feUser['uid'],
 			'ip'		=> $_SERVER['REMOTE_ADDR']
+		]);
+		
+		// create a session in the table `nnrest_sessions` that holds the (encrypted) sessionId / Cookie
+		\nn\rest::Session()->create( $token, [
+			'sid' => \nn\t3::FrontendUser()->getSessionId()
 		]);
 		
 		$feUser['token'] = $token;

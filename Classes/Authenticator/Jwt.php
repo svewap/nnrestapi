@@ -2,8 +2,6 @@
 
 namespace Nng\Nnrestapi\Authenticator;
 
-use Nng\Nnrestapi\Service\TokenService;
-
 /**
  * Bereitet Login eines fe_users anhand seines JWT vor.
  * 
@@ -37,39 +35,47 @@ class Jwt extends AbstractAuthenticator {
 	 * 
 	 * @return mixed
 	 */
-	public function process( $request = null ) {
+	public function process( &$request = null ) {
 
-// REMOVE THIS LINE!!
-//$this->simulateAuthorizationBearer();
+		// Was a token passed? Also checks if token is valid and signature is correct
+		if ($token = \nn\t3::Request()->getJwt()) {
+			
+			// the raw, encoded JWT-string
+			$rawBearerToken = \nn\t3::Request()->getBearerToken();
 
-		$token = TokenService::getFromRequest();
-		if ($feUserSessionId = $token['ses_id'] ?? false) {
-			return ['feUserSessionId' => $feUserSessionId];
+			// Delete expired tokens
+			\nn\rest::Session()->removeExpiredTokens();
+
+			// Get session-data for token from database
+			$session = \nn\rest::Session()->get( $rawBearerToken );
+
+			// Session expired or invalid?
+			if (!$session) return false;
+
+			// Return the feUser.uid to the Authenticator-Middleware
+			if ($feUserUid = $token['uid'] ?? false) {
+
+				// Does Typo3-session still exist in `fe_sessions`?
+				$oldSessionId = $session['data']['sid'] ?? false;
+				if (!$oldSessionId) return false;
+
+				// (Re)start current session or create a new one in `fe_sessions`
+				$sessionId = \nn\rest::Session()->restart( $feUserUid, $oldSessionId );			
+
+				// something went wrong. Destroy session.
+				if (!$sessionId) return false;
+
+				// update tstamp and sessionId in `nnrest_sessions`
+				\nn\rest::Session()->update( $rawBearerToken, ['sid'=>$sessionId] );
+
+				// Override `fe_typo_user`-Cookie in `$_COOKIE` and in the current `Request`
+				\nn\t3::FrontendUser()->setCookie( $sessionId, $request );
+
+				return true;
+			}
 		}
 
 		return false;
 	}
-
-	/**
-	 * Creates a (fake) Authorizaten Bearer Header so the TokenService
-	 * can pick up `$_SERVER['Authorization']` and return a token with
-	 * the frontend-user `ses_id`.
-	 * 
-	 * @return void
-	 */
-	public function simulateAuthorizationBearer() {
-
-		$session = $this->simulateUserSession();
-
-		$jwt = TokenService::create([
-			'uid' 		=> 1, 
-			'ses_id' 	=> $session->getIdentifier(),
-			'tstamp' 	=> time(),
-			'ip'		=> $_SERVER['REMOTE_ADDR']
-		]);
-
-		$_SERVER['Authorization'] = 'Bearer ' . $jwt;
-	}
-
 
 }

@@ -28,6 +28,12 @@ plugin.tx_nnrestapi {
 
 	settings {
 
+		# The max duration of a Session. Seconds, until auth-token will expire. `0` = never expire
+		maxSessionLifetime = 3600
+
+		# The main controller to handle the request 
+		apiController = Nng\Nnrestapi\Controller\ApiController
+
 		# Default upload-paths for fileuploads
 		fileUploads {
 
@@ -43,6 +49,19 @@ plugin.tx_nnrestapi {
 				// target-path for file, file-0, file-1, ...
 				file = 1:/api/tests/
 			}		
+		}
+		
+		# Default values for new entries
+		insertDefaultValues {
+			/*
+			Nng\Nnrestapi\Domain\Model\ApiTest {
+				pid = 6
+				categories {
+					0 = 1
+					1 = 2
+				}
+			}
+			*/
 		}
 
 		# Idea for future version: Implement a per-user configuration

@@ -64,15 +64,18 @@ class PageResolver implements MiddlewareInterface {
 			return $this->response->notFound('RestApi-endpoint not found. Based on your request the endpoint would be `' . $classMethodInfo . '`' );
 		}
 
+		$settings = \nn\t3::Settings()->get('tx_nnrestapi');
+
 		$apiRequest = new \Nng\Nnrestapi\Mvc\Request( $request );
 		$apiRequest->setFeUser( \nn\t3::FrontendUser()->get() );
 		$apiRequest->setEndpoint( $endpoint );
 		$apiRequest->setArguments( $endpoint['route']['arguments'] ?? [] );
-		$apiRequest->setSettings( \nn\t3::Settings()->get('tx_nnrestapi') );
+		$apiRequest->setSettings( $settings );
 
-		$controller = \nn\t3::injectClass( \Nng\Nnrestapi\Controller\ApiController::class );
+		$controller = \nn\t3::injectClass( $settings['apiController'] );
 		$controller->setRequest( $apiRequest );
 		$controller->setResponse( $this->response );
+		$controller->setSettings( $settings );
 		$response = $controller->indexAction();
 
 		return $response;

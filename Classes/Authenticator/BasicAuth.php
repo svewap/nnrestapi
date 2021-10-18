@@ -2,8 +2,6 @@
 
 namespace Nng\Nnrestapi\Authenticator;
 
-use Nng\Nnrestapi\Service\TokenService;
-
 class BasicAuth extends AbstractAuthenticator {
 
 	/**
@@ -24,25 +22,13 @@ class BasicAuth extends AbstractAuthenticator {
 	 * 
 	 * @return mixed
 	 */
-	public function process( $request = null ) {
+	public function process( &$request = null ) {
 
-		$username = null;
-		$password = null;
+		$credentials = \nn\t3::Request()->getBasicAuth();
+		if (!$credentials) return false;
 
-		if (isset($_SERVER['PHP_AUTH_USER'])) {
-            $username = $_SERVER['PHP_AUTH_USER'];
-            $password = $_SERVER['PHP_AUTH_PW'];
-        } elseif ($authData = $this->checkServerAuthData('HTTP_AUTHENTICATION')) {
-            [$username, $password] = $authData;
-        } elseif ($authData = $this->checkServerAuthData('HTTP_AUTHORIZATION')) {
-            [$username, $password] = $authData;
-        } elseif ($authData = $this->checkServerAuthData('REDIRECT_HTTP_AUTHORIZATION')) {
-            [$username, $password] = $authData;
-        }
-
-		if (!$username || !$password) {
-			return false;
-		}
+		$username = $credentials['username'];
+		$password = $credentials['password'];
 
 		// Abort, if the default user from the Extension Manager was passed
 		if ($username == 'examplefeUserName') {
@@ -54,6 +40,8 @@ class BasicAuth extends AbstractAuthenticator {
 		$userlistByAuth = array_combine( $userlist, $userlist );
 
 		if ($userlistByAuth["{$username}:{$password}"] ?? false) {
+
+			die('SOME LOGIC... to do');
 			if ($session = $this->createFeUserSession( $username )) {
 				return ['feUserSessionId' => $session->getIdentifier()];
 			}
@@ -61,19 +49,5 @@ class BasicAuth extends AbstractAuthenticator {
 
 		return false;
 	}
-
-	/**
-	 * Check for Server Authorization data.
-	 * 
-	 * @return array
-	 */
-	private function checkServerAuthData($key) {
-        if ($value = $_SERVER[$key] ?? false) {
-            if (strpos(strtolower($value), 'basic') === 0) {
-                return explode(':', base64_decode(substr($value, 6)));
-            }
-        }
-        return [];
-    }
 
 }

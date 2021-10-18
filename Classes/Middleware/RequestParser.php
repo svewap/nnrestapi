@@ -52,7 +52,9 @@ class RequestParser implements MiddlewareInterface {
 	}
 
 	/**
-	 * ## Handler aus `ext_localconf.php`
+	 * ## Handler for HTTP-requests
+	 * 
+	 * Registered in `$GLOBALS['TYPO3_CONF_VARS']['HTTP']['handler']`, see `ext_localconf.php` of this extension.
 	 * 
 	 * Nutzt externe Library, um den `multipart/form-data` des `PUT` und `PATCH` Requests zu parsen
 	 * und in den `$_POST`-Container zu verschieben.

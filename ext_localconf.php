@@ -37,26 +37,6 @@ call_user_func(
 		// Eigender HTTP handler zum Verarbeiten von RequestMethods, die standardmäßig nicht unterstützt werden
 		$GLOBALS['TYPO3_CONF_VARS']['HTTP']['handler'][] = 
 			(\TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\Nng\Nnrestapi\Middleware\RequestParser::class))->handler();
-
-		// AUTH-Service Registrierung. Delegiert an alle Auth-Services, die mit `\nn\rest::Auth()->register()` registiert wurden
-		/*
-		\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addService(
-			$extKey,
-			'auth',
-			\Nng\Nnrestapi\Service\AuthenticationService::class,
-			[
-				'title' => 'Authentification service (nnrestapi)',
-				'description' => 'Authentication service for login of RestApi.',
-				'subtype' => 'getUserFE,authUserFE,getGroupsFE',
-				'available' => true,
-				'priority' => 80,
-				'quality' => 80,
-				'os' => '',
-				'exec' => '',
-				'className' => \Nng\Nnrestapi\Service\AuthenticationService::class,
-			]
-		);
-		*/
 		
 		// Nur für Typo3 < 11 erforderlich
 		$GLOBALS['TYPO3_CONF_VARS']['SYS']['routing']['enhancers'][\Nng\Nnrestapi\Routing\Enhancer\NnrestapiEnhancer::ENHANCER_NAME] = \Nng\Nnrestapi\Routing\Enhancer\NnrestapiEnhancer::class;

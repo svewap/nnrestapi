@@ -40,3 +40,15 @@ CREATE TABLE tx_nnrestapi_domain_model_apitest (
 	PRIMARY KEY (uid),
 	KEY parent (pid),
 );
+
+#
+# Table structure for table 'nnrestapi_sessions'
+#
+CREATE TABLE nnrestapi_sessions (
+	uid int(11) unsigned DEFAULT 0 NOT NULL auto_increment,
+	token varchar(4096) DEFAULT '' NOT NULL,
+	tstamp int(11) unsigned DEFAULT '0' NOT NULL,
+	data mediumblob,
+
+	PRIMARY KEY (uid)
+);

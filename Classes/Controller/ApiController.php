@@ -9,21 +9,12 @@ use TYPO3\ClassAliasLoader\ClassAliasMap;
 use TYPO3\CMS\Core\Http\PropagateResponseException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
+
 /**
- * Nnrestapi
+ * ApiController
  * 
  */
-class ApiController {
-
-	/**
-	 * @var \Nng\Nnrestapi\Mvc\Request
-	 */
-	public $request;
-
-	/**
-	 * @var \Nng\Nnrestapi\Mvc\Response
-	 */
-	public $response;
+class ApiController extends AbstractApiController {
 
 	/**
 	 * Basis-Endpoint für alle Requests an die REST-Api
@@ -121,6 +112,12 @@ class ApiController {
 						} else {
 	
 							// Keine uid übergeben. Neues Model erzeugen
+
+							// Default values defined for the new model?
+							if ($defaultValues = $this->settings['insertDefaultValues'][$modelName] ?? false) {
+								$model = array_merge($defaultValues, $model);
+							}
+							
 							$model = \nn\t3::Convert( $model )->toModel( $modelName );
 
 						}	
@@ -163,36 +160,4 @@ class ApiController {
 		return $response->render();
 	}
 
-
-	/**
-	 * @return  \Nng\Nnrestapi\Mvc\Request
-	 */
-	public function getRequest() {
-		return $this->request;
-	}
-
-	/**
-	 * @param   \Nng\Nnrestapi\Mvc\Request  $request  
-	 * @return  self
-	 */
-	public function setRequest($request) {
-		$this->request = $request;
-		return $this;
-	}
-
-	/**
-	 * @return  \Nng\Nnrestapi\Mvc\Response
-	 */
-	public function getResponse() {
-		return $this->response;
-	}
-
-	/**
-	 * @param   \Nng\Nnrestapi\Mvc\Response  $response  
-	 * @return  self
-	 */
-	public function setResponse($response) {
-		$this->response = $response;
-		return $this;
-	}
 }

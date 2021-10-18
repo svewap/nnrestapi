@@ -8,7 +8,7 @@ namespace Nng\Nnrestapi\Distiller;
  * 
  * Einbindung über die Annotation direkt an der jeweiligen Api-Methode:
  * ```
- * @api\distiller Nng\Nnrestapi\Distiller\FeUserDistiller
+ * @Api\Distiller("Nng\Nnrestapi\Distiller\FeUserDistiller");
  * ```
  * Siehe `Nng\Nnrestapi\Api\Auth->postIndexAction()` für ein Beispiel.
  * 
