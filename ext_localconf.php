@@ -40,5 +40,13 @@ call_user_func(
 		
 		// Nur für Typo3 < 11 erforderlich
 		$GLOBALS['TYPO3_CONF_VARS']['SYS']['routing']['enhancers'][\Nng\Nnrestapi\Routing\Enhancer\NnrestapiEnhancer::ENHANCER_NAME] = \Nng\Nnrestapi\Routing\Enhancer\NnrestapiEnhancer::class;
+	
+		// Needed to override HiddenRestrictions when retrieving hidden records in Frontend Context
+		$GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\TYPO3\CMS\Extbase\Persistence\Generic\QueryFactory::class] = [
+			'className' => \Nng\Nnrestapi\Xclass\QueryFactory::class
+		];
+		$GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction::class] = [
+			'className' => \Nng\Nnrestapi\Xclass\HiddenRestriction::class
+		];
 	},
 'nnrestapi');

@@ -21,13 +21,15 @@ class Session extends \Nng\Nnhelpers\Singleton {
 	 * Get the session-data for a given JWT from the `nnrestapi_sessions` table.
 	 * We are __not__ using the standard Model/Repository methods here to increase performance.
      * ```
-	 * $session = \nn\rest::Session()->get( $jwt );
+	 * $session = \nn\rest::Session()->get( $identifier );
 	 * ```
 	 * @return array
 	 */
-	public function get( $jwt = null ) 
+	public function get( $token = null ) 
 	{
-		$data = \nn\t3::Db()->findOneByValues( self::TABLENAME, ['token'=>$jwt] );
+		$hashedToken = \nn\t3::Encrypt()->hash( $token );
+
+		$data = \nn\t3::Db()->findOneByValues( self::TABLENAME, ['token'=>$hashedToken] );
 		if (!$data) return [];
 		
 		$data['data'] = \nn\t3::Encrypt()->decode( $data['data'] );
@@ -39,18 +41,21 @@ class Session extends \Nng\Nnhelpers\Singleton {
 	 * The data passed as second parameter will be encrypted in the database.
 	 * We are __not__ using the standard Model/Repository methods here to increase performance.
      * ```
-	 * \nn\rest::Session()->update( $jwt, ['sid'=>'...'] );
+	 * \nn\rest::Session()->update( $identifier, ['sid'=>'...'] );
 	 * ```
 	 * @return array
 	 */
-	public function update( $jwt = null, $data = [] ) 
+	public function update( $token = null, $data = [] ) 
 	{
+		// create a hashed identifer. For security reasons no plaintext tokens are stored in DB.
+		$hashedToken = \nn\t3::Encrypt()->hash( $token );
+
 		$data = [
 			'data' 		=> \nn\t3::Encrypt()->encode( $data ),
 			'tstamp' 	=> time(),
-			'token'		=> $jwt,
+			'token'		=> $hashedToken,
 		];
-		if ($entry = $this->get($jwt)) {
+		if ($entry = $this->get($token)) {
 			return \nn\t3::Db()->update( self::TABLENAME, $data, $entry['uid'] );
 		}
 		return \nn\t3::Db()->insert( self::TABLENAME, $data );
@@ -59,12 +64,12 @@ class Session extends \Nng\Nnhelpers\Singleton {
 	/**
 	 * Alias to `update()`
 	 * ```
-	 * \nn\rest::Session()->create( $jwt, ['sid'=>'...'] );
+	 * \nn\rest::Session()->create( $identifier, ['sid'=>'...'] );
 	 * ```
 	 * @return array
 	 */
-	public function create( $jwt = null, $data = [] ) {
-		return $this->update( $jwt, $data );
+	public function create( $token = null, $data = [] ) {
+		return $this->update( $token, $data );
 	}
 
 	/**
@@ -74,12 +79,12 @@ class Session extends \Nng\Nnhelpers\Singleton {
 	 * ```
 	 * @return array
 	 */
-	public function touch( $jwt = null ) 
+	public function touch( $token = null ) 
 	{
 		$data = [
 			'tstamp' => time(),
 		];
-		if ($entry = $this->get($jwt)) {
+		if ($entry = $this->get($token)) {
 			return \nn\t3::Db()->update( self::TABLENAME, $data, $entry['uid'] );
 		}
 		return false;
@@ -111,29 +116,89 @@ class Session extends \Nng\Nnhelpers\Singleton {
 	}
 
 	/**
-	 * (Re)start a FeUser-session.
+	 * Start a FeUser-session.
 	 * 
 	 * Checks, if there is still a valid session in the table `fe_sessions` for the given user-uid and
-	 * sessionId. If not, it will automatically create a new FE-user-session. Returns the `sessionId` 
-	 * (not hashed) for the new (or current) FE-User. This sessionId will be used to set the 
-	 * Frontend-User-Cookie in `$_COOKIE['fe_typo_user']`.
+	 * sessionId. If not, it will automatically create a new FE-user-session. 
 	 * 
+	 * If the session was successfully created, the method will automatically set Frontend-User-Cookie 
+	 * in `$_COOKIE['fe_typo_user']` and in the `Request`-object. As the `nnrestapi` Authenticator MiddleWare
+	 * is called __before__ the standard `typo3/cms-frontend/authentication`, the Core Typo3 Frontend-
+	 * Authenticator will be fooled in thinking it was sent by the browser.
+	 * 
+	 * Returns the `sessionId` (unhashed) for the new (or current) FE-User. 
+	 * 
+	 * Params:
+	 * 
+	 * `sessionIdentifier`	=> 	A random, unique identifier to identify the user-session.
+	 * 							Will be stored as hash in `nnrestapi_sessions.token`
+	 * 
+	 * `feUser`				=>	The `uid` of the frontend-user - or the username
+	 * 
+	 * `request`			=>	The Request-Object. Needed to set the cookieParams as
+	 * 							`typo3/cms-frontend/authentication` will read the `fe_typo_user`-cookie
+	 * 							from the `Request` and not from the global `$_COOKIE` variable.
+	 * 
+	 * `autoCreate`			=>	If session does not exist, create a session. Defaults to `false`.
+	 * 							In the normal authentication process, a session will always exist as
+	 * 							it is created in `Auth()->postIndexAction()`. The exception is the 
+	 * 							authentication by BasicAuth - the apiKey is directly passed in
+	 * 							the auth-header. In this case the `autoCreate` must be set to `true`
+	 * 							to generate a session without calling the `Auth()`-endpoint.
+	 * 
+	 * Example:
 	 * ```
-	 * \nn\t3::Session()->restart( $feUserUid, $sessionId );
+	 * \nn\t3::Session()->start( $sessionIdentifier, $feUserUid, $request );
 	 * ```
 	 * @return string
 	 */
-	public function restart( $feUserUid = '', $sessionId = '' ) {
-		if (!$feUserUid) return;
+	public function start( $sessionIdentifier = '', $feUser = '', &$request = '', $autoCreate = false ) {
 
-		$hashedSessionId = \nn\t3::Encrypt()->hashSessionId( $sessionId );
-		$session = \nn\t3::Db()->findOneByValues( 'fe_sessions', ['ses_id'=>$hashedSessionId, 'ses_userid'=>$feUserUid] );
+		// no feUser-uid passed? Abort.
+		if (!trim($feUser)) return false;
+		
+		// get session-data for token from table `nnrestapi_sessions`. If expired or invalid: Abort.
+		$session = $this->get( $sessionIdentifier );
+		if (!$autoCreate && !$session) return false;
 
-		// Session is still valid. Return current sessionId
-		if ($session) return $sessionId;
+		// get the original, unhashed `fe_typo_user`-sessionId stored in `nnrestapi_sessions.data`
+		$oldSessionId = $session['data']['sid'] ?? false;
+		if (!$autoCreate && !$oldSessionId) return false;
 
-		// Session has expired. Create a new one and return new sessionId
-		return \nn\t3::FrontendUserAuthentication()->prepareSession( $feUserUid );
+		// username passed instead of user.uid
+		if (!is_numeric($feUser)) {
+			$user = \nn\t3::Db()->findByValues( 'fe_users', ['username'=>$feUser] );
+			if (!$user || count($user) > 1) return false;
+			$feUser = $user[0]['uid'];
+		}
+
+		// hash the `fe_typo_user`-sessionId so it can be used as key for finding it in `fe_sessions.ses_id`
+		$hashedSessionId = \nn\t3::Encrypt()->hashSessionId( $oldSessionId );
+		$session = \nn\t3::Db()->findOneByValues( 'fe_sessions', ['ses_id'=>$hashedSessionId, 'ses_userid'=>$feUser] );
+
+		// fe-user-session is not active anymore. The Typo3-sessions might expire faster than the JWT lifetime.
+		if (!$session) {
+		
+			// let's create a new session in `fe_sessions` and return new sessionId (unhashed)
+			$sessionId = \nn\t3::FrontendUserAuthentication()->prepareSession( $feUser );
+
+			// update tstamp and sessionId in `nnrest_sessions`
+			$this->update( $sessionIdentifier, ['sid'=>$sessionId] );
+
+		} else {
+
+			// session has not expired yet. We can continue using the old session.
+			$sessionId = $oldSessionId;
+		}
+
+		// Aboort, if no session could be (re)created
+		if (!$sessionId) return false;
+
+		// Override `fe_typo_user`-Cookie in `$_COOKIE` and in the current `Request`
+		\nn\t3::FrontendUser()->setCookie( $sessionId, $request );
+
+		return $sessionId;
 	}
+
 
 }

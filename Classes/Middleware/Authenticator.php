@@ -33,6 +33,9 @@ class Authenticator implements MiddlewareInterface {
 		// call `process()` on all registered Authenticators
 		$authenticators =  \nn\rest::Auth()->getAll();
 
+		// delete expired sessions in table `nnrestapi_sessions`
+		\nn\rest::Session()->removeExpiredTokens();
+
 		foreach ($authenticators as $authenticator) {
 			if ($classInstance = \nn\t3::injectClass( $authenticator['className'] ?? false )) {
 				if ($classInstance->process( $request )) {

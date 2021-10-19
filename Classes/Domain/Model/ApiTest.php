@@ -10,6 +10,11 @@ use \TYPO3\CMS\Extbase\Domain\Model\FileReference;
 class ApiTest extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 {
     /**
+     * @var bool
+     */
+    protected $hidden;
+
+    /**
      * title
      *
      * @var int
@@ -182,6 +187,22 @@ class ApiTest extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 	 */
 	public function setChild($child) {
 		$this->child = $child;
+		return $this;
+	}
+
+	/**
+	 * @return  bool
+	 */
+	public function getHidden() {
+		return $this->hidden;
+	}
+
+	/**
+	 * @param   bool  $hidden  
+	 * @return  self
+	 */
+	public function setHidden($hidden) {
+		$this->hidden = $hidden;
 		return $this;
 	}
 }

@@ -6,6 +6,14 @@ CREATE TABLE fe_groups (
 	nnrestapi_flexform text DEFAULT '' NOT NULL
 );
 
+#
+# Table structure for table 'fe_users'
+#
+CREATE TABLE fe_users (
+	nnrestapi_apikey varchar(255) DEFAULT '' NOT NULL,
+	nnrestapi_admin tinyint(4) unsigned DEFAULT 0 NOT NULL
+);
+
 
 #
 # Table structure for table 'tx_nnrestapi_domain_model_apitest'

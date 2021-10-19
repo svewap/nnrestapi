@@ -39,10 +39,10 @@ return [
 		'nnrestapi/auth' => [
 			'target' => \Nng\Nnrestapi\Middleware\Authenticator::class,
 			'before' => [
-				'typo3/cms-frontend/timetracker',
+				'typo3/cms-frontend/authentication',
 			],
 			'after' => [
-				'nnrestapi/requestparser',
+				'typo3/cms-frontend/backend-user-authentication',
 			]
 		],
 

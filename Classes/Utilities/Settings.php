@@ -30,6 +30,12 @@ class Settings extends \Nng\Nnhelpers\Singleton {
 	 * @var string
 	 */
 	private $apiConfiguration = [];
+	
+	/**
+	 * Query settings
+	 * @var array
+	 */
+	private $querySettings = [];
 
 	/**
 	 * Constructor
@@ -114,4 +120,33 @@ class Settings extends \Nng\Nnhelpers\Singleton {
 		return '/' . trim($basePath, '/') . '/';
 	}
 
+
+	/**
+	 * ```
+	 * \nn\rest::Settings()->getQuerySettings();
+	 * \nn\rest::Settings()->getQuerySettings('ignoreEnableFields');
+	 * ```
+	 * @return  array
+	 */
+	public function getQuerySettings( $field = '' ) {
+		return $field ? ($this->querySettings[$field] ?? '') : $this->querySettings;
+	}
+
+	/**
+	 * Enable retrieving of hidden records and relations in the Frontend.
+	 * Solved by Xclass-ing the Core `HiddenRestriction` and `QueryFactory`.
+	 * See `Nng\Nnrestapi\Xclass\QueryFactory` and `Nng\Nnrestapi\Xclass\HiddenRestriction`.
+	 * 
+	 * Probably there is a better solution - spent too much time searching.
+	 * 
+	 * ```
+	 * \nn\rest::Settings()->setIgnoreEnableFields( true );
+	 * ```
+	 * @param   array  $querySettings  Query settings
+	 * @return  self
+	 */
+	public function setIgnoreEnableFields( $ignoreEnableFields = false ) {
+		$this->querySettings['ignoreEnableFields'] = $ignoreEnableFields;
+		return $this;
+	}
 }

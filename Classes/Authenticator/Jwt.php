@@ -3,24 +3,40 @@
 namespace Nng\Nnrestapi\Authenticator;
 
 /**
- * Bereitet Login eines fe_users anhand seines JWT vor.
+ * # JWT Authenticator
  * 
- * Ablauf der Authentifizierung:
+ * Authenticates a frontend-user by using a JSON Web Token instead of the `fe_typo_user` cookie.
+ * This allows cross-domain authentication without worrying about CORS-problems or cookie-domains.
  * 
- * - User gibt username / passwort ein
- * - payload mit `{"username":"...", "password":"..."}` wird an `Auth->postIndexAction()` übertragen
- * - Credentials werden überprüft, JWT wird generiert
- * - Das JWT enthält die `ses_id`, die als Hash in `fe_sessions.ses_id` liegt
- * - JWT im JSON an Frontend gesendet
+ * The trick behind this authentication is rather simple: Instead of relying on the browser to send
+ * the default `fe_typo_user`-Cookie and letting TYPO3 parse the `$_COOKIE` in the 
+ * `typo3/cms-frontend/authentication` MiddleWare, this script parses the JWT-Token __before__ the 
+ * Frontend-Authentcation kicks in. It validates the JWT and then sets the cookie.
  * 
- * Requests nach Authentifizierung:
+ * Step-by-step explaination:
  * 
- * - User schickt Request an Api-Endpoint, der Authentifizierung erfordert
- * - Im `Authorization`-Header wird der Token als `Bearer {token}` übergeben
- * - Diese Middleware wird VOR der Standard Typo3 `FrontendUserAuthenticator` aufgerufen
- * - JWT wird überprüft. Falls valide, wird `fe_typo_user`-Cookie auf `ses_id` gesetzt
- * - Damit "denkt" die Webseite, dass ein `fe_typo_user`-Cookie vom Browser übergeben wurde
- * - Der Typo3 Core `FrontendUserAuthenticator` übernimmt danach den Login anhand des Session-Cookies
+ * During authentication:
+ * 
+ * - User enters his username / password
+ * - `Auth->postIndexAction()` is called and payload `{"username":"...", "password":"..."}` passed
+ * - `Auth->postIndexAction()` checks credentials and (if valid) generates the JWT.
+ * - `\nn\rest::Session()->create()` is called. It generates an entry in `nnrestapi_sessions`.
+ * 	 The 'real' TYPO3 sessionId (usually used for the fe-user-cookie) is encrypted and stored
+ *   in the column `nnrestapi_sessions.data`
+ * - The JWT is sent to the frontend
+ * 
+ * Requests with JWT:
+ * 
+ * - User sends a request to an api-endpoint that requires authentication
+ * - The `Authorization`-header is sent along with the request. The JWT is passed as `Bearer {jwtToken}`
+ * - The `Authenticator`-MiddleWare is called __before__ the FrontendUserAuthenticator of the Core
+ * - This Authenticator checks if the token is valid.
+ * - If the token is valid, the session-data is loaded from `nnrestapi_session`
+ * - The 'real' Typo3-Session-ID is retrieved from `nnrestapi_session.data.sid` 
+ * - If the Typo3 session has expired in `fe_sessions`, a new session is automatically generated
+ * - The `$_COOKIE['fe_typo_user']` and the `Request.cookieParams.fe_typo_user`-Cookies are set.
+ * - After this, the Session-Cookie is ready to be read and processed by the Typo3 Core 
+ *   `FrontendUserAuthenticator`. It takes care of the actual login.
  * 
  */
 class Jwt extends AbstractAuthenticator {
@@ -37,45 +53,24 @@ class Jwt extends AbstractAuthenticator {
 	 */
 	public function process( &$request = null ) {
 
-		// Was a token passed? Also checks if token is valid and signature is correct
-		if ($token = \nn\t3::Request()->getJwt()) {
-			
-			// the raw, encoded JWT-string
-			$rawBearerToken = \nn\t3::Request()->getBearerToken();
+		// the session-identifier can be any unique string. In this case we are simply using the raw JWT string.
+		$sessionIdentifier = \nn\t3::Request()->getBearerToken();
 
-			// Delete expired tokens
-			\nn\rest::Session()->removeExpiredTokens();
+		// Was a JWT-token passed and is it valid? If not, abort.
+		$token = \nn\t3::Request()->getJwt();		
+		if (!$token) return false;
 
-			// Get session-data for token from database
-			$session = \nn\rest::Session()->get( $rawBearerToken );
+		// feUserUid stored in token? If not, abort.
+		$feUserUid = $token['uid'] ?? false;
+		if (!$feUserUid) return false;
 
-			// Session expired or invalid?
-			if (!$session) return false;
+		// (Re)start current session or create a new one
+		$sessionId = \nn\rest::Session()->start( $sessionIdentifier, $feUserUid, $request );
+		
+		// something went wrong. Destroy session.
+		if (!$sessionId) return false;
 
-			// Return the feUser.uid to the Authenticator-Middleware
-			if ($feUserUid = $token['uid'] ?? false) {
-
-				// Does Typo3-session still exist in `fe_sessions`?
-				$oldSessionId = $session['data']['sid'] ?? false;
-				if (!$oldSessionId) return false;
-
-				// (Re)start current session or create a new one in `fe_sessions`
-				$sessionId = \nn\rest::Session()->restart( $feUserUid, $oldSessionId );			
-
-				// something went wrong. Destroy session.
-				if (!$sessionId) return false;
-
-				// update tstamp and sessionId in `nnrest_sessions`
-				\nn\rest::Session()->update( $rawBearerToken, ['sid'=>$sessionId] );
-
-				// Override `fe_typo_user`-Cookie in `$_COOKIE` and in the current `Request`
-				\nn\t3::FrontendUser()->setCookie( $sessionId, $request );
-
-				return true;
-			}
-		}
-
-		return false;
+		return true;
 	}
 
 }

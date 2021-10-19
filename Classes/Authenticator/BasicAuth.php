@@ -2,23 +2,37 @@
 
 namespace Nng\Nnrestapi\Authenticator;
 
+/**
+ * # BasicAuth
+ * 
+ * Authenticator for logging in a user by `username` / `apiKey` credentials.
+ * Checks, if a Basic-AUTH-Header was passed and if the API-Key is valid.
+ * 
+ * The ApiKey can be defined ... 
+ * - in the backend EXT-Manager. One {fe-username}:{apiKey} per line
+ * - in the TCA of the individual `fe_user`-entries
+ * 
+ * You can use this simple script to test the authentication from outside of the installation:
+ * ```
+ * <?php
+ * 
+ * $result = file_get_contents('https://username:apikey@www.yourserver.com/api/user');
+ * print_r( json_decode($result, true) );
+ * ```
+ * 
+ * __Important note:__ If the basicAuth does not work, you might need to add these two lines to
+ * your `.htaccess` directly after the `RewriteEngine on` command:
+ * 
+ * ```
+ * RewriteCond %{HTTP:Authorization} ^(.*)
+ * RewriteRule .* - [e=HTTP_AUTHORIZATION:%1]
+ * ```
+ * 
+ */
 class BasicAuth extends AbstractAuthenticator {
 
 	/**
 	 * Called by Authenticator Middleware.
-	 * 
-	 * Checks, if a Basic-AUTH-Header was passed and if the API-Key was registered
-	 * in the backend extension-configuration
-	 * 
-	 * If the basicAuth does not work, you might need to add these two lines to
-	 * your `.htaccess` directly after the `RewriteEngine on` command:
-	 * 
-	 * ```
-	 * RewriteCond %{HTTP:Authorization} ^(.*)
-	 * RewriteRule .* - [e=HTTP_AUTHORIZATION:%1]
-	 * ```
-	 * 
-	 * See AbstractAuthenticator for more details
 	 * 
 	 * @return mixed
 	 */
@@ -28,7 +42,7 @@ class BasicAuth extends AbstractAuthenticator {
 		if (!$credentials) return false;
 
 		$username = $credentials['username'];
-		$password = $credentials['password'];
+		$apiKey = $credentials['password'];
 
 		// Abort, if the default user from the Extension Manager was passed
 		if ($username == 'examplefeUserName') {
@@ -38,16 +52,35 @@ class BasicAuth extends AbstractAuthenticator {
 		// Get users defined in the Extension Manager
 		$userlist = \nn\t3::Arrays( \nn\t3::Environment()->getExtConf('nnrestapi', 'apiKeys') )->trimExplode("\n");
 		$userlistByAuth = array_combine( $userlist, $userlist );
+		$user = $userlistByAuth["{$username}:{$apiKey}"] ?? false;
 
-		if ($userlistByAuth["{$username}:{$password}"] ?? false) {
+		// User not found in EXT-Configuration?
+		if (!$user) {
 
-			die('SOME LOGIC... to do');
-			if ($session = $this->createFeUserSession( $username )) {
-				return ['feUserSessionId' => $session->getIdentifier()];
+			// ... then check for credentials in `fe_user`-table
+			if ($feUser = \nn\t3::Db()->findOneByValues('fe_users', [
+				'username'			=> $username, 
+				'nnrestapi_apikey'	=> $apiKey
+			])) {
+				$user = true;
+				$username = $feUser['uid'];
 			}
 		}
 
-		return false;
+		// No user found? Abort!
+		if (!$user) return false;
+
+		// Use the username:ApiKey as a session identifer (it will be hashed in the database)
+		$sessionIdentifier = "{$username}.{$apiKey}";
+
+		// (Re)start current session or create a new one. `true` as last parameter will allow to auto-create a new session
+		$sessionId = \nn\rest::Session()->start( $sessionIdentifier, $username, $request, true );
+
+		// something went wrong. Destroy session.
+		if (!$sessionId) return false;
+
+		return true;
+
 	}
 
 }

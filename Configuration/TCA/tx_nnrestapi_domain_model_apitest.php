@@ -63,7 +63,12 @@
 		'ctrl' => [
 			'title'	=> 'LLL:EXT:nnrestapi/Resources/Private/Language/locallang_db.xlf:tx_nnrestapi_domain_model_apitest',
 			'label' => 'title',
-			'enablecolumns' => [],
+			'enablecolumns' => [
+				'disabled' => 'hidden',
+				'starttime' => 'starttime',
+				'endtime' => 'endtime',
+				'fe_group' => 'fe_group',
+			],
 			//'hideTable' => true,
 			'searchFields' => '',
 			'tstamp' => 'tstamp',

@@ -156,6 +156,7 @@ class Test extends AbstractApi {
 	 * 
 	 * @Api\Route("GET /test/{uid}")
 	 * @Api\Access("be_users")
+	 * @Api\IncludeHidden
 	 * 
 	 * @return array
 	 */
@@ -178,6 +179,7 @@ class Test extends AbstractApi {
 	 * @Api\Upload("default")
 	 * @Api\Example("{'title':'My Test Model', 'files':['UPLOAD:/file-0', 'UPLOAD:/file-1']}")
 	 * @Api\Access("be_users")
+	 * @Api\IncludeHidden
 	 * 
 	 * @return array
 	 */
@@ -199,6 +201,7 @@ class Test extends AbstractApi {
 	 * @Api\Upload default
 	 * @Api\Example("{'title':'My Test Model', 'files':['UPLOAD:/file-0', 'UPLOAD:/file-1']}")
 	 * @Api\Access("be_users")
+	 * @Api\IncludeHidden
 	 * 
 	 * @return array
 	 */

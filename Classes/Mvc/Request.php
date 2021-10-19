@@ -221,4 +221,15 @@ class Request {
 		$this->feUser = $feUser;
 		return $this;
 	}
+
+	/**
+	 * Returns if the feUser has the checkbox "RestApi Admin" set.
+	 * This will grant additional privileges like retrieving hidden records.
+	 * 
+	 * @return boolean
+	 */
+	public function isAdmin() {
+		return $this->feUser && $this->feUser['nnrestapi_admin'];
+	}
+
 }

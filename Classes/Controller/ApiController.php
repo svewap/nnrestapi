@@ -30,20 +30,6 @@ class ApiController extends AbstractApiController {
 	 * @return
 	 */
 	public function indexAction() {
-
-		/*
-		$frontendUser = GeneralUtility::makeInstance(\TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication::class);
-		$frontendUser->start();
-		$frontendUser->logoff();
-		*/
-		/*
-		\nn\t3::debug( $sessionId );
-		\nn\t3::debug( \nn\t3::FrontendUser()->getGroups( ) );
-		\nn\t3::debug( \nn\t3::FrontendUser()->get() );
-		\nn\t3::debug( $this->request->getFeUser() );
-		\nn\t3::debug( $this->request );
-		die();
-		//*/
 		
 		$request = $this->request;
 		$response = $this->response;
@@ -57,7 +43,16 @@ class ApiController extends AbstractApiController {
 
 		$classInstance->setRequest( $request );
 		$classInstance->setResponse( $response );
-		
+
+		// Prüfen, ob User Zugriff auf versteckte Datensätze hat, ähnlich einem Backend-Admin
+		$showHiddenFromAnnotation 	= $endpoint['includeHidden'] ?? false;		// per `@Api\IncludeHidden` Annotation
+		$showHiddenFromFeUser 		= $request->isAdmin();						// per Admin-Checkbox am fe-user
+
+		if ($showHiddenFromAnnotation || $showHiddenFromFeUser) {
+			// die nnrestapi-Xclasses übernehmen jetzt die Kontrolle!
+			\nn\rest::Settings()->setIgnoreEnableFields( true );
+		}
+
 		// Prüft, ob aktueller User Zugriff auf Methode hat
 		if (!$classInstance->checkAccess( $endpoint )) {
 			
@@ -73,6 +68,7 @@ class ApiController extends AbstractApiController {
 
 			// Argumente für Methodenaufruf konstruieren
 			if ($arguments = $endpoint['methodArgs']) {
+
 				// Methode möchte ein Argument erhalten `->getSomethingAction( $data )` 
 				$model = $request->getBody();
 				$nothingToMerge = !$model;
@@ -92,12 +88,10 @@ class ApiController extends AbstractApiController {
 					if ($modelName = $varDefinition['element'] ?? false) {
 
 						if ($uid = $model['uid'] ?: $request->getArguments()['uid'] ?? false) {
-						
-							// uid des Models übergeben. Bestehendes Model aus Repo holen
-							$repository = \nn\t3::Db()->getRepositoryForModel( $modelName );
-							\nn\t3::Db()->ignoreEnableFields( $repository );
+							
+							$existingModel = \nn\t3::Db()->get( $uid, $modelName );
 
-							if ($existingModel = $repository->findByUid( $uid )) {
+							if ($existingModel) {
 								
 								if ($nothingToMerge) {
 									$model = $existingModel;

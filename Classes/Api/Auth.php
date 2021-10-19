@@ -35,6 +35,7 @@ class Auth extends AbstractApi {
 		// this data will be exposed publicly if the JWT is base64_decoded
 		$token = \nn\t3::Encrypt()->jwt([
 			'uid' 		=> $feUser['uid'],
+			'tstamp' 	=> time(),
 			'ip'		=> $_SERVER['REMOTE_ADDR']
 		]);
 		

@@ -53,6 +53,12 @@
 										<td><code>{config.distiller}</code></td>
 									</tr>	
 								</f:if>
+								<f:if condition="{config.includeHidden}">
+									<tr>
+										<td>IncludeHidden:</td>
+										<td><code>true</code></td>
+									</tr>	
+								</f:if>
 								<f:if condition="{config.uploadConfig}">
 									<tr>
 										<td>Upload-Config:</td>
