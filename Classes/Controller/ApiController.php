@@ -52,7 +52,7 @@ class ApiController extends AbstractApiController {
 			// die nnrestapi-Xclasses übernehmen jetzt die Kontrolle!
 			\nn\rest::Settings()->setIgnoreEnableFields( true );
 		}
-
+		
 		// Prüft, ob aktueller User Zugriff auf Methode hat
 		if (!$classInstance->checkAccess( $endpoint )) {
 			
@@ -63,7 +63,7 @@ class ApiController extends AbstractApiController {
 			
 			// Prüft, ob Dateiuploads existieren. Ersetzt `UPLOAD://file-x` mit Pfad zu Upload-Dateien
 			\nn\rest::File()->processFileUploadsInRequest( $request );
-			
+
 			$requestArguments = $request->getArguments();
 
 			// Argumente für Methodenaufruf konstruieren
@@ -98,39 +98,39 @@ class ApiController extends AbstractApiController {
 								} else {
 									$model = \nn\t3::Obj( $existingModel )->merge( $model );
 								}
-
+								
 							} else {
 								$model = null;
 							}
-	
+							
 						} else {
-	
+							
 							// Keine uid übergeben. Neues Model erzeugen
-
+							
 							// Default values defined for the new model?
 							if ($defaultValues = $this->settings['insertDefaultValues'][$modelName] ?? false) {
 								$model = array_merge($defaultValues, $model);
 							}
 							
 							$model = \nn\t3::Convert( $model )->toModel( $modelName );
-
+							
 						}	
-
+						
 						$valueToApply = $model;
-
+						
 					} else {
-
+						
 						// Map `/path/{uid}` to `methodName( $uid )`
 						$valueToApply = $requestArguments[$varName] ?? null;
 						
 					}
-
+					
 					$argumentsToApply[] = $valueToApply;
 				}
-
+				
 				$result = $classInstance->{$endpoint['method']}( ...$argumentsToApply ) ?: [];
 			} else {
-
+				
 				// Keine Argumente gefordert `->getSomethingAction()` 
 				$result = $classInstance->{$endpoint['method']}() ?: [];
 			}
@@ -144,12 +144,12 @@ class ApiController extends AbstractApiController {
 				}
 			}
 		}
-
+		
 		// Result was already rendered (e.g. a 404 or 403 was returned)
 		if (is_a($result, \TYPO3\CMS\Core\Http\Response::class)) {
 			return $result;
 		}
-
+		
 		$response->setBody( $result );
 		return $response->render();
 	}

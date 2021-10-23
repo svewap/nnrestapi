@@ -66,12 +66,10 @@ class Response {
 		$status = $this->getStatus();
 		$message = $this->getMessage();
 
-		$json = \nn\t3::Convert($body)->toJson( 5 );
-
-		if (\nn\t3::t3Version() < 11) {
-			// $this->response->setStatus( $status, $message );
-			// return $json;
-		}
+		// Convert Model to array and remove fields defined in `settings.globalDistillers`
+		$arrayData = \nn\t3::Convert($body)->toArray( 5 );
+		\Nng\Nnrestapi\Distiller\ModelDistiller::process( $body, $arrayData );
+		$json = json_encode( $arrayData );
 
 		$this->response = $this->response->withStatus( $status, $message );
 		$this->response->getBody()->write($json);

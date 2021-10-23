@@ -64,6 +64,18 @@ plugin.tx_nnrestapi {
 			*/
 		}
 
+		# Fields to remove from Model when converting to array
+		globalDistillers {
+			TYPO3\CMS\Extbase\Domain\Model\Category {
+				exclude = parent
+			}
+			/*
+			TYPO3\CMS\Extbase\Domain\Model\FileReference {
+				exclude = uidLocal, crop, publicUrl, type
+			}
+			*/
+		}
+
 		# Idea for future version: Implement a per-user configuration
 		/*
 		fe_users {
