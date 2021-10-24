@@ -5,4 +5,4 @@ apiKeys = examplefeUserName:exampleApiKey
 tsfe = 0
 
 # cat=basic/tsfe; type=text; label=Session expires after seconds (0 = never)
-maxSessionLifetime = 0
+maxSessionLifetime = 3600
