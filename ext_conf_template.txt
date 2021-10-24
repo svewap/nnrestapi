@@ -3,3 +3,6 @@ apiKeys = examplefeUserName:exampleApiKey
 
 # cat=basic/tsfe; type=boolean; label=Process request AFTER the Frontend (TSFE) has been initialized
 tsfe = 0
+
+# cat=basic/tsfe; type=text; label=Session expires after seconds (0 = never)
+maxSessionLifetime = 0

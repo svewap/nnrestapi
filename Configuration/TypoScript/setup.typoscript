@@ -28,9 +28,6 @@ plugin.tx_nnrestapi {
 
 	settings {
 
-		# The max duration of a Session. Seconds, until auth-token will expire. `0` = never expire
-		maxSessionLifetime = 3600
-
 		# The main controller to handle the request 
 		apiController = Nng\Nnrestapi\Controller\ApiController
 

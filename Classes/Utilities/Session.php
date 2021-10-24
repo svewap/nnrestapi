@@ -104,9 +104,9 @@ class Session extends \Nng\Nnhelpers\Singleton {
 	 */
 	public function removeExpiredTokens() 
 	{
-		$maxSessionLifetime = \nn\t3::Settings()->get('nnrestapi')['maxSessionLifetime'];
+		$maxSessionLifetime = \nn\t3::Settings()->getExtConf('nnrestapi')['maxSessionLifetime'] ?? 0;
 		if ($maxSessionLifetime == 0) return;
-
+		
 		$queryBuilder = \nn\t3::DB()->getQueryBuilder( self::TABLENAME );
 		$queryBuilder->delete( self::TABLENAME );
 		$queryBuilder->andWhere(
