@@ -8,11 +8,6 @@ namespace Nng\Nnrestapi\Authenticator;
  * Authenticates a frontend-user by using a JSON Web Token instead of the `fe_typo_user` cookie.
  * This allows cross-domain authentication without worrying about CORS-problems or cookie-domains.
  * 
- * The trick behind this authentication is rather simple: Instead of relying on the browser to send
- * the default `fe_typo_user`-Cookie and letting TYPO3 parse the `$_COOKIE` in the 
- * `typo3/cms-frontend/authentication` MiddleWare, this script parses the JWT-Token __before__ the 
- * Frontend-Authentcation kicks in. It validates the JWT and then sets the cookie.
- * 
  * Step-by-step explaination:
  * 
  * During authentication:
@@ -29,14 +24,8 @@ namespace Nng\Nnrestapi\Authenticator;
  * 
  * - User sends a request to an api-endpoint that requires authentication
  * - The `Authorization`-header is sent along with the request. The JWT is passed as `Bearer {jwtToken}`
- * - The `Authenticator`-MiddleWare is called __before__ the FrontendUserAuthenticator of the Core
+ * - xxxxx The `Authenticator`-MiddleWare is called __before__ the FrontendUserAuthenticator of the Core
  * - This Authenticator checks if the token is valid.
- * - If the token is valid, the session-data is loaded from `nnrestapi_session`
- * - The 'real' Typo3-Session-ID is retrieved from `nnrestapi_session.data.sid` 
- * - If the Typo3 session has expired in `fe_sessions`, a new session is automatically generated
- * - The `$_COOKIE['fe_typo_user']` and the `Request.cookieParams.fe_typo_user`-Cookies are set.
- * - After this, the Session-Cookie is ready to be read and processed by the Typo3 Core 
- *   `FrontendUserAuthenticator`. It takes care of the actual login.
  * 
  */
 class Jwt extends AbstractAuthenticator {
@@ -51,26 +40,25 @@ class Jwt extends AbstractAuthenticator {
 	 * 
 	 * @return mixed
 	 */
-	public function process( &$request = null ) {
+	public function process() {
 
-		// the session-identifier can be any unique string. In this case we are simply using the raw JWT string.
-		$sessionIdentifier = \nn\t3::Request()->getBearerToken();
+		// Fake JWT for test-purposes. To create a token, use the login-form in the backend-module
+		//$_SERVER['Authorization'] = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOjksInRzdGFtcCI6MTYzNjM5ODk0OSwiaXAiOiIxMDkuMjUwLjY2LjQifQ==.NjM5MjM0M2I1NjVhNzhmM2NlZGJjYWEyZTRhZDMxMWM1NWE1M2M5MzFiYjFiZGJjZjljMjY0ZDVkYTBlZWU1Yg==';
 
 		// Was a JWT-token passed and is it valid? If not, abort.
-		$token = \nn\t3::Request()->getJwt();		
+		$token = \nn\t3::Request()->getJwt();
 		if (!$token) return false;
 
 		// feUserUid stored in token? If not, abort.
 		$feUserUid = $token['uid'] ?? false;
 		if (!$feUserUid) return false;
 
-		// (Re)start current session or create a new one
-		$sessionId = \nn\rest::Session()->start( $sessionIdentifier, $feUserUid, $request );
-		
-		// something went wrong. Destroy session.
-		if (!$sessionId) return false;
+		// get `fe_user` from DB
+		if ($user = \nn\t3::Db()->findByUid( 'fe_users', $feUserUid )) {
+			return $user;
+		}
 
-		return true;
+		return false;
 	}
 
 }

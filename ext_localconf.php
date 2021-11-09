@@ -48,5 +48,8 @@ call_user_func(
 		$GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction::class] = [
 			'className' => \Nng\Nnrestapi\Xclass\HiddenRestriction::class
 		];
+
+		// Hook in `/sysext/core/Classes/Authentication/AbstractUserAuthentication.php` to auth the frontend-user
+		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_userauth.php']['postUserLookUp']['nnrestapi'] = \Nng\Nnrestapi\Hooks\FrontendUserAuthenticationHook::class . '->postUserLookUp';
 	},
 'nnrestapi');

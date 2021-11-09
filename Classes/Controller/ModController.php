@@ -38,10 +38,8 @@ class ModController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController {
 		$pageRenderer->loadRequireJsModule('TYPO3/CMS/Nnrestapi/Axios');
         $pageRenderer->loadRequireJsModule('TYPO3/CMS/Nnrestapi/Nnrestapi');
 		
-		$pageRenderer->addCssFile('typo3conf/ext/nnhelpers/Resources/Public/Vendor/prism/prism.css');
-
-		$pageRenderer->addJsFile('typo3conf/ext/nnrestapi/Resources/Public/Vendor/axios.min.js');
-		$pageRenderer->addJsFile('typo3conf/ext/nnhelpers/Resources/Public/Vendor/prism/prism.js');
+		$pageRenderer->addCssFile('/typo3conf/ext/nnhelpers/Resources/Public/Vendor/prism/prism.css');
+		$pageRenderer->addJsFile('/typo3conf/ext/nnhelpers/Resources/Public/Vendor/prism/prism.js');
 
         $template = $view->getModuleTemplate();
         $template->setFlashMessageQueue($this->controllerContext->getFlashMessageQueue());

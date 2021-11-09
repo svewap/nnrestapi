@@ -10,7 +10,7 @@ namespace Nng\Nnrestapi\Authenticator;
  * 
  * The ApiKey can be defined ... 
  * - in the backend EXT-Manager. One {fe-username}:{apiKey} per line
- * - in the TCA of the individual `fe_user`-entries
+ * - in the TCA of the individual `fe_user.nnrestapi_apikey`-entries
  * 
  * You can use this simple script to test the authentication from outside of the installation:
  * ```
@@ -49,38 +49,26 @@ class BasicAuth extends AbstractAuthenticator {
 			return false;
 		}
 
+		// Make sure, the username really exists in DB before continuing
+		$feUser = \nn\t3::Db()->findOneByValues('fe_users', [
+			'username' => $username
+		]);
+
+		// `fe_user` doesn't exist or is disabled? Abort.
+		if (!$feUser) return false;
+
 		// Get users defined in the Extension Manager
 		$userlist = \nn\t3::Arrays( \nn\t3::Environment()->getExtConf('nnrestapi', 'apiKeys') )->trimExplode("\n");
 		$userlistByAuth = array_combine( $userlist, $userlist );
+		
 		$user = $userlistByAuth["{$username}:{$apiKey}"] ?? false;
 
-		// User not found in EXT-Configuration?
-		if (!$user) {
-
-			// ... then check for credentials in `fe_user`-table
-			if ($feUser = \nn\t3::Db()->findOneByValues('fe_users', [
-				'username'			=> $username, 
-				'nnrestapi_apikey'	=> $apiKey
-			])) {
-				$user = true;
-				$username = $feUser['uid'];
-			}
+		// User not found in EXT-Configuration AND apiKey not correct in `fe_user.nnrestapi_apikey`
+		if (!$user && $feUser['nnrestapi_apikey'] != $apiKey) {
+			return false;
 		}
 
-		// No user found? Abort!
-		if (!$user) return false;
-
-		// Use the username:ApiKey as a session identifer (it will be hashed in the database)
-		$sessionIdentifier = "{$username}.{$apiKey}";
-
-		// (Re)start current session or create a new one. `true` as last parameter will allow to auto-create a new session
-		$sessionId = \nn\rest::Session()->start( $sessionIdentifier, $username, $request, true );
-
-		// something went wrong. Destroy session.
-		if (!$sessionId) return false;
-
-		return true;
-
+		return $feUser;
 	}
 
 }

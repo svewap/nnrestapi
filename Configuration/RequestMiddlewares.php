@@ -35,17 +35,6 @@ return [
 			],
 		],
 
-		// Authenticates the frontend-user via JWT
-		'nnrestapi/auth' => [
-			'target' => \Nng\Nnrestapi\Middleware\Authenticator::class,
-			'before' => [
-				'typo3/cms-frontend/authentication',
-			],
-			'after' => [
-				'typo3/cms-frontend/backend-user-authentication',
-			]
-		],
-
 		// Resolve the request, forward to ApiController
 		'nnrestapi/resolver' => [
 			'target' => \Nng\Nnrestapi\Middleware\PageResolver::class,
