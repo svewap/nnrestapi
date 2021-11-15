@@ -54,6 +54,7 @@ It includes many features:
    Installation/Index
    Quickstart/Index
    Screenshots/Index
+   Annotations/Index
    Access/Index
    KnownProblems/Index
    Changelog/Index

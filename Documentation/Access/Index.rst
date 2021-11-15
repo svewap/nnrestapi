@@ -74,6 +74,8 @@ The following permissions exist for `@Api\Access(...)`:
 +--------------------------------------------+--------------------------------------------------------------+
 | `@Api\Access("be_admins")`                 | every logged in backend admin                                |
 +--------------------------------------------+--------------------------------------------------------------+
+| `@Api\Access("ip[89.19.*,89.20.*]")`       | only users with given IPs as REMOTE_ADDR                     |
++--------------------------------------------+--------------------------------------------------------------+
 | `@Api\Access("config[myconf]")`            | use `myconf` in Yaml config for the site/API                 |
 +--------------------------------------------+--------------------------------------------------------------+
 
@@ -179,6 +181,36 @@ And in case you prefer using the **array syntax**, that is also possible:
     */
 
 
+Restrict access to certain IP-adresses
+~~~~~~~~~~~~
+
+By using the ``@Api\Access("ip[...]")`` annotation you can limit the request to a given
+list of IPs.
+
+Contrary to all other ``@Api\Access()`` restrictions, the IP-restriction will be handled
+like an **AND** contraint. If you set an IP-restriction, then the request **must** come from the
+given IP, independent from other access-restrictions like Frontend-User Authentication etc.
+
+.. code-block:: php
+
+   /**
+    * Only REMOTE_ADDR with IP 90.120.10.* may access this endpoint
+    *
+    * @Api\Access("ip[90.120.10.*]")
+    * ...
+    */
+
+Multiple IPs can be listed the same way usernames or uids are listed in the examples above.
+All of the following examples are equivilants, choose the syntax you can remember best:
+
+.. code-block:: php
+
+   @Api\Access("ip[90.120.10.*, 90.120.11.*]")
+   @Api\Access("ip[90.120.10.*], ip[90.120.11.*]")
+   @Api\Access({"ip[90.120.10.*]", "ip[90.120.11.*]"})
+
+
+
 Using global configurations
 ---------
 
@@ -236,3 +268,9 @@ We now can refer to the accessGroup from the YAML-configuration by using the `co
     * @Api\Access("config[apiUsers]")
     * ...
     */
+
+.. toctree::
+   :glob:
+   :maxdepth: 6
+
+   Access/*
