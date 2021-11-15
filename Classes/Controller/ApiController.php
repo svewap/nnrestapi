@@ -38,6 +38,9 @@ class ApiController extends AbstractApiController {
 
 		$uid = $reqVars['uid'] ?: false;
 
+		$result = [];
+		$cacheIdentifer = [$endpoint['class'], $endpoint['method']];
+
 		// Instanz des Endpoints erstellen, z.B. `Nng\Nnrestapi\Api\Test`
 		$classInstance = \nn\t3::injectClass( $endpoint['class'] );
 
@@ -57,7 +60,7 @@ class ApiController extends AbstractApiController {
 		if (!$classInstance->checkAccess( $endpoint )) {
 			
 			// Kein Zugriff - oder kein `@api\access public`
-			$result = $response->unauthorized("{$endpoint['class']}->{$endpoint['method']}() has no public access. Please authenticate to access this endpoint or use `@access public` annotation to mark the endpoint as public accessible." );
+			$result = $response->unauthorized("{$endpoint['class']}->{$endpoint['method']}() has no public access or you are not authenticated. Please check your `@Api\Access()` annotation at the method." );
 			
 		} else {
 			
@@ -128,7 +131,16 @@ class ApiController extends AbstractApiController {
 					$argumentsToApply[] = $valueToApply;
 				}
 				
-				$result = $classInstance->{$endpoint['method']}( ...$argumentsToApply ) ?: [];
+				// @Api\Cache enabled? Then return result from Cache if possible
+				if ($endpoint['cache'] ?? false) {
+					$result = \nn\t3::Cache()->get( $cacheIdentifer ) ?? [];
+				}
+
+				// No result or nothing in Cache? Then call method.
+				if (!$result) {
+					$result = $classInstance->{$endpoint['method']}( ...$argumentsToApply ) ?: [];
+				}
+
 			} else {
 				
 				// Keine Argumente gefordert `->getSomethingAction()` 
@@ -151,7 +163,14 @@ class ApiController extends AbstractApiController {
 		}
 		
 		$response->setBody( $result );
-		return $response->render();
+		$json = $response->render();
+
+		// @Api\Cache enabled? Then write result to cache
+		if ($endpoint['cache'] ?? false) {
+			\nn\t3::Cache()->set( $cacheIdentifer, $json );
+		}
+
+		return $json;
 	}
 
 }

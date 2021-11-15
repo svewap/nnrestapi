@@ -67,7 +67,7 @@ class Response {
 		$message = $this->getMessage();
 
 		// Convert Model to array and remove fields defined in `settings.globalDistillers`
-		$arrayData = \nn\t3::Convert($body)->toArray( 5 );
+		$arrayData = \nn\t3::Convert($body)->toArray( 10 );
 		\Nng\Nnrestapi\Distiller\ModelDistiller::process( $body, $arrayData );
 		$json = json_encode( $arrayData );
 

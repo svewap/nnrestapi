@@ -223,6 +223,16 @@ class Request {
 	/**
 	 * @return  array
 	 */
+	public function getFeUserGroups() {
+		if ($groupList = $this->feUser['usergroup'] ?? false) {
+			return \nn\t3::FrontendUser()->resolveUserGroups( $groupList );
+		}
+		return [];
+	}
+	
+	/**
+	 * @return  array
+	 */
 	public function getFeUser() {
 		return $this->feUser;
 	}
