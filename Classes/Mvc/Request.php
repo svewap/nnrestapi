@@ -105,6 +105,20 @@ class Request {
 	}
 
 	/**
+	 * @return array
+	 */
+	public function getServerParams() {
+		return $this->mvcRequest->getServerParams();
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getRemoteAddr() {
+		return $this->getServerParams()['REMOTE_ADDR'] ?? '';
+	}
+	
+	/**
 	 * @return  \TYPO3\CMS\Extbase\Mvc\Request
 	 */
 	public function getMvcRequest() {

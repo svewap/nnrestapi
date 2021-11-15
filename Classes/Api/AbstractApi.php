@@ -2,6 +2,7 @@
 namespace Nng\Nnrestapi\Api;
 
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Nng\Nnrestapi\Mvc\Request;
 use Nng\Nnrestapi\Annotations as Api;
 
@@ -63,6 +64,12 @@ class AbstractApi {
 	 * @return boolean
 	 */
 	public function checkAccess ( $endpoint = [] ) {
+
+		if ($ipList = $endpoint['access']['ip'] ?? false) {
+			if (!GeneralUtility::cmpIP( $this->request->getRemoteAddr(), join(',', $ipList ))) {
+				return false;
+			}
+		}
 
 		if ($endpoint['access']['public'] ?? false) {
 			return true;
