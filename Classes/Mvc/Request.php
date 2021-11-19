@@ -66,7 +66,6 @@ class Request {
         $this->setMvcRequest( $request );
 
 		$this->rawBody = $request->getBody()->getContents();
-
 		// Bei `multipart/form-data`: JSON befindet sich an anderer Stelle, weil auch Dateien/Filedata übertragen wurde
 		if (!$this->rawBody && $body = $request->getParsedBody()) {
 			$this->rawBody = json_decode( $body['json'] ?? '', true );
@@ -100,6 +99,7 @@ class Request {
 	 * @return  self
 	 */
 	public function setArguments($arguments) {
+		if (!is_array($arguments)) return $this;
 		$this->arguments = array_merge( $this->arguments, $arguments );
 		return $this;
 	}
@@ -217,6 +217,7 @@ class Request {
 	 */
 	public function setEndpoint($endpoint) {
 		$this->endpoint = $endpoint;
+		$this->setArguments( $endpoint['args'] );
 		return $this;
 	}
 

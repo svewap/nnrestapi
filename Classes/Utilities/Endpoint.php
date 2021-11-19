@@ -156,24 +156,22 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 		$numParamsToParse = count($this->uriToParameterMapping);
 		
 		$parts = array_slice(explode('/', substr($uri, strlen($apiPrefix))), 0, $numParamsToParse);
-		
 		$paramKeys = $this->uriToParameterMapping;
 		$paramValues = array_pad( $parts, $numParamsToParse, '' );
 		
 		// Slugs, die über `\nn\rest::Endpoint()->register()` registriert wurden, z.B. ['nnrestdemo', 'nnrestapi']
 		$endpointSlugs = array_column( $this->getAll(), 'slug' );
-
+		
 		// War der URL-Pfad `api/{slug}/...` statt `api/{controller}/...`?
 		if (in_array($paramValues[0] ?? '', $endpointSlugs)) {
-
+			
 			// dann schieben wir noch ein `ext` vor die keys. Und einen leeren Wert in die Values
 			array_unshift( $paramKeys, 'ext' );
 			array_push( $paramValues, '' );
 		}
-
+		
 		$params = array_combine( $paramKeys, $paramValues );
 		
-
 		// Ist der `controller` oder `action` ein intval? Dann Ergebnis verschieben.
 		$search = ['controller', 'action'];
 		foreach ($search as $key) {
@@ -200,6 +198,7 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 
 		// Passenden Endpoint finden. `GET test/something` -> \Nng\Nnrestapi\Api\Test->getSomethingAction()`
 		$endpoint = $this->find( $reqType, $params['controller'], $params['action'], $params['ext'] );
+		$endpoint['args'] = $params;
 
 		if (!$endpoint) {
 			$endpoint = $this->findForRoute( $reqType, $uri );

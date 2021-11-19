@@ -70,6 +70,9 @@ class PageResolver implements MiddlewareInterface {
 
 		$settings = \nn\t3::Settings()->get('tx_nnrestapi');
 
+		$this->response->setEndpoint( $endpoint );
+		$this->response->setSettings( $settings );
+
 		$apiRequest = new \Nng\Nnrestapi\Mvc\Request( $request );
 		$apiRequest->setFeUser( \nn\t3::FrontendUser()->get() );
 		$apiRequest->setEndpoint( $endpoint );

@@ -79,12 +79,23 @@ class RequestParser implements MiddlewareInterface {
 
 		// Check if there was a problem with the content-length, e.g. stream or tmp-file could not be written
 		$expectedLength = intval($_SERVER["CONTENT_LENGTH"]);
-		$realLength = strlen(file_get_contents('php://input', false, stream_context_get_default(), 0, $expectedLength));
+		$rawInput = file_get_contents('php://input', false, stream_context_get_default(), 0, $expectedLength);
+		$realLength = strlen( $rawInput );
 
 		if ($realLength < $expectedLength) {
 			throw new Exception('There seems to be a problem with the multipart-formdata - less bytes were reveived than expected. Is the `/tmp` folder writeable?');
 		}
 
+		// Check, if multipart form-data was passed
+		$isMultipartFormData = strpos($_SERVER['CONTENT_TYPE'] ?? '', 'multipart/form-data') !== false;
+
+		// No mutipart form-data? Then we don't need to specially parse the request
+		if (!$isMultipartFormData) {
+			$_POST['json'] = $rawInput;
+			return;
+		}
+
+		// Multipart form-data? This needs special parsing to get the $_FILES in a PUT or PATCH request
 		require_once( \TYPO3\CMS\Core\Core\Environment::getPublicPath() . '/typo3conf/ext/nnrestapi/Resources/Libraries/vendor/autoload.php' );
 
 		// Variablen aus dem `multipart/form-data`-payload parsen und `$_FILES`-Container füllen

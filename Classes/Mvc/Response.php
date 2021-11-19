@@ -47,6 +47,16 @@ class Response {
 	 */
 	protected $response;
 
+	/**
+	 * @var array
+	 */
+	protected $settings;
+	
+	/**
+	 * @var array
+	 */
+	protected $endpoint;
+
 
 	public function __construct( $responseFactory = null ) {
 		
@@ -67,7 +77,8 @@ class Response {
 		$message = $this->getMessage();
 
 		// Convert Model to array and remove fields defined in `settings.globalDistillers`
-		$arrayData = \nn\t3::Convert($body)->toArray( 10 );
+		$depth = $this->endpoint['json']['depth'] ?? 10;
+		$arrayData = \nn\t3::Convert($body)->toArray( $depth );
 		\Nng\Nnrestapi\Distiller\ModelDistiller::process( $body, $arrayData );
 		$json = json_encode( $arrayData );
 
@@ -111,6 +122,16 @@ class Response {
 		];
 	}
 	
+	/**
+	 * Alias to `unauthorized`.
+	 * Makes programmers think less.
+	 * 
+	 * @return void
+	 */
+	public function forbidden( $message = '' ) {
+		return $this->unauthorized( $message );
+	}
+
 	/**
 	 * Not found ausgeben
 	 * 
@@ -202,6 +223,38 @@ class Response {
 	 */
 	public function setResponse( &$response ) {
 		$this->response = $response;
+		return $this;
+	}
+
+	/**
+	 * @return  array
+	 */
+	public function getSettings() {
+		return $this->settings;
+	}
+
+	/**
+	 * @param   array  $settings  
+	 * @return  self
+	 */
+	public function setSettings($settings) {
+		$this->settings = $settings;
+		return $this;
+	}
+
+	/**
+	 * @return  array
+	 */
+	public function getEndpoint() {
+		return $this->endpoint;
+	}
+
+	/**
+	 * @param   array  $endpoint  
+	 * @return  self
+	 */
+	public function setEndpoint($endpoint) {
+		$this->endpoint = $endpoint;
 		return $this;
 	}
 }
