@@ -102,7 +102,14 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 	 */
 	public function register( $options = [] ) {
 
+		// No priority passed? then set to highest priority
 		$priority = $options['priority'] ?? max(array_keys($this->endpoints));
+
+		// other extension already uses same priority? then find next free slot
+		while ($this->endpoints[$priority] ?? false) {
+			$priority++;
+		}
+		
 		$this->endpoints[$priority] = $options;
 		krsort( $this->endpoints );
 
@@ -196,13 +203,15 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 			$params['ext'] = '';
 		}
 
-		// Passenden Endpoint finden. `GET test/something` -> \Nng\Nnrestapi\Api\Test->getSomethingAction()`
-		$endpoint = $this->find( $reqType, $params['controller'], $params['action'], $params['ext'] );
-		$endpoint['args'] = $params;
+		// First: See if a custom routing exists, defined by `@Api\Route` annotation 
+		$endpoint = $this->findForRoute( $reqType, $uri );
 
+		// If not, use default method: `GET test/something` -> \Nng\Nnrestapi\Api\Test->getSomethingAction()`
 		if (!$endpoint) {
-			$endpoint = $this->findForRoute( $reqType, $uri );
+			$endpoint = $this->find( $reqType, $params['controller'], $params['action'], $params['ext'] );
 		}
+
+		$endpoint['args'] = $params;
 
 		if (!$endpoint) {
 			$endpoint = ['args'=>$params];

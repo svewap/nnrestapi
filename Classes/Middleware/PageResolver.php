@@ -83,7 +83,16 @@ class PageResolver implements MiddlewareInterface {
 		$controller->setRequest( $apiRequest );
 		$controller->setResponse( $this->response );
 		$controller->setSettings( $settings );
-		$response = $controller->indexAction();
+
+		try {
+			$response = $controller->indexAction();
+		} catch( \Exception $e ) {
+			\nn\rest::Header()->exception( $e->getMessage(), 500 );
+			\nn\t3::Exception( $e->getMessage() );
+		} catch( \Error $e ) {
+			\nn\rest::Header()->exception( $e->getMessage(), 500 );
+			\nn\t3::Error( $e->getMessage() );
+		}
 
 		return $response;
 

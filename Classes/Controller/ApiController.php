@@ -55,7 +55,7 @@ class ApiController extends AbstractApiController {
 			// die nnrestapi-Xclasses übernehmen jetzt die Kontrolle!
 			\nn\rest::Settings()->setIgnoreEnableFields( true );
 		}
-		
+
 		// Prüft, ob aktueller User Zugriff auf Methode hat
 		if (!$classInstance->checkAccess( $endpoint )) {
 			
@@ -110,13 +110,18 @@ class ApiController extends AbstractApiController {
 							
 							// Keine uid übergeben. Neues Model erzeugen
 							
+							// Always set tstamp and crdate for new models (if not already set)
+							$model = array_merge(['tstamp'=>time(), 'mktime'=>time()], $model);
+
 							// Default values defined for the new model?
-							if ($defaultValues = $this->settings['insertDefaultValues'][$modelName] ?? false) {
+							if ($defaultValues = 
+									$this->settings['insertDefaultValues'][$modelName] 
+								??  $this->settings['insertDefaultValues']['\\' . $modelName]
+								??  false) {
 								$model = array_merge($defaultValues, $model);
 							}
-							
+
 							$model = \nn\t3::Convert( $model )->toModel( $modelName );
-							
 						}	
 						
 						$valueToApply = $model;
@@ -130,19 +135,18 @@ class ApiController extends AbstractApiController {
 					
 					$argumentsToApply[] = $valueToApply;
 				}
-				
+
 				// @Api\Cache enabled? Then return result from Cache if possible
 				if ($endpoint['cache'] ?? false) {
 					$result = \nn\t3::Cache()->get( $cacheIdentifer ) ?? [];
 				}
-
+				
 				// No result or nothing in Cache? Then call method.
 				if (!$result) {
 					$result = $classInstance->{$endpoint['method']}( ...$argumentsToApply ) ?: [];
 				}
-
 			} else {
-				
+
 				// Keine Argumente gefordert `->getSomethingAction()` 
 				$result = $classInstance->{$endpoint['method']}() ?: [];
 			}

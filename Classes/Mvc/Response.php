@@ -79,6 +79,7 @@ class Response {
 		// Convert Model to array and remove fields defined in `settings.globalDistillers`
 		$depth = $this->endpoint['json']['depth'] ?? 10;
 		$arrayData = \nn\t3::Convert($body)->toArray( $depth );
+
 		\Nng\Nnrestapi\Distiller\ModelDistiller::process( $body, $arrayData );
 		$json = json_encode( $arrayData );
 
@@ -140,6 +141,18 @@ class Response {
 	public function notFound( $message = 'Not found.' ) {
 		return $this->setStatus(404)->setMessage($message)->render([
 			'status'	=> 404, 
+			'error'		=> $message
+		]);
+	}
+	
+	/**
+	 * Return `invalid parameters` Error
+	 * 
+	 * @return void
+	 */
+	public function invalid( $message = 'Invalid parameters.' ) {
+		return $this->setStatus(422)->setMessage($message)->render([
+			'status'	=> 422, 
 			'error'		=> $message
 		]);
 	}
