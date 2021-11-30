@@ -65,12 +65,21 @@ class AbstractApi {
 	 */
 	public function checkAccess ( $endpoint = [] ) {
 
+
+		// @Api\Access("ipUser[...]") - ANY user with given IP will be able to access
+		if ($ipUserList = $endpoint['access']['ipUsers'] ?? false) {
+			if (GeneralUtility::cmpIP( $this->request->getRemoteAddr(), join(',', $ipUserList ))) {
+				return true;
+			}
+		}
+		
+		// @Api\Access("ip[...]") - ONLY fe_users, be_users etc. with given IP will be able to access
 		if ($ipList = $endpoint['access']['ip'] ?? false) {
 			if (!GeneralUtility::cmpIP( $this->request->getRemoteAddr(), join(',', $ipList ))) {
 				return false;
 			}
 		}
-
+		
 		if ($endpoint['access']['public'] ?? false) {
 			return true;
 		}

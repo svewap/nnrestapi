@@ -60,7 +60,7 @@ class ApiController extends AbstractApiController {
 		if (!$classInstance->checkAccess( $endpoint )) {
 			
 			// Kein Zugriff - oder kein `@api\access public`
-			$result = $response->unauthorized("{$endpoint['class']}->{$endpoint['method']}() has no public access or you are not authenticated. Please check your `@Api\Access()` annotation at the method." );
+			$result = $response->unauthorized("{$endpoint['class']}->{$endpoint['method']}() has no public access or you are not authenticated. Please check your `@Api\Access()` annotation at the method. Your IP was " . $this->request->getRemoteAddr() );
 			
 		} else {
 			
