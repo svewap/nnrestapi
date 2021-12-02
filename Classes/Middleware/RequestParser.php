@@ -54,10 +54,13 @@ class RequestParser implements MiddlewareInterface {
 	/**
 	 * ## Handler for HTTP-requests
 	 * 
-	 * Registered in `$GLOBALS['TYPO3_CONF_VARS']['HTTP']['handler']`, see `ext_localconf.php` of this extension.
+	 * This method is called from the `ext_localconf.php` of this extension.
+	 * As all `ext_localconf.php`-scripts are included before TYPO3 starts its bootstrap process,
+	 * this handler can take care of "preparing"  the HTTP-Request-Data for further parsing
+	 * by the Core.
 	 * 
-	 * Nutzt externe Library, um den `multipart/form-data` des `PUT` und `PATCH` Requests zu parsen
-	 * und in den `$_POST`-Container zu verschieben.
+	 * Uses an external library, to parse the `multipart/form-data` of the `PUT` and `PATCH`
+	 * and transfer it to a `$_POST`-container.
 	 * 
 	 * If you are sending a `PUT` oder `PATCH` request and are only receiving a truncated part (e.g. 8192 bytes) 
 	 * or are getting this error message: 
@@ -76,7 +79,7 @@ class RequestParser implements MiddlewareInterface {
 		// Ist es ein relevanter RequestType?
 		$reqMethod = $_SERVER['REQUEST_METHOD'];
 		if (!in_array($reqMethod, $this->requestMethodsToParse)) return;
-
+		
 		// Check if there was a problem with the content-length, e.g. stream or tmp-file could not be written
 		$expectedLength = intval($_SERVER["CONTENT_LENGTH"]);
 		$rawInput = file_get_contents('php://input', false, stream_context_get_default(), 0, $expectedLength);

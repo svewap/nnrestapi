@@ -34,9 +34,9 @@ call_user_func(
 			'className'	=> \Nng\Nnrestapi\Authenticator\BasicAuth::class
 		]);
 
-		// Eigender HTTP handler zum Verarbeiten von RequestMethods, die standardmäßig nicht unterstützt werden
-		$GLOBALS['TYPO3_CONF_VARS']['HTTP']['handler'][] = 
-			(\TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\Nng\Nnrestapi\Middleware\RequestParser::class))->handler();
+		// Custom HTTP handler to process PUT / PATCH / DELETE Requests. As all ext_localconf.php are included during 
+		// TYPO3 bootstrap BEFORE processing the request, this script will be executed prior to anything else
+		\TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\Nng\Nnrestapi\Middleware\RequestParser::class)->handler();
 		
 		// Nur für Typo3 < 11 erforderlich
 		$GLOBALS['TYPO3_CONF_VARS']['SYS']['routing']['enhancers'][\Nng\Nnrestapi\Routing\Enhancer\NnrestapiEnhancer::ENHANCER_NAME] = \Nng\Nnrestapi\Routing\Enhancer\NnrestapiEnhancer::class;
