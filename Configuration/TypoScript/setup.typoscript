@@ -31,6 +31,10 @@ plugin.tx_nnrestapi {
 		# The main controller to handle the request 
 		apiController = Nng\Nnrestapi\Controller\ApiController
 
+		# Problems with dates from frontend date-pickers being off by 1h? 
+		# Try `UTC` or `Europe/Berlin` here - or leave empty to use LocalConfiguration.SYS.phpTimeZone
+		timeZone = 
+
 		# Default upload-paths for fileuploads
 		fileUploads {
 

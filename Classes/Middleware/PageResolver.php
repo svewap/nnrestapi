@@ -70,6 +70,11 @@ class PageResolver implements MiddlewareInterface {
 
 		$settings = \nn\t3::Settings()->get('tx_nnrestapi');
 
+		// Compensate problems with JS date-pickers
+		if ($timeZone = $settings['timeZone'] ?? false) {
+			date_default_timezone_set( $timeZone );
+		}
+
 		$this->response->setEndpoint( $endpoint );
 		$this->response->setSettings( $settings );
 

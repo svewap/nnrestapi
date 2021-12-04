@@ -30,7 +30,7 @@ class ApiController extends AbstractApiController {
 	 * @return
 	 */
 	public function indexAction() {
-		
+				
 		$request = $this->request;
 		$response = $this->response;
 		$endpoint = $request->getEndpoint();
