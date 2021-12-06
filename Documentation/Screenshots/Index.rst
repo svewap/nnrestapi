@@ -6,45 +6,41 @@
 Screenshots
 ====================
 
-We are currently translating all the comments, annotations and descriptions in to English.
-Update coming soon!
-
-Many, many time-savers
+Backend module with testbed
 -----------------------------
 
-.. figure:: ../Images/backend-02.gif
+While creating your own RestApi you don't need to use external tools like Postman.
+All registered endpoints automatically get listed in the backend module. By clicking
+on the compose-icon you can create your custom request in the backend including
+Frontend-User authentication and file-uploading.
+
+.. figure:: ../Images/01.gif
    :class: with-shadow
-   :alt: nnhelpers Backend Module
+   :alt: nnrestapi Backend Module
    :width: 100%
 
-Quick search function
+Automatic documentation
 -----------------------------
 
-.. figure:: ../Images/backend-04.gif
+Use Markdown in your method annotations to automatically create the
+documentation for your TYPO3 Restful Api. This saves a lot of time and keeps code and
+documentation at one place.
+
+.. figure:: ../Images/03.gif
    :class: with-shadow
-   :alt: nnhelpers Backend Module
+   :alt: nnrestapi Backend Module
    :width: 100%
 
-View source code in backend
+FrontendUser Authentication
 -----------------------------
 
-.. figure:: ../Images/backend-03.gif
+The ``nnrestapi`` extensions ships with a Authentication-layer for logging in frontend-users
+and setting Json Web Tokens (JWT). This allows development from localhost-environments which
+connect to a external development-server without CORS-problems.
+
+You can test the login / logout from the testbed in the backend module:
+
+.. figure:: ../Images/04.gif
    :class: with-shadow
-   :alt: nnhelpers Backend Module
-   :width: 100%
-
-Download Boilerplates
----------------------
-
-.. figure:: ../Images/backend-05.gif
-   :class: with-shadow
-   :alt: nnhelpers Backend Module
-   :width: 100%
-
-Smart namespacing
----------------------
-
-.. figure:: ../Images/backend-06.gif
-   :class: with-shadow
-   :alt: nnhelpers Backend Module
+   :alt: nnrestapi Backend Module
    :width: 100%

@@ -52,10 +52,14 @@ It includes many features:
 
    Introduction/Index
    Installation/Index
-   Quickstart/Index
    Screenshots/Index
+   Quickstart/Index
+   Requests/Index
+   Responses/Index
    Annotations/Index
    Access/Index
+   FileUploads/Index
+   WritingDoc/Index
    KnownProblems/Index
    Changelog/Index
    Sitemap

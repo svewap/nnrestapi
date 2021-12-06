@@ -74,7 +74,9 @@ The following permissions exist for `@Api\Access(...)`:
 +--------------------------------------------+--------------------------------------------------------------+
 | `@Api\Access("be_admins")`                 | every logged in backend admin                                |
 +--------------------------------------------+--------------------------------------------------------------+
-| `@Api\Access("ip[89.19.*,89.20.*]")`       | only users with given IPs as REMOTE_ADDR                     |
+| `@Api\Access("ip[89.19.*,89.20.*]")`       | Limit to certain IPs (ADDITIONALLY to fe_user etc.)          |
++--------------------------------------------+--------------------------------------------------------------+
+| `@Api\Access("ipUsers[89.19.*,89.*]")`     | Allow certain IPs (ALTERNATIVELY to fe_user etc.)            |
 +--------------------------------------------+--------------------------------------------------------------+
 | `@Api\Access("config[myconf]")`            | use `myconf` in Yaml config for the site/API                 |
 +--------------------------------------------+--------------------------------------------------------------+
@@ -181,7 +183,7 @@ And in case you prefer using the **array syntax**, that is also possible:
     */
 
 
-Restrict access to certain IP-adresses
+Restrict to IP-adresses ADDITIONALLY to other authentications
 ~~~~~~~~~~~~
 
 By using the ``@Api\Access("ip[...]")`` annotation you can limit the request to a given
@@ -209,6 +211,26 @@ All of the following examples are equivilants, choose the syntax you can remembe
    @Api\Access("ip[90.120.10.*], ip[90.120.11.*]")
    @Api\Access({"ip[90.120.10.*]", "ip[90.120.11.*]"})
 
+
+
+Grant access for IP-adresses ALTERNATIVELY to other authentications
+~~~~~~~~~~~~
+
+By using the ``@Api\Access("ipUsers[...]")`` annotation you grant access to the endpoint from
+given IPs without any other limitations.
+
+Other that ``@Api\Access("ip[...]")``, if the IP is correct, there will not be any additional check 
+of ``fe_users`` or ``be_users``.
+
+.. code-block:: php
+
+   /**
+    * User with IP 90.120.10.* OR any fe_users (with any IP) may access this endpoint
+    *
+    * @Api\Access("ipUsers[90.120.10.*]")
+    * @Api\Access("fe_users")
+    * ...
+    */
 
 
 Using global configurations

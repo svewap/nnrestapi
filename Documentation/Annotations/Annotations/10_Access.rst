@@ -1,6 +1,6 @@
 .. include:: ../Includes.txt
 
-.. _annotations:
+.. _annotations_access:
 
 ============
 @Api\\Access
@@ -19,6 +19,8 @@ The ``@Api\Access()`` annotation can be used to restrict the access to an endpoi
 The basic syntax is:
 
 .. code-block:: php
+   
+   namespace My\Extension\Api;
    
    use Nng\Nnrestapi\Annotations as Api;
 
