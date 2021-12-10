@@ -6,68 +6,54 @@
 Routing by custom Routes
 ============
 
-Returning an 404 NOT FOUND
-~~~~~~~~~~
+Defining custom URL paths to your TYPO3 Restful Api
+------------
 
-The ``nnrestapi`` has a few shortcuts built in to respond with error codes, if the request parameters were
-invalid or the requested data could not be retrieved.
+In certain cases you might want to define a custom routing instead of using the :ref:`routing_standard`
 
-Have a look at the class ``Nng\Nnrestapi\Mvc\Response`` to see all available options.
-
-Here we are checking for a model. If it can't be found we return a ``404 NOT FOUND`` error:
+This can be accomplished using this annotation:
 
 .. code-block:: php
 
-   <?php   
+   @Api\Route("/your/custom/url")
+
+The Annotation gets placed in the comment above the method of your Api class.
+Here is a full example:
+
+.. code-block:: php
+
+   <?php
+
    namespace My\Extension\Api;
 
    use Nng\Nnrestapi\Annotations as Api;
 
-   class Test extends \Nng\Nnrestapi\Api\AbstractApi {
-
+   class Example
+   {
       /**
-       * Call via GET-request with an uid: https://www.mywebsite.com/api/test/1 
-       *
+       * @Api\Route("GET /test/route")
        * @Api\Access("public")
+       * 
        * @return array
        */
-      public function getIndexAction( $uid = null )
+      public function customRoutingTest()
       {
-         $entry = $this->entryRepository->findByUid( $uid );
-         if (!$entry) {
-            return $this->response->notFound('Model with uid [' . $uid . '] was not found.');
-         }
-         return $entry;
+         $args = $this->request->getArguments();
+         return ['message'=>"Hello, {$args['name']}!"];
       }
    }
 
-If you open the URL ``https://www.mywebsite.com/api/test/1`` in your browser and pass the ``uid``
-of an entry that does not exist, you will see the following JSON response. It will be sent with
-a ``404 NOT FOUND`` header:
+When using custom routing, the method name is irrelevant and does not have to follow the pattern 
+``{request_method}{Classname}Action``. 
 
-.. code-block:: json
+The above method ``customRoutingTest()``  would be executed when sending a ``GET`` Request to
 
-   {"status":404, "error":"Model with uid [1] was not found."}
+.. code-block:: php
 
-
-Overview of error codes
-~~~~~~~~~~
+   https://www.mysite.com/api/test/route
 
 
-+------------------------------------------------------+------+-------------------------------------------------------+
-| shortcut                                             | code | description                                           |
-+======================================================+======+=======================================================+
-| ``$this->response->success([...], 'OK')``            | 200  | OK - sent, if no other option was called              |
-+------------------------------------------------------+------+-------------------------------------------------------+
-| ``$this->response->noContent('message')``            | 204  | Empty response                                        |
-+------------------------------------------------------+------+-------------------------------------------------------+
-| ``$this->response->unauthorized('message')``         | 403  | Unauthorized (not logged in)                          |
-+------------------------------------------------------+------+-------------------------------------------------------+
-| ``$this->response->forbidden('message')``            | 403  | Alias to unauthorized                                 |
-+------------------------------------------------------+------+-------------------------------------------------------+
-| ``$this->response->notFound('message')``             | 404  | Not found                                             |
-+------------------------------------------------------+------+-------------------------------------------------------+
-| ``$this->response->invalid('message')``              | 422  | Invalid request parameters                            |
-+------------------------------------------------------+------+-------------------------------------------------------+
-| ``$this->response->error($code, 'message')``         | any  | Custom response                                       |
-+------------------------------------------------------+------+-------------------------------------------------------+
+Want to find out more?
+------------
+
+Please refer to the :ref:`annotations_route` section of this documentation for more details and examples.

@@ -60,6 +60,7 @@ It includes many features:
    Access/Index
    FileUploads/Index
    WritingDoc/Index
+   Examples/Index
    KnownProblems/Index
    Changelog/Index
    Sitemap
