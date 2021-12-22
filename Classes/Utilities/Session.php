@@ -106,7 +106,12 @@ class Session extends \Nng\Nnhelpers\Singleton {
 	{
 		$maxSessionLifetime = \nn\t3::Settings()->getExtConf('nnrestapi')['maxSessionLifetime'] ?? 0;
 		if ($maxSessionLifetime == 0) return;
-		
+
+		$tableName = self::TABLENAME;
+		if (!\nn\t3::Db()->statement("SHOW TABLES like '{$tableName}'")) {
+			return;
+		}
+
 		$queryBuilder = \nn\t3::DB()->getQueryBuilder( self::TABLENAME );
 		$queryBuilder->delete( self::TABLENAME );
 		$queryBuilder->andWhere(
