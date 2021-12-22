@@ -45,7 +45,7 @@ class AbstractRestApiModel extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntit
 	/**
 	 * @return  int
 	 */
-	public function getPid() {
+	public function getPid(): ?int {
 		return $this->pid;
 	}
 
@@ -53,9 +53,8 @@ class AbstractRestApiModel extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntit
 	 * @param   int  $pid  
 	 * @return  self
 	 */
-	public function setPid($pid) {
+	public function setPid(int $pid):void {
 		$this->pid = $pid;
-		return $this;
 	}
 
 	/**
