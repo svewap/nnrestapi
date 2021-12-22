@@ -3,10 +3,10 @@
 .. _annotations_custom:
 
 ============
-Adding custom annotations to your endpoints
+Custom Annotations
 ============
 
-How to add your own annotations and parse them
+Adding custom annotations to your TYPO3 RestApi endpoints
 ---------
 
 If you would like to add custom annotations that get parsed and passed to the `endpoint`,
