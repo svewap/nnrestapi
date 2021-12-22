@@ -192,4 +192,28 @@ class File extends \Nng\Nnhelpers\Singleton {
 		return $placeholder;
 	}
 
+	/**
+	 * Get all files, recursively in a directory
+	 * 
+	 * ```
+	 * \nn\rest::File()->getAllInFolder( 'EXT:nnrestapi/path/to/files/' );
+	 * ```
+	 * @return array
+	 */
+	public function getAllInFolder( $path = '', $recursive = true ) {
+
+		$files = [];
+		$path = \nn\t3::File()->absPath( $path );
+
+		$flags = \FilesystemIterator::KEY_AS_PATHNAME | \FilesystemIterator::CURRENT_AS_FILEINFO | \FilesystemIterator::SKIP_DOTS | \FilesystemIterator::UNIX_PATHS;
+		$iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator( $path, $flags ));
+
+		foreach ($iterator as $fileObject) {
+			if (!$fileObject->isDir()) {
+				$files[] = $fileObject->getPathname();
+			}
+		}
+		
+		return $files;
+	}
 }

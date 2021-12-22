@@ -31,6 +31,7 @@ class AccordionViewHelper extends AbstractViewHelper
         $this->registerArgument('icon', 'string', 'Icon-Klasse');
         $this->registerArgument('class', 'string', 'Accordeon-Klasse');
         $this->registerArgument('content', 'string', 'Inhalt');
+        $this->registerArgument('config', 'array', 'Endpoint configuration');
     }
 
     /**

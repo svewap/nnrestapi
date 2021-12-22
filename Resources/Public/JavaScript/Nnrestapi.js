@@ -2,14 +2,15 @@
 
 define(['jquery', 'TYPO3/CMS/Nnrestapi/Axios'], function($, axios) {
 
+	
 	var $testbed = $('.testbed');
 	var $endpoints = $('.endpoints');
-
+	
 	var urlBase = $testbed.data().urlBase;
 	var requestTypesWithBody = ['post', 'put', 'patch'];
-
+	
 	var filters = {};
-
+		
 	/**
 	 * Filterform
 	 * 
@@ -42,6 +43,41 @@ define(['jquery', 'TYPO3/CMS/Nnrestapi/Axios'], function($, axios) {
 		filters = prevFilters;
 		$('#hide-nnrestapi').prop('checked', filters.hideNnrestapi).change();
 		$('.search').val(filters.sword || '').keyup();
+	});
+
+	/**
+	 * Kickstarts
+	 * 
+	 */
+	$('.kickstarts-config input').change(function () {
+		var obj = {};
+		$('.kickstarts-config input').each(function () {
+			var $me = $(this);
+			obj[$me.data().field] = $me.val() || $me.data().default;
+		});
+		$('.kickstarts .item a').each(function() {
+			var $me = $(this);
+			if (!$me.data('a')) {
+				$me.data('a', $me.attr('href'));
+			}
+			var href = $me.data().a;
+			for (var i in obj) {
+				href = href.replace( `=${i}`, `=${obj[i]}` );
+			}
+			$me.attr('href', href);
+		});
+		saveInStorage('kickstarts', obj);
+	});
+
+	getFromStorage( 'kickstarts' ).then(( prevConfig ) => {
+		if (!prevConfig) {
+			prevConfig = {};
+		}
+		$('.kickstarts-config [data-field]').each(function () {
+			var $me = $(this);
+			$me.val( prevConfig[$me.data().field] || '' );
+		});
+		$('.kickstarts-config input').first().change();
 	});
 
 	/**
@@ -277,5 +313,7 @@ define(['jquery', 'TYPO3/CMS/Nnrestapi/Axios'], function($, axios) {
 	updateCredentialsFromStorage().then(() => {
 		updateFeUserStatus();
 	});
+
+	$('[data-toggle="tooltip"]').tooltip();
 
 });

@@ -10,6 +10,7 @@ use Nng\Nnrestapi\Utilities\Endpoint;
 use Nng\Nnrestapi\Utilities\Environment;
 use Nng\Nnrestapi\Utilities\File;
 use Nng\Nnrestapi\Utilities\Header;
+use Nng\Nnrestapi\Utilities\Kickstart;
 use Nng\Nnrestapi\Utilities\Query;
 use Nng\Nnrestapi\Utilities\Settings;
 use Nng\Nnrestapi\Utilities\Session;
@@ -99,6 +100,16 @@ class rest {
 	 */
 	public static function Header() {
 		return \nn\t3::injectClass(Header::class);		
+	}
+
+	/**
+	 * ```
+	 * \nn\rest::Kickstart()->methodName();
+	 * ```
+	 * @return Kickstart
+	 */
+	public static function Kickstart() {
+		return \nn\t3::injectClass(Kickstart::class);		
 	}
 
 	/**

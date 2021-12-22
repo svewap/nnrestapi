@@ -78,4 +78,38 @@ class ModController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController {
 		return $this->view->render();
 	}
 
+	/**
+	 * Export Kickstarter-Templates
+	 * 
+	 * @param string $identfier
+	 * @param string $extname
+	 * @param string $vendorname
+	 * @return string
+	 */
+	public function kickstartAction( string $identifier = '', string $extname = '', string $vendorname = '' ) {
+
+		$config = $this->settings['kickstarts'][$identifier] ?? false;
+		if (!$config) {
+			return 'Kickstart config not defined!';
+		}
+
+		$extname = GeneralUtility::camelCaseToLowerCaseUnderscored($extname);
+		$vendorname = GeneralUtility::camelCaseToLowerCaseUnderscored($vendorname);
+
+		$placeholder = [
+			'ext-ucc' 		=> GeneralUtility::underscoredToUpperCamelCase($extname),
+			'ext-lower' 	=> $extname,
+			'vendor-ucc' 	=> GeneralUtility::underscoredToUpperCamelCase($vendorname),
+			'vendor-lower' 	=> $vendorname,
+		];
+
+		$marker = [];
+		foreach ($placeholder as $k=>$v) {
+			$marker["[#{$k}#]"] = $v;
+		}
+
+		\nn\rest::Kickstart()->createExtensionFromTemplate( $config['path'], $extname, $marker );
+
+		return '';
+	}
 }

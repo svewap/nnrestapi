@@ -83,6 +83,15 @@ plugin.tx_nnrestapi {
 			1.fileUploads.default.defaultStoragePath = 1:/group
 		}
 		*/
+
+		# Kickstarter-Templates
+		kickstarts {
+			verybasic {
+				title = Very Basic RestApi Extension
+				description = Just a very simple extension with a Model and an endpoint
+				path = EXT:nnrestapi/Resources/Private/Kickstarts/VeryBasic
+			}
+		}
 	}
 }
 
@@ -105,4 +114,5 @@ module.tx_nnrestapi {
 			10 = EXT:nnrestapi/Resources/Private/Backend/Partials/
 		}
 	}
+	settings < plugin.tx_nnrestapi.settings
 }

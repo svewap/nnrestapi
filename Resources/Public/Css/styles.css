@@ -1,5 +1,24 @@
 .nnhelpers-be-module {
     font-family: "Source Sans Pro", sans-serif;
+    font-size: 0.9rem;
+}
+
+.nav-pills {
+    background: linear-gradient(45deg, #e8e8e8, #f4f4f4);
+    font-size: 0.9rem;
+}
+
+.nav-pills .nav-link {
+    border-radius: 0;
+    padding: 0.5rem 1rem 0.3rem 1rem;
+    cursor: pointer;
+}
+
+.nav-pills .nav-link.active, 
+.nav-pills .show > .nav-link {
+    background: transparent;
+    color: #000;
+    border-bottom: 0.2rem solid #7090af;
 }
 
 .form-control, .nav-link, .btn {
@@ -20,8 +39,29 @@ h3 {
 }
 
 h2 {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
+    font-weight: 400;
+}
+
+.card-body h2 {
+    font-size: 1rem;
     font-weight: 600;
+}
+
+.card-header i {
+    color: #aaa;
+}
+
+.card .access-icon {
+    min-width: 45px;
+    display: inline-block;
+    text-align: center;
+    color: #aaa;
+    font-size: 0.8rem;
+}
+
+.access-icon.public {
+    color: #69ad8d;
 }
 
 .hide-nnrestapi .ext-nnrestapi {
@@ -118,7 +158,6 @@ main {
 
 .compose span {
     text-transform: uppercase;
-    color: #7aa4b8;
     font-size: 0.8rem;
     letter-spacing: 0.05em;
     opacity: 0;
@@ -189,9 +228,7 @@ main {
     display: flex !important;
     align-items: center;
 }
-.card-body {
-    font-size: 0.9rem;
-}
+
 .example .code-toolbar {
     margin-top: 0.5rem;
 }
@@ -346,4 +383,23 @@ b, strong {
 }
 .feuser-exists .auth-form .login {
     display: none;
+}
+
+.kickstarts h3 {
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin: 0 0 0.25rem 0;
+}
+.kickstarts .icon {
+    font-size: 2rem;
+    width: 60px;
+    height: 60px;
+    background-color: #cee7e4;
+}
+.kickstarts .icon i {
+    color: #15b5a2;
+}
+
+.kickstarts a:hover {   
+    text-decoration: none;
 }
