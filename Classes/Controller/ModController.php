@@ -50,7 +50,13 @@ class ModController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController {
 	 * @return void
 	 */
 	public function indexAction () {
-		
+
+		$tablesExist = \nn\rest::Environment()->sessionTableExists();
+        if (!$tablesExist) {
+			\nn\t3::Message()->ERROR('Where are my database-tables?', 'The database-tables seem to be missing. Please run the "Analyze Database Structure" in the Maintenance module and create the missing tables.');
+			return \nn\t3::Template()->render('EXT:nnrestapi/Resources/Private/Backend/Templates/Mod/Error.html');
+		}
+
         $settings = \nn\t3::Settings()->getPlugin('nnrestapi');
         if (!$settings) {
 			\nn\t3::Message()->ERROR('Where\'s my TypoScript?', 'No TypoScript Configuration found. Make sure you included the RestApi templates in the root page template.');

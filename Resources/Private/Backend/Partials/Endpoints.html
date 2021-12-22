@@ -1,13 +1,31 @@
 
 <div class="endpoints">	
 
-	<div class="mb-4">
+	<div class="mb-3">
 		<h2>Endpoints</h2>
 		<p>The list of all registered endpoints. If you add your own Api endpoints, they will automatically appear in this list.</p>
 	</div>
 
-	<f:for each="{endpoints}" key="reqType" as="endpoints">
-		<f:for each="{endpoints}" key="identifier" as="registrations">
+	<div class="filter mb-4 d-flex align-items-center">
+		<div class="form-check pl-4">
+			<input class="form-check-input" type="checkbox" value="" id="hide-nnrestapi">
+			<label class="form-check-label" for="hide-nnrestapi">
+				Hide nnrestapi
+			</label>
+		</div>
+		<div class="col-4 pr-0 input-group ml-auto">
+			<input type="text" class="search form-control form-control-sm" />
+			<div class="input-group-append">
+				<span class="input-group-text">
+					<i class="search-icon fas fa-search"></i>
+					<i class="clear-icon fas fa-times"></i>
+				</span>
+			</div>
+		</div>
+	</div>
+
+	<f:for each="{endpoints}" key="reqType" as="endpointsForReqType">
+		<f:for each="{endpointsForReqType}" key="identifier" as="registrations">
 
 			<f:for each="{registrations}" key="extname" as="config">
 
@@ -17,7 +35,7 @@
 
 				{f:variable(name:'title', value:'{uri->nnt3:format.replace(from:urlBase, to:\'\')->f:format.htmlspecialchars()}')}
 
-				<div class="request mb-2" 
+				<div class="request mb-2 ext-{extname}" 
 					data-uid="{reqType}/{relUri}"
 					data-reqtype="{reqType}" 
 					data-requrl="{relUri}"

@@ -7,6 +7,7 @@ use Nng\Nnrestapi\Utilities\Api;
 use Nng\Nnrestapi\Utilities\Auth;
 use Nng\Nnrestapi\Utilities\Annotations;
 use Nng\Nnrestapi\Utilities\Endpoint;
+use Nng\Nnrestapi\Utilities\Environment;
 use Nng\Nnrestapi\Utilities\File;
 use Nng\Nnrestapi\Utilities\Header;
 use Nng\Nnrestapi\Utilities\Query;
@@ -68,6 +69,16 @@ class rest {
 	 */
 	public static function Endpoint() {
 		return \nn\t3::injectClass(Endpoint::class);		
+	}
+	
+	/**
+	 * ```
+	 * \nn\rest::Environment()->methodName();
+	 * ```
+	 * @return Environment
+	 */
+	public static function Environment() {
+		return \nn\t3::injectClass(Environment::class);		
 	}
 	
 	/**

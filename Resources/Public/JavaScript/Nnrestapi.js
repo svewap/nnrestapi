@@ -8,6 +8,42 @@ define(['jquery', 'TYPO3/CMS/Nnrestapi/Axios'], function($, axios) {
 	var urlBase = $testbed.data().urlBase;
 	var requestTypesWithBody = ['post', 'put', 'patch'];
 
+	var filters = {};
+
+	/**
+	 * Filterform
+	 * 
+	 */
+	$('#hide-nnrestapi').change(function () {
+		var hide = $(this).prop('checked');
+		$('body').toggleClass('hide-nnrestapi', hide );
+		filters.hideNnrestapi = hide;
+		saveInStorage('filters', filters);
+	});
+
+	$('.search').keyup(function () {
+		var sword = $(this).val();
+		filters.sword = sword;
+		saveInStorage('filters', filters);
+		$('.search-icon').toggle( sword.length == 0 );
+		$('.clear-icon').toggle( sword.length > 0 );
+
+		$('.card').each(function () {
+			var $el = $(this);
+			$el.toggle( $el.text().indexOf(sword) > -1 );
+		});
+	});
+
+	$('.clear-icon').click(() => {
+		$('.search').val('').keyup();
+	});
+
+	getFromStorage( 'filters' ).then(( prevFilters ) => {
+		filters = prevFilters;
+		$('#hide-nnrestapi').prop('checked', filters.hideNnrestapi).change();
+		$('.search').val(filters.sword || '').keyup();
+	});
+
 	/**
 	 * Authenticate
 	 * 
@@ -130,7 +166,6 @@ define(['jquery', 'TYPO3/CMS/Nnrestapi/Axios'], function($, axios) {
 			
 			axios.defaults.withCredentials = true;
 			axios.defaults.headers.common = config.headers;
-//*---	
 
 			var formData = new FormData();
 			var imagefile = $('.reqfiles')[0];
@@ -147,24 +182,11 @@ define(['jquery', 'TYPO3/CMS/Nnrestapi/Axios'], function($, axios) {
 
 				var fileIdentifier = `${fileprefix}-${i}`;
 				formData.append( fileIdentifier, file);
-/*
-				if (typeof file == 'object') {
-					var reader = new FileReader();
-					reader.onload = function() {
-						uploadImages.push({
-							fileName: fileName,
-							fileData: reader.result
-						});
-						saveInStorage( 'images', uploadImages );
-					}
-					reader.readAsDataURL(file);
-				}
-*/
+
 			}
 			
 			body = formData;
 
-//---*/
 			var params = requestTypesWithBody.indexOf(reqType) > -1 ? [url, body, config] : [url, config];
 
 			axios[reqType]( ...params )

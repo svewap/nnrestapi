@@ -66,7 +66,7 @@ class Query extends \Nng\Nnhelpers\Singleton {
 		$query = $this->query;
 		$query->matching( $query->equals('uid', intval($uid)) );
 		$result = $query->execute( $this->returnRawData );
-\nn\t3::debug($query);
+
 		foreach ($result as $row) return $row;
 	}
 }

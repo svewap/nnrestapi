@@ -6,7 +6,7 @@
     border-radius: 0;
 }
 
-.form-control {
+.testbed .form-control {
     height: 2.25rem;
 }
 
@@ -16,12 +16,36 @@
 }
 
 h3 {
-    font-size: 1.1rem;
+    font-size: 1rem;
 }
 
 h2 {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     font-weight: 600;
+}
+
+.hide-nnrestapi .ext-nnrestapi {
+    display: none;
+}
+
+.form-control.search {
+    border-radius: 15px 0 0 15px;
+    border-right: none;
+    padding-left: 15px;
+}
+
+.search ~ .input-group-append {
+    border-left: none;
+}
+
+.search ~ .input-group-append .input-group-text {
+    border-radius: 0 15px 15px 0;
+    background: transparent;
+}
+
+.clear-icon {
+    display: none;
+    cursor: pointer;
 }
 
 .testbed {
@@ -78,9 +102,9 @@ h2 {
 
 input[type=file] {
     display: block;
-    border: none;
+    border: 1px solid #ced4da;
     margin: 0;
-    padding: 0.2rem;
+    min-height: 100%;
 }
 
 main {
@@ -91,6 +115,23 @@ main {
     min-height: 200px;
     padding: 1rem;
 }
+
+.compose span {
+    text-transform: uppercase;
+    color: #7aa4b8;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+    opacity: 0;
+    transition: 0.1s all;
+}
+
+.path:hover {
+    opacity: 0.7;
+}
+
+.compose:hover span {
+    opacity: 1;
+} 
 
 .rescode {
     background: #444;
@@ -141,9 +182,18 @@ main {
 .card-header {
     background: linear-gradient(45deg, #e8e8e8, #f4f4f4);
 }
+.card-header h2 {
+    font-size: 0.9rem;
+}
 .card-header a {
     display: flex !important;
     align-items: center;
+}
+.card-body {
+    font-size: 0.9rem;
+}
+.example .code-toolbar {
+    margin-top: 0.5rem;
 }
 
 .req-type:before {
@@ -160,6 +210,10 @@ main {
     padding: 7px 5px;
     display: inline-flex;
     margin: 0 10px 0 0;
+}
+
+.endpoints {
+    font-size: 0.9rem;
 }
 
 .endpoints .req-type-get:before {

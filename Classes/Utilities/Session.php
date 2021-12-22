@@ -97,27 +97,31 @@ class Session extends \Nng\Nnhelpers\Singleton {
 	 * under `plugin.tx_nnrestapi.settings.maxSessionLifetime`. Setting this value to `0`
 	 * will create permanent sessions that never expire.
 	 * 
+	 * This method will throw a 503 error in the frontend, if the required database-tables
+	 * for this extension are missing. The error is surpressed, but there will be a warning
+	 * in the nnrestapi backend module.
+	 * 
      * ```
 	 * \nn\rest::Session()->removeExpiredTokens();
 	 * ```
-	 * @return array
+	 * @return void
 	 */
 	public function removeExpiredTokens() 
 	{
 		$maxSessionLifetime = \nn\t3::Settings()->getExtConf('nnrestapi')['maxSessionLifetime'] ?? 0;
 		if ($maxSessionLifetime == 0) return;
-
-		$tableName = self::TABLENAME;
-		if (!\nn\t3::Db()->statement("SHOW TABLES like '{$tableName}'")) {
-			return;
-		}
-
+		
 		$queryBuilder = \nn\t3::DB()->getQueryBuilder( self::TABLENAME );
 		$queryBuilder->delete( self::TABLENAME );
 		$queryBuilder->andWhere(
 			$queryBuilder->expr()->lt( 'tstamp', $queryBuilder->createNamedParameter(time() - $maxSessionLifetime))
 		);
-		return $queryBuilder->execute();
+
+		// If required tables for nnrestapi have not been installed yet, stay silent.
+		try {
+			$queryBuilder->execute();
+		} catch( \Throwable $e ) {
+		} catch ( \Exception $e ) {}
 	}
 
 	/**
