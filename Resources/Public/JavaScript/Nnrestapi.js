@@ -314,6 +314,8 @@ define(['jquery', 'TYPO3/CMS/Nnrestapi/Axios'], function($, axios) {
 		updateFeUserStatus();
 	});
 
-	$('[data-toggle="tooltip"]').tooltip();
+	if ($.fn.tooltip) {
+		$('[data-toggle="tooltip"]').tooltip();
+	}
 
 });

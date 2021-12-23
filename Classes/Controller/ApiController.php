@@ -87,9 +87,12 @@ class ApiController extends AbstractApiController {
 
 					$valueToApply = '';
 
-					// ToDO: ObjectStorage und Array berücksichtigen
-					if ($modelName = $varDefinition['element'] ?? false) {
+					$modelName = $varDefinition['element'] ?? false;
+					$expectedType = $varDefinition['type'] ?? false;
 
+					if ($expectedType == 'object' && $modelName) {
+						
+						// ToDO: ObjectStorage und Array berücksichtigen
 						if ($uid = $model['uid'] ?: $request->getArguments()['uid'] ?? false) {
 							
 							$existingModel = \nn\t3::Db()->get( $uid, $modelName );
@@ -131,8 +134,17 @@ class ApiController extends AbstractApiController {
 						// Map `/path/{uid}` to `methodName( $uid )`
 						$valueToApply = $requestArguments[$varName] ?? null;
 						
+						// Integer expected as argument
+						switch ($expectedType) {
+							case 'integer':
+								$valueToApply = intval($valueToApply);
+								break;
+							case 'string':
+								$valueToApply = "{$valueToApply}";
+								break;
+						}
 					}
-					
+
 					$argumentsToApply[] = $valueToApply;
 				}
 

@@ -71,6 +71,12 @@ plugin.tx_nnrestapi {
 				exclude = parent
 			}
 			/*
+			Nng\Nnrestapi\Domain\Model\ApiTest {
+				flattenFileReferences = 1
+				include = uid,pid,title
+			}
+			*/
+			/*
 			TYPO3\CMS\Extbase\Domain\Model\FileReference {
 				exclude = uidLocal, crop, publicUrl, type
 			}

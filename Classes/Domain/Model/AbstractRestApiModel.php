@@ -2,14 +2,28 @@
 namespace Nng\Nnrestapi\Domain\Model;
 
 /**
- * A base model that can be extended in your own extensions.
+ * A base model that can be extended in your own extensions. 
  * 
+ * Use in your own Model like this:
  * ```
  * class MyModel extends \Nng\Nnrestapi\Domain\Model\AbstractRestApiModel {}
  * ```
  * 
+ * (!!) Important:
+ * If you can't access `tstamp` or `crdate`, make sure, you have these fields defined in
+ * the TCA. Otherwise they will not get mapped!
+ * 
+ * ```
+ * 'tstamp' => [
+ * 	'label' => 'tstamp',
+ * 	'config' => [
+ * 		'type' => 'passthrough',
+ * 	]
+ * ],
+ * ```
+ * 
  */
-class AbstractRestApiModel extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
+abstract class AbstractRestApiModel extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 {
 	/**
 	 * @var int
@@ -27,6 +41,7 @@ class AbstractRestApiModel extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntit
 	protected $pid;
 	
 	/**
+	 * Only accessible if also defined in TCA! (see above)
 	 * @return  int
 	 */
 	public function getTstamp() {
@@ -58,6 +73,7 @@ class AbstractRestApiModel extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntit
 	}
 
 	/**
+	 * Only accessible if also defined in TCA! (see above)
 	 * @return  int
 	 */
 	public function getCrdate() {
