@@ -1,19 +1,34 @@
 
 <article class="{class}">
-    <div class="card">
-        <div class="card-header p-0">
-            <h2 class="mb-0 d-flex align-items-center">
-                <a href="#" class="d-flex align-items-center w-100 py-2 px-3" data-toggle="collapse" data-target="#{uniqid}" data-bs-toggle="collapse" data-bs-target="#{uniqid}">
-                    <i class="req-type req-type-{reqType}"></i>
-                    {title->f:format.raw()}
-                </a>
-                <a href="#" class="compose ml-auto px-3 fas fa-share-alt"></a>
-            </h2>
-        </div>
-        <div id="{uniqid}" class="collapse">
-            <div class="card-body p-text">
-                {renderedChildren->f:format.raw()}
-            </div>
-        </div>        
-    </div>
+	<div class="card">
+		<div class="card-header p-0">
+			<h2 class="mb-0 d-flex align-items-center">
+				
+				<a href="#" class="path d-flex align-items-center w-100 py-2 px-2 compose">	
+					<i class="req-type req-type-{reqType}"></i>
+					{title->f:format.raw()}
+				</a>
+
+				<a href="#" class="ml-auto details pl-3 d-flex" data-toggle="collapse" data-target="#{uniqid}" data-bs-toggle="collapse" data-bs-target="#{uniqid}">
+					<span>details</span>
+					<i class="fas fa-angle-down ml-2 mb--1"></i>
+				</a>
+
+				<f:if condition="{config.access.public}">
+					<f:then>
+						<i class="access-icon public fas fa-users" data-toggle="tooltip" data-placement="top" title="public access"></i>
+					</f:then>
+					<f:else>
+						<i class="access-icon fas fa-lock" data-toggle="tooltip" data-placement="top" title="restricted access"></i>
+					</f:else>
+				</f:if>
+
+			</h2>
+		</div>
+		<div id="{uniqid}" class="collapse">
+			<div class="card-body p-text">
+				{renderedChildren->f:format.raw()}
+			</div>
+		</div>        
+	</div>
 </article>

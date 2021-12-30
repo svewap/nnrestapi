@@ -374,7 +374,10 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 
 				$methodArgs = [];
 				foreach ($arguments as $variableName=>$argument) {
-					$methodArgs[$variableName] = $argument['simple'] ? [] : [
+					$methodArgs[$variableName] = $argument['simple'] ? [
+						'type' 		=> $argument['elementType'],
+					] : [
+						'type'		=> 'object',
 						'element' 	=> $argument['elementType'],
 						'storage' 	=> $argument['storageType'],
 					];	

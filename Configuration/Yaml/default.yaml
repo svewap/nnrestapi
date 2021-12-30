@@ -1,8 +1,6 @@
 nnrestapi:
   routing:
     basePath: '/api'
-  accessGroups:
-    apiUsers: be_users[david,tanja],fe_users[3]
 routeEnhancers:
   Nnrestapi:
     type: NnrestapiEnhancer

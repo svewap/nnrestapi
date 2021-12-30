@@ -75,9 +75,6 @@ class Request {
 		}
 
 		$this->uploadedFiles = $request->getUploadedFiles() ?: [];
-
-        $header = $this->mvcRequest->getHeaders()['accept-language'] ?? [];
-        $this->acceptedLanguage = strtolower(substr($header[0] ?? '', 0, 2));
     }
 
 	/**
@@ -135,10 +132,47 @@ class Request {
 	}
 
 	/**
+	 * Get the accepted language from header.
+	 * The header-fields to search in can be defined in the TypoScript setup.
+	 * 
+	 * Returns a short two-character code like `en` or `de`.
+	 * 
+	 * The "real" header can be more complex than we are evaluating here.
+	 * e.g. `en-DE,en;q=0.9,de-DE;q=0.8,de;q=0.7,en-GB;q=0.6,en-US;q=0.5`
+	 * 
 	 * @return  string
 	 */
 	public function getAcceptedLanguage() {
+		if ($lang = $this->acceptedLanguage) {
+			return $lang;
+		}
+		if ($languageHeaders = $this->settings['localization']['languageHeader'] ?? false) {
+			$languageHeaders = \nn\t3::Arrays( $languageHeaders )->trimExplode();
+			$headers = $this->getHeaders();
+			foreach ($languageHeaders as $headerName) {
+				if ($val = $headers[$headerName] ?? false) {
+					$this->acceptedLanguage = strtolower(substr($val, 0, 2));
+					break;
+				}
+			}
+		}
 		return $this->acceptedLanguage;
+	}
+
+	/**
+	 * Maps the requested language from header (`en-EN...`, `de-DE...`) to the languageId 
+	 * defined in Typo3. Returns the requested languageUid as integer (`0`, `1`, ...).
+	 * 
+	 * If no language matches, the default language `0` will be returned.
+	 * 
+	 * Languages are defined in the backend module "sites" (or the site-config YAML)
+	 * 
+	 * @return  int
+	 */
+	public function getAcceptedLanguageUid() {
+		$languagesByName = \nn\rest::Environment()->getLanguages( 'iso-639-1' );
+		$acceptedLanguage = $this->getAcceptedLanguage();
+		return $languagesByName[$acceptedLanguage]['languageId'] ?? 0;
 	}
 
 	/**
@@ -155,6 +189,18 @@ class Request {
 	public function setRawBody($rawBody) {
 		$this->rawBody = $rawBody;
 		return $this;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getHeaders() {
+		$headers = $this->mvcRequest->getHeaders();
+		foreach ($headers as $k=>$arr) {
+			$val = is_array($arr) ? array_pop($arr) : $arr;
+			$headers[strtolower($k)] = $val;
+		}
+		return $headers;
 	}
 
 	/**

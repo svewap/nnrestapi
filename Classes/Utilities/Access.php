@@ -49,8 +49,14 @@ class Access extends \Nng\Nnhelpers\Singleton {
 		$accessStr = join(',', $accessArr );
 		$accessList = [];
 
-		// Definition der Gruppen aus der siteConfig-Yaml
-		$groupConfigurations = \nn\rest::Settings()->getConfiguration('accessGroups') ?? [];
+		// groups defined in the siteConfig-Yaml ...
+		$groupConfigurationsFromYaml = \nn\rest::Settings()->getConfiguration('accessGroups') ?? [];
+
+		// ... or the TypoScript Setup ...
+		$groupConfigurationsFromSetup = \nn\t3::Settings()->get('nnrestapi')['accessGroups'] ?? [];
+
+		// ... are merged.
+		$groupConfigurations = array_merge( $groupConfigurationsFromYaml, $groupConfigurationsFromSetup );
 
 		if (preg_match_all($regEx, $accessStr, $matches)) {
 			foreach ($matches[1] as $n=>$v) {
@@ -59,7 +65,7 @@ class Access extends \Nng\Nnhelpers\Singleton {
 				
 				// Liste der uids oder usernamen in den Klammern, z.B. `fe_users[...]`
 				$userList = \nn\t3::Arrays($matches[3][$n] ?? '')->trimExplode();
-				
+
 				// Keine Einschränkungen auf bestimmte uids oder usernamen bedeutet: ALLE dieses Typs dürfen!
 				if (!count($userList)) {
 					$userList = ['*'=>'*'];

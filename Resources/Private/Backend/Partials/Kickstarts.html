@@ -1,0 +1,39 @@
+
+<div class="kickstarts mb-4">
+
+    <h2>Download, install, play.</h2>
+
+    <p>
+        Create your own TYPO3 REST Api extension with one click: Enter a vendor name and an extension name.
+        Then click on an a package below to export your extension. All classes will automatically be namespaced.
+    </p>
+
+    <div class="kickstarts-config form-row mb-4">
+        <div class="col form-group">
+            <label>Vendor-Name</label>
+            <input class="form-control form-control-sm" data-field="vendorname" type="text" placeholder="Nng" data-default="Nng">
+        </div>
+        <div class="col form-group">
+            <label>Extension-Name</label>
+            <input class="form-control form-control-sm" data-field="extname" type="text" placeholder="Apidemo" data-default="Apidemo">
+        </div>
+    </div>
+
+    <h2>Available packages:</h2>
+
+    <div class="pt-2">
+        <f:for each="{settings.kickstarts}" key="identifier" as="config">
+            <div class="item">
+                <f:link.action action="kickstart" arguments="{identifier:identifier, extname:'extname', vendorname:'vendorname'}" class="d-flex align-items-center">
+                    <div class="icon mr-3 d-flex align-items-center justify-content-center">
+                        { <i class="fas fa-box mx-1"></i> }
+                    </div>
+                    <div class="info">
+                        <h3>{config.title}</h3>
+                        {config.description->f:format.html()}
+                    </div>
+                </f:link.action>
+            </div>
+        </f:for>    
+    </div>
+</div>

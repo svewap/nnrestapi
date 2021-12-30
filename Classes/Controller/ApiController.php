@@ -8,6 +8,8 @@ use \Nng\Nnrestapi\Mvc\Response;
 use TYPO3\ClassAliasLoader\ClassAliasMap;
 use TYPO3\CMS\Core\Http\PropagateResponseException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Context\LanguageAspect;
 
 
 /**
@@ -56,6 +58,13 @@ class ApiController extends AbstractApiController {
 			\nn\rest::Settings()->setIgnoreEnableFields( true );
 		}
 
+		// Checks, if LanguageAspect needs to be set to different language. Will decide, if language-overlay is loaded for records.
+		$overlayLanguageUid = $classInstance->determineLanguage( $endpoint );
+		if ($overlayLanguageUid > 0) {
+			$context = GeneralUtility::makeInstance(Context::class);
+			$context->setAspect('language', new LanguageAspect($overlayLanguageUid));
+		}
+
 		// Prüft, ob aktueller User Zugriff auf Methode hat
 		if (!$classInstance->checkAccess( $endpoint )) {
 			
@@ -87,9 +96,12 @@ class ApiController extends AbstractApiController {
 
 					$valueToApply = '';
 
-					// ToDO: ObjectStorage und Array berücksichtigen
-					if ($modelName = $varDefinition['element'] ?? false) {
+					$modelName = $varDefinition['element'] ?? false;
+					$expectedType = $varDefinition['type'] ?? false;
 
+					if ($expectedType == 'object' && $modelName) {
+						
+						// ToDO: ObjectStorage und Array berücksichtigen
 						if ($uid = $model['uid'] ?: $request->getArguments()['uid'] ?? false) {
 							
 							$existingModel = \nn\t3::Db()->get( $uid, $modelName );
@@ -131,8 +143,17 @@ class ApiController extends AbstractApiController {
 						// Map `/path/{uid}` to `methodName( $uid )`
 						$valueToApply = $requestArguments[$varName] ?? null;
 						
+						// Integer expected as argument
+						switch ($expectedType) {
+							case 'integer':
+								$valueToApply = intval($valueToApply);
+								break;
+							case 'string':
+								$valueToApply = "{$valueToApply}";
+								break;
+						}
 					}
-					
+
 					$argumentsToApply[] = $valueToApply;
 				}
 

@@ -9,7 +9,6 @@ namespace Nng\Nnrestapi\Authenticator;
  * Checks, if a Basic-AUTH-Header was passed and if the API-Key is valid.
  * 
  * The ApiKey can be defined ... 
- * - in the backend EXT-Manager. One {fe-username}:{apiKey} per line
  * - in the TCA of the individual `fe_user.nnrestapi_apikey`-entries
  * 
  * You can use this simple script to test the authentication from outside of the installation:
@@ -44,6 +43,11 @@ class BasicAuth extends AbstractAuthenticator {
 		$username = $credentials['username'];
 		$apiKey = $credentials['password'];
 
+		// No password or username set? Nope.
+		if (!trim($username) || !trim($apiKey)) {
+			return false;
+		}
+
 		// Abort, if the default user from the Extension Manager was passed
 		if ($username == 'examplefeUserName') {
 			return false;
@@ -57,14 +61,8 @@ class BasicAuth extends AbstractAuthenticator {
 		// `fe_user` doesn't exist or is disabled? Abort.
 		if (!$feUser) return false;
 
-		// Get users defined in the Extension Manager
-		$userlist = \nn\t3::Arrays( \nn\t3::Environment()->getExtConf('nnrestapi', 'apiKeys') )->trimExplode("\n");
-		$userlistByAuth = array_combine( $userlist, $userlist );
-		
-		$user = $userlistByAuth["{$username}:{$apiKey}"] ?? false;
-
-		// User not found in EXT-Configuration AND apiKey not correct in `fe_user.nnrestapi_apikey`
-		if (!$user && $feUser['nnrestapi_apikey'] != $apiKey) {
+		// apiKey not correct in `fe_user.nnrestapi_apikey`
+		if ($feUser['nnrestapi_apikey'] != $apiKey) {
 			return false;
 		}
 

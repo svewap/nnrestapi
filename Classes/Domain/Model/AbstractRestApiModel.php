@@ -2,14 +2,28 @@
 namespace Nng\Nnrestapi\Domain\Model;
 
 /**
- * A base model that can be extended in your own extensions.
+ * A base model that can be extended in your own extensions. 
  * 
+ * Use in your own Model like this:
  * ```
  * class MyModel extends \Nng\Nnrestapi\Domain\Model\AbstractRestApiModel {}
  * ```
  * 
+ * (!!) Important:
+ * If you can't access `tstamp` or `crdate`, make sure, you have these fields defined in
+ * the TCA. Otherwise they will not get mapped!
+ * 
+ * ```
+ * 'tstamp' => [
+ * 	'label' => 'tstamp',
+ * 	'config' => [
+ * 		'type' => 'passthrough',
+ * 	]
+ * ],
+ * ```
+ * 
  */
-class AbstractRestApiModel extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
+abstract class AbstractRestApiModel extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntity
 {
 	/**
 	 * @var int
@@ -25,8 +39,9 @@ class AbstractRestApiModel extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntit
 	 * @var int
 	 */
 	protected $pid;
-	
+
 	/**
+	 * Only accessible if also defined in TCA! (see above)
 	 * @return  int
 	 */
 	public function getTstamp() {
@@ -45,7 +60,7 @@ class AbstractRestApiModel extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntit
 	/**
 	 * @return  int
 	 */
-	public function getPid() {
+	public function getPid(): ?int {
 		return $this->pid;
 	}
 
@@ -53,12 +68,12 @@ class AbstractRestApiModel extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntit
 	 * @param   int  $pid  
 	 * @return  self
 	 */
-	public function setPid($pid) {
+	public function setPid(int $pid):void {
 		$this->pid = $pid;
-		return $this;
 	}
 
 	/**
+	 * Only accessible if also defined in TCA! (see above)
 	 * @return  int
 	 */
 	public function getCrdate() {
@@ -71,6 +86,28 @@ class AbstractRestApiModel extends \TYPO3\CMS\Extbase\DomainObject\AbstractEntit
 	 */
 	public function setCrdate($crdate) {
 		$this->crdate = $crdate;
+		return $this;
+	}
+
+	/**
+	 * @return  int
+	 */
+	public function getL10nUid() {
+		return $this->_localizedUid;
+	}
+
+	/**
+	 * @return  int
+	 */
+	public function getSysLanguageUid() {
+		return $this->_languageUid;
+	}
+	
+	/**
+	 * @return  self
+	 */
+	public function setSysLanguageUid( $sysLanguageUid = '' ) {
+		$this->_setProperty( '_languageUid', $sysLanguageUid );
 		return $this;
 	}
 }

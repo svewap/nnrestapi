@@ -25,6 +25,6 @@ class Example
     }
 
     public function mergeDataForDocumentation ( &$data ) {
-		$data['example'] = json_encode( \Nng\Nnhelpers\Helpers\JsonHelper::decode( $this->value ) );
+		$data['example'] = str_replace("\/", "/", json_encode( \Nng\Nnhelpers\Helpers\JsonHelper::decode( $this->value ) ));
 	}
 }
