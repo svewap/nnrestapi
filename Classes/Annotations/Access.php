@@ -26,7 +26,7 @@ namespace Nng\Nnrestapi\Annotations;
  * | @Api\Access("fe_groups[1,2]")		    | fe_user-group with uid 1 and 2						|
  * | @Api\Access("fe_groups[api]")		    | fe_user-group 'api'								  	|
  * | @Api\Access("ip[89.19.*,89.20.*]")     | Limit to certain IPs (ADDITIONALLY to fe_user etc.)   |
- * | @Api\Access("ipUsers[89.19.*,89.*]")   | Allow certain IPs (ALTERNATIVELY to fe_user etc.)		|
+ * | @Api\Access("ip_users[89.19.*,89.*]")  | Allow certain IPs (ALTERNATIVELY to fe_user etc.)		|
  * | @Api\Access("config[myconf]")		    | use Yaml config for the site/API						|
  * | @Api\Access({"...", "..."})		    | You can add muliple users using this syntax		  	|
  * | ---------------------------------------|-------------------------------------------------------|

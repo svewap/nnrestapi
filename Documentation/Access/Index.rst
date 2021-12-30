@@ -221,7 +221,7 @@ All of the following examples are equivilants, choose the syntax you can remembe
 Grant access for IP-adresses ALTERNATIVELY to other authentications
 ~~~~~~~~~~~~
 
-By using the ``@Api\Access("ipUsers[...]")`` annotation you grant access to the endpoint from
+By using the ``@Api\Access("ip_users[...]")`` annotation you grant access to the endpoint from
 given IPs without any other limitations.
 
 Other that ``@Api\Access("ip[...]")``, if the IP is correct, there will not be any additional check 
@@ -232,7 +232,7 @@ of ``fe_users`` or ``be_users``.
    /**
     * User with IP 90.120.10.* OR any fe_users (with any IP) may access this endpoint
     *
-    * @Api\Access("ipUsers[90.120.10.*]")
+    * @Api\Access("ip_users[90.120.10.*]")
     * @Api\Access("fe_users")
     * ...
     */
