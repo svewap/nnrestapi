@@ -1,0 +1,20 @@
+.. include:: ../Includes.txt
+
+.. _examples_jquery:
+
+============
+jQuery
+============
+
+Creating requests to the TYPO3 Rest Api with jQuery
+---------
+
+Find out, how to create ``GET``, ``POST``, ``PUT``, ``PATCH`` and ``DELETE`` requests,
+with and without authentication and file-uploads using `jQuery <https://jquery.com/>`__ in in the following chapters:
+
+.. toctree::
+   :glob:
+   :maxdepth: 6
+
+   jQuery/*
+

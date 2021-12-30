@@ -9,20 +9,51 @@
 Control where files are uploaded to in your TYPO3 RestAPi
 ---------
 
-If the method of an endpoint has the ``@Api\Cache`` annotion set, then its result
-will be cached. The next time this endpoint is called, the result will be retrieved
-from the cache without calling the method.
-
-Useful, if static data should be loaded like settings, dropdown-values or country-lists etc.
-The cache will only be cleared and rebuilt, if the "clear cache" button is clicked in the backend.
+With the ``@Api\Upload(...)`` annotion you can control, where the file uploads of a multipart/form-data request
+are moved to.
 
 The syntax is:
 
 .. code-block:: php
 
-   @Api\Upload("default")
+   @Api\Upload( option )
 
-It is defined above the endpoint of your method:
+Where ``option`` can have one of the following expressions to either define a direct filepath, a custom Class to 
+return the upload-path or the key to a configuration in the TypoScript setup: 
+
++--------------------------------------------------------+----------------------------------------------------------------+
+| syntax                                                 | description                                                    |
++========================================================+================================================================+
+| ``@Api\Upload(FALSE)``                                 | Explicitly **disables** the file-upload. Any file attached to  |
+|                                                        | the request will be discarded and removed from the JSON        |
+|                                                        | without further processing or parsing.                         |
+|                                                        | This is the **default behaviour** to prevent unwanted          |
+|                                                        | file-uploads to the fileadmin.                                 |
++--------------------------------------------------------+----------------------------------------------------------------+
+| ``@Api\Upload("1:/path/to/upload/folder")``            | The **filepath** to the folder in the combined identifier      |
+|                                                        | syntax (by default, ``1:/`` would be interpreted as            |
+|                                                        | the default storage ``fileadmin/``)                            |
++--------------------------------------------------------+----------------------------------------------------------------+
+| ``@Api\Upload("config[name]")``                        | Use a **predefined configuration** defined in the TypoScript   |
+|                                                        | setup at ``plugin.tx_nnrestapi.settings.fileUploads.[name]``   |
++--------------------------------------------------------+----------------------------------------------------------------+
+| ``@Api\Upload("config[default]")``                     | Uses the **default settings** from the TypoScript setup.       |
+|                                                        | If set to ``default``, the files will be uploaded to the path  |
+|                                                        | ``fileadmin/api/``                                             |
++--------------------------------------------------------+----------------------------------------------------------------+
+| ``@Api\Upload(\My\Extname\UploadProcessor::class)``    | Use a **custom class** to return the upload-path for the       |
+|                                                        | files. The class must have a method calles ``getUploadPath``   |
+|                                                        | and return an array as described                               |
+|                                                        | :ref:`here <annotations_upload_custom>`                        |
++--------------------------------------------------------+----------------------------------------------------------------+
+
+.. important::
+
+   Note that ``@Api\Upload(...)`` **must explicitly be set** as an Annotation on the endpoint - otherwise the nnrestapi 
+   will ignore any fileupload passed during the request. This is to prevent uncontrolled uploads and misuse of the Api. 
+
+
+The Annotation is placed in the comment block above your method / endpoint:
 
 .. code-block:: php
 
@@ -48,8 +79,7 @@ It is defined above the endpoint of your method:
 
    }
 
-Where ``name`` is the key to the configuration in TypoScript settings. Let`s have a look at the
-option for ``plugin.tx_nnrestapi.settings.fileUploads``:
+Let`s have a look at the configuration in TypoScript setup for ``plugin.tx_nnrestapi.settings.fileUploads``:
 
 .. code-block:: typoscript
 
@@ -72,12 +102,50 @@ option for ``plugin.tx_nnrestapi.settings.fileUploads``:
 Make sure the upload-folder exists and has the correct rights for reading/writing.
 
 
+.. _annotations_upload_custom:
+
 Custom method for resolving the upload path
 ~~~~~~~~~~
 
-You can define a custom class that resolves the upload-path for each individual file by 
-setting ``pathFinderClass`` and creating your own Helper-class. Have a look at the
-``Nng\Nnrestapi\Helper\UploadPathHelper`` for detailles examples.
+You can define a custom class that resolves the upload-path for each individual file.
+This can either be done by ... 
+
+-  Setting the class name in the **Annotation itself** like this:
+
+   .. code-block:: php
+
+      // will call \My\Extname\UploadProcessor->getUploadPath()
+      @Api\Upload( \My\Extname\UploadProcessor::class )
+
+   In this case, the nnrestapi will automatically try to call the method ``getUploadPath()`` of
+   your class and will expect an array as return value. Refer to the examples below to see, which
+   values need to be returned in the array.
+
+-  Creating a configuration in the **TypoScript setup** at ``plugin.tx_nnrestapi.settings.fileUploads.[name].pathFinderClass``. 
+   In this case you can also set the method name to call:
+
+   .. code-block:: typoscript
+
+      plugin.tx_nnrestapi.settings.fileUploads {
+         myconf {
+            pathFinderClass = My\Extension\Helper\UploadPathHelper::getPathForDate
+         }
+      }
+
+   Then use the configuration name in your Annotations like this:
+
+   .. code-block:: php
+
+      @Api\Upload("config[myconf]")
+
+
+.. tip::
+
+   Have a look at the ``Nng\Nnrestapi\Helper\UploadPathHelper`` for detailled examples.
+
+
+Example of custom path resolvers
+~~~~~~~~~~
 
 Let's create an UploadPathHelper that uploads the files to a folder-structure depending
 on the current month and date. You probably have seen this structure in WordPress.
@@ -145,7 +213,7 @@ Last step: Use the key ``monthdate`` in the ``@Api\Upload("monthdate")`` annotat
    class Example
    {
       /**
-       * @Api\Upload("monthdate")
+       * @Api\Upload("config[monthdate]")
        * @Api\Access("public")
        *
        * @param \My\Extension\Domain\Model\ApiTest $apiTest

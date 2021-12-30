@@ -27,8 +27,9 @@ Here is a full example:
    namespace My\Extension\Api;
 
    use Nng\Nnrestapi\Annotations as Api;
+   use Nng\Nnrestapi\Api\AbstractApi;
 
-   class Example
+   class Example extends AbstractApi
    {
       /**
        * @Api\Route("GET /test/route")
@@ -38,8 +39,7 @@ Here is a full example:
        */
       public function customRoutingTest()
       {
-         $args = $this->request->getArguments();
-         return ['message'=>"Hello, {$args['name']}!"];
+         return ['message'=>'Hello!'];
       }
    }
 

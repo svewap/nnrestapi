@@ -173,6 +173,9 @@ You can limit the Routing to certain HTTP Request Methods with this pattern:
 
 .. code-block:: php
 
+   // listen to ALL requests (GET, POST, PUT, DELETE, PATCH)
+   @Api\Route("/test/demo/something")
+
    // only listen to GET requests
    @Api\Route("GET /test/demo/something")
 

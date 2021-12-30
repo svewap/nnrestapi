@@ -152,7 +152,7 @@ the Article could not be found.
 .. code-block:: php
 
    /**
-    * @param $article My\Extension\Domain\Model\Article
+    * @param My\Extension\Domain\Model\Article $article 
     */
    public function getIndexAction( $article = null )
    {
@@ -196,7 +196,7 @@ Next we need an endpoint to handle the request and update the model in the datab
 .. code-block:: php
 
    /**
-    * @param $article My\Extension\Domain\Model\Article
+    * @param My\Extension\Domain\Model\Article $article 
     */
    public function putIndexAction( $article = null )
    {
@@ -236,7 +236,7 @@ Here is the corresponding method in your Article-class:
 .. code-block:: php
 
    /**
-    * @param $article My\Extension\Domain\Model\Article
+    * @param My\Extension\Domain\Model\Article $article
     */
    public function postIndexAction( $article = null )
    {
@@ -254,7 +254,7 @@ to delete:
 .. code-block:: php
 
    /**
-    * @param $article My\Extension\Domain\Model\Article
+    * @param My\Extension\Domain\Model\Article $article
     */
    public function deleteIndexAction( $article = null )
    {
@@ -268,6 +268,17 @@ to delete:
 
 Full example
 ----------
+
+.. attention::
+
+   **DON'T DO IT!**
+
+   You probably will **not** want to expose all your read and write endpoints to the public using ``@Api\Access("public")``.
+   We have only used public access here to provide you with an "instant feeling of success".
+
+   Restricting acess to endpoints can be acomplished by :ref:`access_checkaccess` or by using Annotations as described
+   in the chapter :ref:`access`
+
 
 .. code-block:: php
 
@@ -283,7 +294,7 @@ Full example
        * GET an article via: /api/article/{uid}
        *
        * @Api\Access("public")
-       * @param $article My\Extension\Domain\Model\Article
+       * @param My\Extension\Domain\Model\Article $article
        */
       public function getIndexAction( $article = null )
       {
@@ -297,7 +308,7 @@ Full example
        * UPDATE an article via: /api/article/{uid}
        *
        * @Api\Access("public")
-       * @param $article My\Extension\Domain\Model\Article
+       * @param My\Extension\Domain\Model\Article $article
        */
       public function putIndexAction( $article = null )
       {
@@ -312,7 +323,7 @@ Full example
        * INSERT a new article via: /api/article
        *
        * @Api\Access("public")
-       * @param $article My\Extension\Domain\Model\Article
+       * @param My\Extension\Domain\Model\Article $article
        */
       public function postIndexAction( $article = null )
       {
@@ -324,7 +335,7 @@ Full example
        * DELETE an article via: /api/article/{uid}
        *
        * @Api\Access("public")
-       * @param $article My\Extension\Domain\Model\Article
+       * @param My\Extension\Domain\Model\Article $article
        */
       public function deleteIndexAction( $article = null )
       {
@@ -336,10 +347,3 @@ Full example
       }
    }
 
-Test 
-
-.. hint::
-
-   You probably will not want to expose all your read and write endpoints to the public.
-   This can be acomplished by :ref:`access_checkaccess` or by using Annotations as described
-   in the chapter :ref:`access`

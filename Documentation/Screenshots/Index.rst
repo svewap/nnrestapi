@@ -19,6 +19,17 @@ Frontend-User authentication and file-uploading.
    :alt: nnrestapi Backend Module
    :width: 100%
 
+Search and filter endpoints
+-----------------------------
+
+Search for registered endpoints in the backend and hide the default endpoints 
+that come with the nnrestapi-extension.
+
+.. figure:: ../Images/05.gif
+   :class: with-shadow
+   :alt: nnrestapi Backend Module
+   :width: 100%
+
 Automatic documentation
 -----------------------------
 
@@ -43,4 +54,15 @@ You can test the login / logout from the testbed in the backend module:
 .. figure:: ../Images/04.gif
    :class: with-shadow
    :alt: nnrestapi Backend Module
+   :width: 100%
+
+CodePens to go wild on
+-----------------------------
+
+We've tried to give you as many practical examples for the frontend and backend as possible.
+Most of the examples are also on CodePen for you to copy, test and modify.
+
+.. figure:: ../Images/codepen-auth.gif
+   :class: with-shadow
+   :alt: nnrestapi example codepen
    :width: 100%

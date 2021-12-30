@@ -68,6 +68,10 @@ The following permissions exist for `@Api\Access(...)`:
 +--------------------------------------------+--------------------------------------------------------------+
 | `@Api\Access("fe_groups[api]")`            | fe_user in fe_user_group `api`                               |
 +--------------------------------------------+--------------------------------------------------------------+
+| `@Api\Access("api_users")`                 | all users defined in the extension configuration             |
++--------------------------------------------+--------------------------------------------------------------+
+| `@Api\Access("api_users[david]")`          | users `david` defined in the extension configuration         |
++--------------------------------------------+--------------------------------------------------------------+
 | `@Api\Access({"fe_users", "be_users"})`    | all fe_users and be_users                                    |
 +--------------------------------------------+--------------------------------------------------------------+
 | `@Api\Access("be_users")`                  | every logged in backend user                                 |
@@ -76,9 +80,10 @@ The following permissions exist for `@Api\Access(...)`:
 +--------------------------------------------+--------------------------------------------------------------+
 | `@Api\Access("ip[89.19.*,89.20.*]")`       | Limit to certain IPs (ADDITIONALLY to fe_user etc.)          |
 +--------------------------------------------+--------------------------------------------------------------+
-| `@Api\Access("ipUsers[89.19.*,89.*]")`     | Allow certain IPs (ALTERNATIVELY to fe_user etc.)            |
+| `@Api\Access("ip_users[89.19.*,89.*]")`    | Allow certain IPs (ALTERNATIVELY to fe_user etc.)            |
 +--------------------------------------------+--------------------------------------------------------------+
-| `@Api\Access("config[myconf]")`            | use `myconf` in Yaml config for the site/API                 |
+| `@Api\Access("config[myconf]")`            | use `myconf` in Yaml config for the site/API **OR**          |
+|                                            | the TypoScript Setup                                         |
 +--------------------------------------------+--------------------------------------------------------------+
 
 
@@ -236,7 +241,7 @@ of ``fe_users`` or ``be_users``.
 Using global configurations
 ---------
 
-Defining centralized access-groups in your site YAML
+Defining centralized access-groups in your site YAML or TypoScript Setup
 ~~~~~~~~~~~~
 
 Of course it might not "feel" very good, to define users and usergroup-restrictions in
@@ -252,17 +257,27 @@ users by their `username` or `uid` in the `@Api\Access()` annotation directly wi
 difficult to keep all your installation up-to-date with the same code-base.
 
 **The good news:** 
-With the TYPO3 Rest Api you can also define `accessGroups` in your site-configuration
-and then refer to their identifier in your `@Api\Access()`-annotation instead of using fixed
-usernames or uids.
+With the TYPO3 Rest Api you can also define `accessGroups` in your site-configuration or
+TypoScript Setup and then refer to their identifier in your `@Api\Access()`-annotation instead 
+of repeatingly using usernames or uids above the individual methods.
 
-Let's start by adding this to your site-configuration `YAML`.
+Let's start by adding this to your site-configuration `YAML` or TypoScript Setup
 
-.. code-block:: php
+.. tabs::
 
-   nnrestapi:
-     accessGroups:
-        apiUsers: fe_users[3,2]
+   .. code-tab:: yaml
+
+      nnrestapi:
+         accessGroups:
+            apiUsers: fe_users[3,2]
+
+   .. code-tab:: typoscript
+
+      plugin.tx_nnrestapi.settings {
+         accessGroups {
+            apiUsers = fe_users[3,2]
+         }
+      }
 
 We have defined an accessGroup with the identifier `apiUsers`.
 The frontend-users with the uid `3` and `2` are in this group.
@@ -272,15 +287,28 @@ You may choose any identifier name here you like and that makes sense to you.
 
 Of course you can also define multiple groups and have multiple users per group:
 
-.. code-block:: php
+.. tabs::
 
-   nnrestapi:
-     accessGroups:
-        limitedUser: fe_users[david,marc]
-        adminUsers: fe_users[1,2,3], be_users, be_admins
-        viewOnlyUsers: fe_groups[apiViewers]
+   .. code-tab:: yaml
 
-We now can refer to the accessGroup from the YAML-configuration by using the `config[identifier]`-syntax:
+      nnrestapi:
+         accessGroups:
+            limitedUser: fe_users[david,marc]
+            adminUsers: fe_users[1,2,3], be_users, be_admins
+            viewOnlyUsers: fe_groups[apiViewers]
+
+   .. code-tab:: typoscript
+
+      plugin.tx_nnrestapi.settings {
+         accessGroups {
+            limitedUser = fe_users[david,marc]
+            adminUsers = fe_users[1,2,3], be_users, be_admins
+            viewOnlyUsers = fe_groups[apiViewers]
+         }
+      }
+
+
+We now can refer to the accessGroup from tby using the `config[identifier]`-syntax in our Annotation:
 
 .. code-block:: php
 

@@ -6,4 +6,8 @@
 Known Problems
 ==============
 
-Unfortunalety tons of problems related to the big, red warning on :ref:`this page <introduction>`
+Backend Module
+--------------
+
+The backend module does not support Internet Explorer. It would be relatively easy do get it to work.
+But we simply don't think anybody should be using Internet Explorer anymore.

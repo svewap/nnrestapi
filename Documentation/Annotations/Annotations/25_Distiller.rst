@@ -115,7 +115,7 @@ This can be accomplished by defining a per-model Distiller in the TypoScript set
 ``globalDistillers``. Use the classname of the Model as a key and define how the Model
 should be parsed:
 
-.. code-block:: TypoScript
+.. code-block:: typoscript
 
    plugin.tx_nnrestapi.settings {
 
@@ -131,3 +131,85 @@ should be parsed:
          }
       }
    }
+
+Here is an overview of the available options for every class
+
+Excluding certain fields
+""""""""
+
+Use ``exclude`` to define fields that show be removed from the JSON for the Model:
+
+.. code-block:: typoscript
+
+   plugin.tx_nnrestapi.settings.globalDistillers {
+      My\Extension\Extbase\Domain\Model\Example {
+         exclude = parent, mktime, crdate
+      }
+   }
+
+Only including certain fields
+""""""""
+
+If you have more fields you want to remove than include, simply use ``include`` to define 
+all fields that show **NOT** be removed from the JSON. All other fields will be removed
+automatically.
+
+.. code-block:: typoscript
+
+   plugin.tx_nnrestapi.settings.globalDistillers {
+      My\Extension\Extbase\Domain\Model\Example {
+         include = uid, title, image
+      }
+   }
+
+.. tip::
+
+   When you ``PUT``, ``POST`` or ``PATCH`` your Model to the TYPO3 RestApi, you don't have to pass the
+   complete object with all fields. The RestApi will automatically merge the fields passed in the request
+   with the existing properties of the Model. This is why it is fine, to only include fields that you
+   really need to edit or modify in your frontend-application.
+
+   **Example**: If you only want to change the ``title`` of an existing Model, it would be enough to
+   only pass the title in the payload. All other properties and relations will stay untouched when
+   the data from the JSON is merged in the existing Model:
+
+   .. code-block:: json
+
+      // PUT or PATCH to /api/entry/{uid}
+      {"title":"New title"}
+
+
+
+Flattening SysFileReferences (FAL)
+""""""""
+
+By default, a FAL will be converted to an array containing fields like ``publicUrl``, ``title``, ``description``,
+``crop`` etc. If you only need the path to the SysFile and not all these fields, you can set ``flattenFileReferences = 1``
+on the top level of the destiller configuration for your Model. It will be recursively applied to all child-relations.
+
+.. code-block:: typoscript
+
+   plugin.tx_nnrestapi.settings.globalDistillers {
+      My\Extension\Extbase\Domain\Model\Example {
+         flattenFileReferences = 1
+      }
+   }
+
+Without the above configuration, a ``sys_file_reference`` would be converted to this in the JSON:
+
+.. code-block:: json
+
+   {"image":{"publicUrl":"path/to/file.jpg", "title":"...", "crop":"..."}}
+
+By setting ``flattenFileReferences = 1`` it deflates the FileReference and only returns the ``publicUrl``:
+
+.. code-block:: json
+
+   {"image":"path/to/file.jpg"}
+
+**Note:** In both cases, if there is no ``sys_file_reference`` attached to the Model you will get a ``NULL``
+in the JSON:
+
+.. code-block:: json
+
+   {"image":NULL}

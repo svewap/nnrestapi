@@ -51,12 +51,29 @@ You can also return a Model as response from your method:
       return $model;
    }
 
-In the result the model will be automatically converted to an array. Also notice that
-even relations like ``SysFileReferences`` get converted.
+In the result the model will be automatically converted to a JSON-object. Even relations 
+like ``SysFileReferences`` or other models and objects get converted.
 
 .. code-block:: json
 
-   {"uid":123, "title":"nice!", "image":{"publicUrl":"path/to/some/image.jpg"}}
+   {"uid":123, "title":"nice!", "image":{"publicUrl":"path/to/some/image.jpg", "title":"..."}}
+
+
+.. tip::
+
+   You can see in the example above, that FileReferences are automatically converted to an object containing 
+   ``title``, ``publicUrl`` and several more properties from the original ``sys_file_reference`` and ``sys_file``.
+   If you only need the path to the image or file, you can set ``flattenFileReferences = 1`` in the TypoScript
+   settings for ``globalDistillers``.
+   
+   The above example would then be flattened to this:
+
+   .. code-block:: json
+
+      {"uid":123, "title":"nice!", "image":"path/to/some/image.jpg"}
+
+   Find out more in the section :ref:`@Api\Distiller() <annotations_distiller>`.
+
 
 Returning an ObjectStorage
 ~~~~~~~~~~
@@ -139,3 +156,11 @@ from the database, this recipe will speed things up:
       $rows = \nn\t3::Db()->findAll('tx_myext_domain_model_example');
       return $rows;
    }
+
+.. tip::
+
+   If you are looking for a way to remove certain fields / properties from the resulting JSON,
+   then :ref:`@Api\Distiller() <annotations_distiller>` is your friend.
+
+   You can write a custom distiller, that cleans up the resulting JSON – or define the Distiller on a
+   per-Model-base using TypoScript.
