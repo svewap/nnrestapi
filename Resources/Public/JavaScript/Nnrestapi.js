@@ -39,11 +39,15 @@ define(['jquery', 'TYPO3/CMS/Nnrestapi/Axios'], function($, axios) {
 		$('.search').val('').keyup();
 	});
 
+	// Restore last filter values from localStorage
 	getFromStorage( 'filters' ).then(( prevFilters ) => {
 		filters = prevFilters;
 		$('#hide-nnrestapi').prop('checked', filters.hideNnrestapi).change();
 		$('.search').val(filters.sword || '').keyup();
 	});
+
+	// Restore last form values from localStorage
+	restoreLastFormData();
 
 	/**
 	 * Kickstarts
@@ -176,10 +180,13 @@ define(['jquery', 'TYPO3/CMS/Nnrestapi/Axios'], function($, axios) {
 	 */
 	function sendRequest( reqType, url, body, silent = false ) {
 
+		saveCurrentFormData();
+
 		return new Promise((resolve, reject) => {
 
 			var token	= $('.reqtoken').val();
 			var cookie	= $('.reqcookie').val();
+			var basicAuth = $.trim($('.reqbasicauth').val()).split(':');
 
 			$testbed.addClass('loading');
 
@@ -199,7 +206,20 @@ define(['jquery', 'TYPO3/CMS/Nnrestapi/Axios'], function($, axios) {
 			if (cookie) {
 				document.cookie = `fe_typo_user=${cookie}; Path=/`;
 			}
-			
+			if (basicAuth.length > 1) {
+				config.auth = {
+					username: basicAuth[0],
+					password: basicAuth[1]
+				};
+			}
+
+			$('[data-request-header]').each(function () {
+				var val = $(this).val();
+				if (val || $(this).filter('[data-add-header-if-empty]').length ) {
+					config.headers[$(this).data().requestHeader] = val;
+				}
+			});
+
 			axios.defaults.withCredentials = true;
 			axios.defaults.headers.common = config.headers;
 
@@ -281,11 +301,44 @@ define(['jquery', 'TYPO3/CMS/Nnrestapi/Axios'], function($, axios) {
 		Prism.highlightElement( $('.resbody')[0] );
 	}
 
+	/**
+	 * Save all form settings and data for current request.
+	 * 
+	 * @returns Promise
+	 */
+	function saveCurrentFormData() {
+		var data = [];
+		$('.testbed').find('input, select, textarea').each(function () {
+			data.push({
+				selector: '[class="' + $(this).attr('class') + '"]',
+				value: $(this).val()
+			});
+		});
+		return saveInStorage('lastRequest', data);
+	}
+
+	/**
+	 * Restore all values from last request.
+	 * 
+	 * @returns Promise
+	 */
+	function restoreLastFormData() {
+		getFromStorage( 'lastRequest' ).then(( data ) => {
+			for (var i in data) {
+				var obj = data[i];
+				var $el = $(obj.selector);
+				if ($el.length == 1) {
+					$el.val( obj.value );
+					$el.change();
+				}
+			}
+		});
+	}
 
 	/**
 	 * Daten aus der localStorage laden.
 	 * 
-	 * @returns array 
+	 * @returns Promise 
 	 */
 	function getFromStorage( key = '' ) {
 		return new Promise(( resolve, reject ) => {
@@ -297,7 +350,7 @@ define(['jquery', 'TYPO3/CMS/Nnrestapi/Axios'], function($, axios) {
 	/**
 	 * Daten in der localStorage speichern.
 	 * 
-	 * @returns array 
+	 * @returns Promise 
 	 */
 	function saveInStorage( key = '', val = '' ) {
 		return new Promise(( resolve, reject ) => {

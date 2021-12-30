@@ -1,7 +1,6 @@
 <?php
 namespace Nng\Nnrestapi\Api;
 
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Nng\Nnrestapi\Mvc\Request;
 use Nng\Nnrestapi\Annotations as Api;
@@ -55,6 +54,51 @@ class AbstractApi {
 	}
 	
 	/**
+	 * Determines the current language requested by the frontend.
+	 * 
+	 * This method can be overriden with custom methods in your own endpoint if you wish 
+	 * to implement your own logic.
+	 * 
+	 * @return int
+	 */
+	public function determineLanguage( $endpoint = [] ) {
+
+		$localizationSettings = $this->request->getSettings()['localization'] ?? [];
+		
+		// localization not configured? Don't localize
+		if (!$localizationSettings) {
+			return 0;
+		}
+		// localization enabled, but locally disabled by `@Api\Localize(FALSE)` Annotation? Don't localize
+		if ($localizationSettings['enabled'] && $endpoint['localize'] === false) {
+			return 0;
+		}
+		// localization disabled, and not enabled locally by `@Api\Localize(TRUE)` Annotation? Don't localize
+		if (!$localizationSettings['enabled'] && $endpoint['localize'] !== true) {
+			return 0;
+		}
+
+		// `L=..` parameter passed in GET-Request?
+		if ($L = \nn\t3::Request()->GP('L')) {
+			return intval($L);
+		}
+
+		// language from route / url-path?
+		if ($languageId = $this->request->getMvcRequest()->getAttribute('language')->getLanguageId()) {
+			if ($languageId > 0) {
+				return $languageId;
+			}
+		}
+
+		// `accept-language` or `x-language` passed in Request-Header?
+		if ($acceptedLanguageUid = $this->request->getAcceptedLanguageUid()) {
+			return $acceptedLanguageUid;
+		}
+
+		return 0;
+	}
+
+	/**
 	 * Checks, if the current frontend/backend user has privileges to call
 	 * the endpoint. This method can be overriden with custom methods in your
 	 * own endpoint if you wish to implement your own logic.
@@ -63,11 +107,10 @@ class AbstractApi {
 	 * 
 	 * @return boolean
 	 */
-	public function checkAccess ( $endpoint = [] ) {
-
-
-		// @Api\Access("ipUser[...]") - ANY user with given IP will be able to access
-		if ($ipUserList = $endpoint['access']['ipUsers'] ?? false) {
+	public function checkAccess ( $endpoint = [] ) 
+	{
+		// @Api\Access("ip_users[...]") - ANY user with given IP will be able to access
+		if ($ipUserList = $endpoint['access']['ip_users'] ?? false) {
 			if (GeneralUtility::cmpIP( $this->request->getRemoteAddr(), join(',', $ipUserList ))) {
 				return true;
 			}
@@ -80,6 +123,7 @@ class AbstractApi {
 			}
 		}
 		
+		// @Api\Access("public") - ALWAYS returns true, the endpoint may be accessed by anybody
 		if ($endpoint['access']['public'] ?? false) {
 			return true;
 		}
@@ -93,7 +137,18 @@ class AbstractApi {
 		if (\nn\t3::BackendUser()->get() && \nn\t3::BackendUser()->get()->user && $endpoint['access']['be_users'] ?? false) {
 			return true;
 		}
-				
+		
+		// @Api\Access("api_users") and @Api\Access("api_users[name]") will grant access to users defined in the Extension Manager / EXT-Configuration
+		if ($basicAuthUser = \nn\rest::Auth()->getHttpBasicAuthUser()) {
+			if ($endpoint['access']['api_users']['*'] ?? false) {
+				return true;
+			}
+			if (in_array($basicAuthUser, $endpoint['access']['api_users'])) {
+				return true;
+			}
+		}
+
+		// @Api\Access("fe_users") and @Api\Access("api_users[name]") checks for certain fe_users
 		$feUser = \nn\t3::FrontendUser()->get();
 		
 		if ($feUser && $endpoint['access']['fe_users'] ?? false) {
@@ -105,6 +160,7 @@ class AbstractApi {
 			}
 		}			
 
+		// @Api\Access("fe_groups") and @Api\Access("fe_groups[name]") checks for certain fe_user_groups
 		if ($endpoint['access']['fe_groups'] ?? false) {
 			if ($endpoint['access']['fe_groups']['*'] ?? false) {
 				return true;

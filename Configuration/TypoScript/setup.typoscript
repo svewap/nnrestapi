@@ -35,6 +35,12 @@ plugin.tx_nnrestapi {
 		# Try `UTC` or `Europe/Berlin` here - or leave empty to use LocalConfiguration.SYS.phpTimeZone
 		timeZone = 
 
+		# central place to define groups. Use `@Api\Access("config[keyname]")` in the methods comment
+		accessGroups {
+			# example1 = fe_users[3,2]
+			# example2 = fe_users[david]
+		}
+
 		# Default upload-paths for fileuploads
 		fileUploads {
 
@@ -48,7 +54,7 @@ plugin.tx_nnrestapi {
 				//pathFinderClass = Nng\Nnrestapi\Helper\UploadPathHelper::getUserUidPath
 
 				// target-path for file, file-0, file-1, ...
-				file = 1:/api/tests/
+				file = 1:/api/files/
 			}		
 		}
 		
@@ -83,19 +89,30 @@ plugin.tx_nnrestapi {
 			*/
 		}
 
-		# Idea for future version: Implement a per-user configuration
-		/*
-		fe_users {
-			1.fileUploads.default.defaultStoragePath = 1:/group
+		# Language / localization settings
+		localization {
+			
+			# Whether to enable the localization. Disabled by default because this is the primary use-case.
+			enabled = 0
+
+			# Which header(s) in the request contains the information about requested language (might be "X-Locale")
+			languageHeader = x-locale, accept-language
 		}
-		*/
 
 		# Kickstarter-Templates
 		kickstarts {
 			verybasic {
 				title = Very Basic RestApi Extension
 				description = Just a very simple extension with a Model and an endpoint
-				path = EXT:nnrestapi/Resources/Private/Kickstarts/VeryBasic
+				//path = EXT:nnrestapi/Resources/Private/Kickstarts/apitest.zip
+				path = EXT:apitest/
+				replace {
+					nng/apitest = [#vendor-lower#]/[#ext-lower#]
+					Nng\\Apitest\\ = [#vendor-ucc#]\\[#ext-ucc#]\\
+					Nng\Apitest\ = [#vendor-ucc#]\[#ext-ucc#]\
+					\x22apitest\x22 = "[#ext-lower#]"
+					tx_apitest = tx_[#ext-lower#]
+				}
 			}
 		}
 	}

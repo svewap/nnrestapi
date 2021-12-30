@@ -89,6 +89,7 @@ class ModController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController {
 	public function kickstartAction( string $identifier = '', string $extname = '', string $vendorname = '' ) {
 
 		$config = $this->settings['kickstarts'][$identifier] ?? false;
+		
 		if (!$config) {
 			return 'Kickstart config not defined!';
 		}
@@ -108,7 +109,21 @@ class ModController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController {
 			$marker["[#{$k}#]"] = $v;
 		}
 
-		\nn\rest::Kickstart()->createExtensionFromTemplate( $config['path'], $extname, $marker );
+		if ($replace = $config['replace'] ?? false) {
+			foreach ($replace as $k=>$v) {
+
+				// enable escaping keys for replacement (e.g. \x22test\x22 => "test")
+				$k = preg_replace_callback( "(\\\\x([0-9a-f]{2}))i", function ($a) {
+						return chr(hexdec($a[1]));
+					}, $k);
+
+				// replace placeholders
+				$v = strtr( $v, $marker );
+				$marker[$k] = $v;
+			}
+		}
+
+		\nn\rest::Kickstart()->createExtensionFromTemplate( $config, $marker );
 
 		return '';
 	}

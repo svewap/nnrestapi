@@ -19,6 +19,8 @@ namespace Nng\Nnrestapi\Annotations;
  * | @Api\Access("fe_users")			    | every logged in frontend user							|
  * | @Api\Access("fe_users[1]")			    | only logged in frontend user with uid 1			  	|
  * | @Api\Access("fe_users[david]")		    | Only logged in frontend user with username `david`	|
+ * | @Api\Access("api_users")		    	| evey user defined in the EXT configuration            |
+ * | @Api\Access("api_users[david]")		| only user "david" defined in the EXT configuration    |
  * | @Api\Access("be_users")			    | every logged in backend user						 	|
  * | @Api\Access("be_admins")			    | every logged in backend admin							|
  * | @Api\Access("fe_groups[1,2]")		    | fe_user-group with uid 1 and 2						|

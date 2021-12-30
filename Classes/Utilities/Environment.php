@@ -44,4 +44,19 @@ class Environment extends \Nng\Nnhelpers\Singleton
 		return $this->databaseTableExists( $tableName );
 	}
 	
+	/**
+	 * Return list of defined languages from the YAML site configuration.
+	 * Default key is the `languageId`, can be overriden with `$key` parameter.
+	 * 
+	 * ```
+	 * \nn\rest::Environment()->getLanguages();
+	 * \nn\rest::Environment()->getLanguages('iso-639-1');
+	 * ```
+	 * @return boolean
+	 */
+	public function getLanguages( $key = 'languageId' ) {
+		$languages = \nn\t3::Settings()->getSiteConfig()['languages'] ?? [];
+		return array_combine( array_column($languages, $key), array_values($languages) );
+	}
+	
 }

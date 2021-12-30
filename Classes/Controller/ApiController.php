@@ -8,6 +8,8 @@ use \Nng\Nnrestapi\Mvc\Response;
 use TYPO3\ClassAliasLoader\ClassAliasMap;
 use TYPO3\CMS\Core\Http\PropagateResponseException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Context\LanguageAspect;
 
 
 /**
@@ -54,6 +56,13 @@ class ApiController extends AbstractApiController {
 		if ($showHiddenFromAnnotation || $showHiddenFromFeUser) {
 			// die nnrestapi-Xclasses übernehmen jetzt die Kontrolle!
 			\nn\rest::Settings()->setIgnoreEnableFields( true );
+		}
+
+		// Checks, if LanguageAspect needs to be set to different language. Will decide, if language-overlay is loaded for records.
+		$overlayLanguageUid = $classInstance->determineLanguage( $endpoint );
+		if ($overlayLanguageUid > 0) {
+			$context = GeneralUtility::makeInstance(Context::class);
+			$context->setAspect('language', new LanguageAspect($overlayLanguageUid));
 		}
 
 		// Prüft, ob aktueller User Zugriff auf Methode hat

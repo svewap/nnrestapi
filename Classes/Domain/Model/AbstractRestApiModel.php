@@ -39,7 +39,7 @@ abstract class AbstractRestApiModel extends \TYPO3\CMS\Extbase\DomainObject\Abst
 	 * @var int
 	 */
 	protected $pid;
-	
+
 	/**
 	 * Only accessible if also defined in TCA! (see above)
 	 * @return  int
@@ -86,6 +86,28 @@ abstract class AbstractRestApiModel extends \TYPO3\CMS\Extbase\DomainObject\Abst
 	 */
 	public function setCrdate($crdate) {
 		$this->crdate = $crdate;
+		return $this;
+	}
+
+	/**
+	 * @return  int
+	 */
+	public function getL10nUid() {
+		return $this->_localizedUid;
+	}
+
+	/**
+	 * @return  int
+	 */
+	public function getSysLanguageUid() {
+		return $this->_languageUid;
+	}
+	
+	/**
+	 * @return  self
+	 */
+	public function setSysLanguageUid( $sysLanguageUid = '' ) {
+		$this->_setProperty( '_languageUid', $sysLanguageUid );
 		return $this;
 	}
 }

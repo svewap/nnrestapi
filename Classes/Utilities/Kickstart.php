@@ -16,24 +16,31 @@ namespace Nng\Nnrestapi\Utilities;
 class Kickstart extends \Nng\Nnhelpers\Singleton 
 {
 	/**
-	 * Export all files in folder recursively.
-	 * Replaces markers.
+	 * Read all files from a ZIP file, replaces markers in source code and 
+	 * repack it to a ZIP (or TAR) that is downloaded.
 	 * 
 	 * ```
 	 * \nn\rest::Kickstart()->createExtensionFromTemplate( $path, $filename, $marker );
 	 * ```
 	 * 
-	 * @param string $path 			The path to the templates (e.g. `EXT:nnrestapi/Resources/...`) 
+	 * @param string $path 			The path to the templates-Zip (e.g. `EXT:nnrestapi/Resources/.../demo.zip`) 
 	 * @param string $filename 		The filename of the zip to download to the templates (e.g. `myext`) 
 	 * @param array $marker 		The maker to replace (see above) 
 	 * 
 	 * @return void
 	 */
-	public function createExtensionFromTemplate( $path = '', $filename = '', $marker = [] ) {
+	public function createExtensionFromTemplate( $config = [], $marker = [] ) {
 
-		// get all files from given folder
-		$files = \nn\rest::File()->getAllInFolder( $path );
-		$absPath = \nn\t3::File()->absPath( $path );
+		// extension-name
+		$extname = $marker['[#ext-lower#]'];
+
+		if (\nn\t3::File()->isFolder( $config['path'] )) {
+			// get all files from given folder
+			$files = \nn\rest::File()->getFolderContent( $config['path'] );
+		} else {
+			// get all files from given zip-file
+			$files = \nn\rest::File()->getZipContent( $config['path'] );
+		}
 
 		if (!$files) return false;
 
@@ -52,7 +59,7 @@ class Kickstart extends \Nng\Nnhelpers\Singleton
 			}
 		}
 
-		$archiveFilename = $filename ?: 'download-'.date('Y-m-d');		
+		$archiveFilename = $extname ?: 'download-'.date('Y-m-d');		
 		$stream = fopen('php://output', 'w');
 		$opt = [];
 
@@ -62,21 +69,21 @@ class Kickstart extends \Nng\Nnhelpers\Singleton
 		} else {
 			$zipStream = new \Barracuda\ArchiveStream\TarArchive( $archiveFilename.'.tar', $opt, null, $stream );
 		}
+		
+		// now pack every file back in a streamed zip-file
+		foreach ($files as $fileNameInArchive=>$content) {
 
-		// now pack every file from template in zip-file
-		foreach ($files as $k=>$file) {
-			
-			$filesize = \nn\t3::File()->size( $file );
+			// replace first path part with ext-name (`apitest/Controller/Test.php` => `foobar/Controller/Test.php`)
+			$fileNameInArchive = $extname . '/' . substr($fileNameInArchive, strpos($fileNameInArchive, '/', 1));
 
-			$relFilename = str_replace( $absPath, '', $file );
-			$relFilename = str_replace( '.tmpl', '', $relFilename );
-			$fileNameInArchive = $relFilename;
+			// replace placeholders in the filename
+			$fileNameInArchive = strtr( $fileNameInArchive, $marker );
 
+			// replace placeholder for vendor-name and extension-name in scripts
+			$content = strtr( $content, $marker );
+
+			$filesize = strlen( $content );
 			$zipStream->init_file_stream_transfer( $fileNameInArchive, $filesize );
-
-			// read file content and replace placeholder for vendor-name and extension-name
-			$content = \nn\t3::File()->read( $file );
-			$content = str_replace( array_keys($marker), array_values($marker), $content );
 
 			$zipStream->stream_file_part( $content );
 			$zipStream->complete_file_stream();

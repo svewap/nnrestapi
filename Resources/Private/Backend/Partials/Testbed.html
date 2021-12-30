@@ -28,6 +28,9 @@
 				<li class="nav-item">
 					<a class="nav-link" data-toggle="tab" data-bs-toggle="tab" data-target=".compose-auth" data-bs-target=".compose-auth">Auth</a>
 				</li>
+				<li class="nav-item">
+					<a class="nav-link" data-toggle="tab" data-bs-toggle="tab" data-target=".compose-lang" data-bs-target=".compose-lang">Language</a>
+				</li>
 			</ul>
 			<div class="tab-content">
 				<div class="tab-pane compose-body active">
@@ -56,6 +59,18 @@
 						<div class="d-flex align-items-center">
 							<label>fe_typo_user Cookie</label>
 							<input type="text" class="form-control reqcookie" placeholder="filled automatically after login" />
+						</div>
+						<div class="d-flex align-items-center">
+							<label>Basic Auth</label>
+							<input type="text" class="form-control reqbasicauth" placeholder="username:password" />
+						</div>
+					</div>			
+				</div>
+				<div class="tab-pane compose-lang">
+					<div class="lang p-3">
+						<div class="d-flex align-items-center">
+							<label>Accept-Language</label>
+							<input type="text" data-request-header="Accept-Language" data-add-header-if-empty class="form-control req-header-accept-lang" value="de-DE" />
 						</div>
 					</div>			
 				</div>

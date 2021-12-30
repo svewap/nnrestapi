@@ -41,16 +41,40 @@ class File extends \Nng\Nnhelpers\Singleton {
 	 * ```
 	 * @return self
 	 */
-	public function processFileUploadsInRequest( $request ) {
-
+	public function processFileUploadsInRequest( $request ) 
+	{
 		$body = $request->getBody();
 		if (!$body || !is_array($body)) return;
 		
 		$this->uploadedFiles = $request->getUploadedFiles();
 		$settings = $request->getSettings();
 
-		$configKey = $request->getEndpoint()['uploadConfig'] ?? 'default';
-		$this->uploadConfig = $settings['fileUploads'][$configKey] ?? false;
+		$configKey = $request->getEndpoint()['uploadConfig'] ?? false;
+
+		// config-key set to FALSE? `@Api\Upload(FALSE)` - deny ANY fileupload!
+		if ($configKey === false) {
+			$this->uploadConfig = false;
+			$this->processFileUploadsInRequestRecursive( $body );
+			$request->setBody( $body );
+			return $this;
+		}
+
+		// config-key passed? `@Api\Upload("config[name]")`
+		if (preg_match('/config\[(.*)\]/', $configKey, $matches)) {
+			$configKey = $matches[1];
+		}
+
+		$this->uploadConfig = $settings['fileUploads'][$configKey] ?? [];
+
+		// combined identifier passed? `@Api\Upload("1:/path/to/somewhere/")`
+		if (preg_match('/[0-9]+:\/(.*)/', $configKey)) {
+			$this->uploadConfig['defaultStoragePath'] = $configKey;
+		}
+
+		// classname passed? `@Api\Upload( \My\Extname\UploadProcessor::class )`
+		if ( class_exists( $configKey ) ) {
+			$this->uploadConfig['pathFinderClass'] = $configKey . '::getUploadPath';
+		}
 
 		// Klasse angegeben? Dann muss die Methode die Konfiguration zurückgeben.
 		if ($pathHelper = $this->uploadConfig['pathFinderClass'] ?? false) {
@@ -80,8 +104,8 @@ class File extends \Nng\Nnhelpers\Singleton {
 	 * 
 	 * @return void
 	 */
-	private function processFileUploadsInRequestRecursive( &$arr = [] ) {
-
+	private function processFileUploadsInRequestRecursive( &$arr = [] ) 
+	{
 		$configuration = $this->uploadConfig;
 
 		foreach ($arr as $k=>$v) {
@@ -123,7 +147,8 @@ class File extends \Nng\Nnhelpers\Singleton {
 	 * 
 	 * In `$configuration` kann der Zielordner pauschal – oder pro File-Key angegeben werden.
 	 * Falls keine `$configuration` angegeben wird, landen die Dateien im Ordner `fileadmin/`
-	 * 
+	 * Falls für `$configuration` `FALSE` angegeben wird, werden alle Datei-Uploads entfernt.
+	 *  
 	 * ```
 	 * // Dateien in die Default-Storage kopieren (fileadmin)
 	 * \nn\rest::File()->processFileUpload( 'UPLOAD:/file-0', $uploadedFiles );
@@ -144,8 +169,13 @@ class File extends \Nng\Nnhelpers\Singleton {
 	 * 
 	 * @return string|boolean
 	 */
-	public function processFileUpload( $placeholder = '', $uploadedFiles = [], $configuration = [] ) {
-		
+	public function processFileUpload( $placeholder = '', $uploadedFiles = [], $configuration = [] ) 
+	{
+		// `FALSE`? Simply ignore the file.
+		if ($configuration === false) {
+			return false;
+		}
+
 		// `UPLOAD:/...` als Prefix vorhanden?
 		if (strpos($placeholder, $this->uploadPrefix) === 0) {
 
@@ -200,8 +230,8 @@ class File extends \Nng\Nnhelpers\Singleton {
 	 * ```
 	 * @return array
 	 */
-	public function getAllInFolder( $path = '', $recursive = true ) {
-
+	public function getAllInFolder( $path = '', $recursive = true ) 
+	{
 		$files = [];
 		$path = \nn\t3::File()->absPath( $path );
 
@@ -214,6 +244,55 @@ class File extends \Nng\Nnhelpers\Singleton {
 			}
 		}
 		
+		return $files;
+	}
+
+	/**
+	 * Get all files content, recursively in a directory
+	 * Returns an array with the path to the file as key and the content as value.
+	 * 
+	 * @return array 
+	 */
+	public function getFolderContent( $path = '' ) 
+	{
+		$absPath = \nn\t3::File()->absPath( $path );
+		$dirname = basename( $absPath );
+		$files = $this->getAllInFolder( $path );
+		$filesByRelPath = [];
+
+		foreach ($files as $file) {
+			$relPath = str_replace( $absPath, '', $file );
+			$contents = file_get_contents( $file );
+			$filesByRelPath[$dirname . '/' . $relPath] = $contents;
+		}
+
+		return $filesByRelPath;
+	}
+
+	/**
+	 * Get complete content of ZIP-file as array.
+	 * Returns an array with the path to the file as key and the content as value.
+	 * The zip is not physically unpacked for this.
+	 * 
+	 * @return array
+	 */
+	public function getZipContent( $path = '' ) 
+	{
+		$absPath = \nn\t3::File()->absPath( $path );
+		
+		$archive = new \ZipArchive();
+		$archive->open( $absPath );
+		$files = [];
+
+		for( $i = 0; $i < $archive->numFiles; $i++ ){ 
+			$stat = $archive->statIndex( $i );
+			$filename = $stat['name'];
+			if (substr(basename($filename), 0, 2) == '._') {
+				continue;
+			}
+			$files[$filename] = $archive->getFromIndex( $i ); 
+		}
+
 		return $files;
 	}
 }

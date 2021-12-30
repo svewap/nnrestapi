@@ -42,12 +42,10 @@ class RequestParser implements MiddlewareInterface {
 	 * @param RequestHandlerInterface $handler
 	 * @return ResponseInterface
 	 */
-	public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
-
+	public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {		
 		if (in_array($request->getMethod(), $this->requestMethodsToParse)) {
 			$request->getBody()->close();
 		}
-
 		return $handler->handle($request);
 	}
 
