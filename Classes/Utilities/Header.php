@@ -25,18 +25,37 @@ class Header extends \Nng\Nnhelpers\Singleton {
 	 */
 	public function addControls( Response &$response = null ) {
 
-		$origin = $_SERVER['HTTP_ORIGIN'] ?? '*';
+		$defaultHeaders = [
+			'Access-Control-Allow-Headers' => $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'] ?? 'Origin, X-Requested-With, Content-Type, Authorization, Cache-Control',
+			'Access-Control-Allow-Credentials' => 'true',
+			'Access-Control-Allow-Methods' => 'GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS',
+			'Allow' => 'GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS',
+			'Cache-Control' => 'no-store, no-cache, must-revalidate, max-age=0, post-check=0, pre-check=0, false',
+			'Pragma' => 'no-cache',
+		];
 
-		$response = $response->withHeader('Access-Control-Allow-Origin', $origin)
-			->withHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Access-Control-Allow-Headers, Content-Type, Authorization')
-			->withHeader('Access-Control-Allow-Credentials', 'true')
-			->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS')
-			->withHeader('Allow', 'GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS')
-			->withHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
-			->withHeader('Cache-Control', 'post-check=0, pre-check=0, false')
-			->withHeader('Pragma', 'no-cache')
-			->withHeader('Access-Control-Allow-Headers', $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'] ?? 'origin, x-requested-with, content-type, cache-control');
+		$headersFromSetup = \nn\rest::Settings()->get()['response']['headers'];
 
+		// the `HTTP_REFERER` without full path, e.g. `https://www.mydomain.com` or `https://localhost:8090`
+		$referer = \nn\rest::Access()->getRefererDomain();
+
+		$origin = $_SERVER['HTTP_ORIGIN'] ?? $referer ?: '*';
+		$allowedPatterns = $headersFromSetup['Access-Control-Allow-Origin'] ?? '*';
+		$selfUrl = rtrim(\nn\t3::Environment()->getBaseURL(), '/');
+
+		// check if current client meets pattern(s) defined in `Access-Control-Allow-Origin` from TypoScript
+		$acceptOrigin = \nn\rest::Access()->domainIsAllowed($origin, $allowedPatterns) ?: $selfUrl;
+		$headersFromSetup['Access-Control-Allow-Origin'] = $acceptOrigin;
+
+		// merge headers from TypoScript with default headers
+		$mergedHeaders = array_merge($defaultHeaders, $headersFromSetup);
+
+		foreach ($mergedHeaders as $key=>$val) {
+			if ($val = trim($val)) {
+				$response = $response->withHeader($key, $val);
+			}
+		}
+		
 		return $this;
 	}
 

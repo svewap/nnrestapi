@@ -138,7 +138,7 @@ class AbstractApi {
 			return true;
 		}
 		
-		// @Api\Access("api_users") and @Api\Access("api_users[name]") will grant access to users defined in the Extension Manager / EXT-Configuration
+		// @Api\Access("api_users") and @Api\Access("api_users[name]") will grant access to users defined in the Extension Manager / EXT-Configuration OR fe_user
 		if ($basicAuthUser = \nn\rest::Auth()->getHttpBasicAuthUser()) {
 			if ($endpoint['access']['api_users']['*'] ?? false) {
 				return true;

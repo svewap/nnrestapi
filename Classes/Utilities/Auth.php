@@ -58,11 +58,13 @@ class Auth extends \Nng\Nnhelpers\Singleton {
 	
 	/**
 	 * Get the current user that was passed via HTTP Basic Auth.
-	 * The HTTP Basic Auth users are defined globally in the extension manager 
-	 * (EXT configuration).
 	 * 
+	 * The HTTP Basic Auth users are defined either
+	 * - globally in the extension manager (EXT configuration).
+	 * - in the TCA of the individual `fe_user.nnrestapi_apikey`-entries
+	 *  
 	 * The most primitive way to make an authenticated call via HTTP Basic Auth would
-	 * be sending a request in the style: 
+	 * be sending a JavaScript or PHP request in the style: 
 	 * `https://username:password@www.mywebsite.com/api/endpoint`
 	 * 
 	 * If `username` and `password` are correct, this method will return the username.
@@ -76,7 +78,6 @@ class Auth extends \Nng\Nnhelpers\Singleton {
 	public function getHttpBasicAuthUser() {
 
 		$credentials = \nn\t3::Request()->getBasicAuth();
-		print_r($_SERVER);die();
 		if (!$credentials) return false;
 
 		$username = $credentials['username'];
@@ -87,12 +88,27 @@ class Auth extends \Nng\Nnhelpers\Singleton {
 			return false;
 		}
 
+		// Abort, if the default user from the Extension Manager was passed
+		if ($username == 'examplefeUserName') {
+			return false;
+		}
+
 		// Get users defined in the Extension Manager
 		$userlist = \nn\t3::Arrays( \nn\t3::Environment()->getExtConf('nnrestapi', 'apiKeys') )->trimExplode("\n");
 		$userlistByAuth = array_combine( $userlist, $userlist );
 		
-		$user = $userlistByAuth["{$username}:{$apiKey}"] ?? false;
+		// User was defined in Extension Manager? Then return username
+		if ($user = $userlistByAuth["{$username}:{$apiKey}"] ?? false) {
+			return $username;
+		}
 
-		return $user ? $username : FALSE;
+		// ... or is it a fe_user? Credentials have already been checked by Authenticator/BasicAuth
+		if ($feUser = \nn\t3::FrontendUser()->get()) {
+			if ($feUser['nnrestapi_apikey'] == $apiKey) {
+				return $username;
+			}
+		}
+
+		return false;
 	}
 }

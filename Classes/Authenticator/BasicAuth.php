@@ -48,11 +48,6 @@ class BasicAuth extends AbstractAuthenticator {
 			return false;
 		}
 
-		// Abort, if the default user from the Extension Manager was passed
-		if ($username == 'examplefeUserName') {
-			return false;
-		}
-
 		// Make sure, the username really exists in DB before continuing
 		$feUser = \nn\t3::Db()->findOneByValues('fe_users', [
 			'username' => $username

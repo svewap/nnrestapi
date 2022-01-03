@@ -44,7 +44,7 @@ plugin.tx_nnrestapi {
 		# Default upload-paths for fileuploads
 		fileUploads {
 
-			// Use this key in your endpoint annotation "@api\upload default"
+			// Use this key in your endpoint annotation `@Api\Upload("config[keyname]")`
 			default {
 
 				// if nothing else fits, use fileadmin/api/
@@ -97,6 +97,15 @@ plugin.tx_nnrestapi {
 
 			# Which header(s) in the request contains the information about requested language (might be "X-Locale")
 			languageHeader = x-locale, accept-language
+		}
+
+		# Settings for the response
+		response {
+			# headers to send with response. Merged with default headers (see \Nng\Nnrestapi\Utilities\Header::addControls)
+			headers {
+				# Restrict CORS to certain domains. Please set for higher security!
+				Access-Control-Allow-Origin = *
+			}
 		}
 
 		# Kickstarter-Templates
