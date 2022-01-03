@@ -2,6 +2,8 @@
 
 namespace Nng\Nnrestapi\Utilities;
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * Helper für die Authentifizierungen von Frontend-Usern.
  * 
@@ -14,7 +16,6 @@ class Access extends \Nng\Nnhelpers\Singleton {
 	 * @var array
 	 */
 	private $userCache = [];
-
 
 	/**
 	 * Parses the `@Api\Access(...)` value which defines the access-rights to an endpoint.
@@ -138,6 +139,86 @@ class Access extends \Nng\Nnhelpers\Singleton {
 		}
 
 		return $accessList;
+	}
+
+	/**
+	 * Get current REFERER (domain only) a request was made from.
+	 * Returns a string like `https://www.somewhere.com`
+	 * 
+	 * ```
+	 * \nn\rest::Access()->getRefererDomain();
+	 * ```
+	 * @return string
+	 */
+	public function getRefererDomain() {
+		if ($referer = $_SERVER['HTTP_REFERER'] ?? '') {
+			$parts = parse_url( $referer );
+			$parts['port'] = $parts['port'] ?? false;
+			if ($parts['port']) {
+				$parts['port'] = ":{$parts['port']}";
+			}
+			$referer = "{$parts['scheme']}://{$parts['host']}{$parts['port']}";
+		}
+		return $referer;
+	}
+
+	/**
+	 * Checks, if a given domain matches a list of domain-patterns.
+	 * Other than `GeneralUtility::cmpFQDN()` also respects the port.
+	 * 
+	 * Return the given domain if it matches.
+	 * Return empty string if it doesn't match any pattern.
+	 * 
+	 * ```
+	 * \nn\rest::Access()->domainIsAllowed( $domain, $listOfpatterns );
+	 * \nn\rest::Access()->domainIsAllowed( 'https://www.test.de', '*.test.de, www.other.com' );
+	 * \nn\rest::Access()->domainIsAllowed( 'https://www.test.de', ['*.test.de', 'www.other.com'] );
+	 * ```
+	 * @return string
+	 */
+	public function domainIsAllowed( $domain = '', $listOfPatterns = [] ) {
+
+		// normalize to array in format [['host'=>'www.domain.com', 'port'=>'8090', 'scheme'=>'https'], ...]
+		$listOfPatterns = \nn\t3::Arrays($listOfPatterns)->trimExplode();
+
+		// `*` without any restrictions set as criteria? Then allow any domain
+		if (in_array('*', $listOfPatterns)) {
+			return $domain;
+		}
+
+		// check for ports - this is not supported by GeneralUtility::cmpFQDN()
+		foreach ($listOfPatterns as &$pattern) {
+
+			// get port (`...:8090` -> `8090`), if defined in pattern
+			preg_match( '/(.*):([0-9\.\*]*)/', $pattern, $matches );
+
+			if ($port = $matches[2]) {
+				// remove port restriction, if ANY port was defined (`www.domain.de:*`) 
+				if ($port == '*') {
+					$pattern = preg_replace('/(.*):([0-9\.\*]*)/', '\1', $pattern);
+					$port = '';
+				}
+			}
+
+			$scheme = parse_url( $pattern, PHP_URL_SCHEME ) ?: '';
+			$host = parse_url( $pattern, PHP_URL_HOST ) ?: $pattern;
+
+			// build regex for comparison
+			$regex = ($scheme ?: '(.*)') . ':\/\/';			
+			$regex .= strtr($host, [
+				'.' 	=> '\.', 
+				'*.'	=> '(.*)\.',
+				'.*'	=> '\.(.*)',
+			]);
+			$regex .= $port ? ":{$port}" : '(:.*)?';
+			$regex = "/^{$regex}$/i";
+
+			if (preg_match($regex, $domain)) {
+				return $domain;
+			}
+		}
+
+		return '';
 	}
 
 }

@@ -38,6 +38,12 @@ class Settings extends \Nng\Nnhelpers\Singleton {
 	private $querySettings = [];
 
 	/**
+	 * Settings from TypoScript setup
+	 * @var array
+	 */
+	private $typoscriptSettings = [];
+
+	/**
 	 * Constructor
 	 * 
 	 * @return void
@@ -96,6 +102,20 @@ class Settings extends \Nng\Nnhelpers\Singleton {
 		return \nn\t3::Settings()->getFromPath( $path, $this->apiConfiguration );
 	}
 	
+	/**
+	 * Return the TypoScript setup for `plugin.tx_nnrestapi.settings`
+	 * ```
+	 * \nn\rest::Settings()->get();
+	 * ```
+	 * @return array
+	 */
+	public function get() {
+		if ($cache = $this->typoscriptSettings) {
+			return $cache;
+		}
+		return $cache = \nn\t3::Settings()->get('nnrestapi');
+	}
+
 	/**
 	 * Return the site-identfier = the name of the siteConfig-YAML
 	 * ```
