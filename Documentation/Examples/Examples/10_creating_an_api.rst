@@ -215,6 +215,8 @@ To save changes to the Model you will have to persist it.
 You can use the standard ``$repository->update()`` and ``$persistenceManager->persistAll()`` methods,
 but here we are using one of our favourite one-lines from the TYPO3 ``nnhelpers``-extension.
 
+.. _examples_article_newmodel:
+
 5. Creating / inserting a new Model
 ~~~~~~~~~~
 

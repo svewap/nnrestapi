@@ -104,6 +104,8 @@ array.
    }
 
 
+.. _annotations_distiller_global:
+
 Defining Global Distillers - by the Model-type
 ~~~~~~~~
 

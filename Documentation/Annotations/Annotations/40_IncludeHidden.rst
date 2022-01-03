@@ -19,6 +19,12 @@ The syntax is:
 
    @Api\IncludeHidden
 
+.. tip::
+
+   If you are using frontend-user authentication, you can also set the option to include hidden records
+   on a per-user base by setting the checkbox "Admin-Mode: Show hidden records" in the tab "RestApi" 
+   of the frontend user entry.
+
 Here is a full example:
 
 .. code-block:: php

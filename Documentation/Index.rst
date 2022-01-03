@@ -127,6 +127,7 @@ Let's get started:
    Kickstarter/Index
    WritingDoc/Index
    Examples/Index
+   Configuration/Index
    KnownProblems/Index
    Changelog/Index
    Sitemap

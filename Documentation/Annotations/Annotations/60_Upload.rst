@@ -144,6 +144,8 @@ This can either be done by ...
    Have a look at the ``Nng\Nnrestapi\Helper\UploadPathHelper`` for detailled examples.
 
 
+.. _upload_custom_pathresolver:
+
 Example of custom path resolvers
 ~~~~~~~~~~
 
