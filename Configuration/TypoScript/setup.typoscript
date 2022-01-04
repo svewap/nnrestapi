@@ -148,3 +148,12 @@ module.tx_nnrestapi {
 	}
 	settings < plugin.tx_nnrestapi.settings
 }
+
+# ---------------------------------------------------
+# Create absolute URLs in RTE-texts
+
+lib.parseFunc_nnrestapi < lib.parseFunc_RTE
+lib.parseFunc_nnrestapi.tags {
+	link.typolink.forceAbsoluteUrl = 1
+	a.typolink.forceAbsoluteUrl = 1
+}

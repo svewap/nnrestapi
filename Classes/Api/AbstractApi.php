@@ -9,7 +9,7 @@ use Nng\Nnrestapi\Annotations as Api;
  * Nnrestapi
  * 
  */
-class AbstractApi {
+abstract class AbstractApi {
 
 	/**
 	 * @var Request
@@ -79,7 +79,8 @@ class AbstractApi {
 		}
 
 		// `L=..` parameter passed in GET-Request?
-		if ($L = \nn\t3::Request()->GP('L')) {
+		$L = \nn\t3::Request()->GP('L');
+		if ($L != '') {
 			return intval($L);
 		}
 
@@ -143,7 +144,7 @@ class AbstractApi {
 			if ($endpoint['access']['api_users']['*'] ?? false) {
 				return true;
 			}
-			if (in_array($basicAuthUser, $endpoint['access']['api_users'])) {
+			if (in_array($basicAuthUser, $endpoint['access']['api_users'] ?? [])) {
 				return true;
 			}
 		}
