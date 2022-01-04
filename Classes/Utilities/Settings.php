@@ -115,6 +115,17 @@ class Settings extends \Nng\Nnhelpers\Singleton {
 		}
 		return $cache = \nn\t3::Settings()->get('nnrestapi');
 	}
+	
+	/**
+	 * Return the key for the JSON-data in a `multipart/form-data` request
+	 * ```
+	 * \nn\rest::Settings()->getPayloadKey();
+	 * ```
+	 * @return array
+	 */
+	public function getPayloadKey() {
+		return $this->apiConfiguration['payloadKey'] ?? 'json';
+	}
 
 	/**
 	 * Return the site-identfier = the name of the siteConfig-YAML

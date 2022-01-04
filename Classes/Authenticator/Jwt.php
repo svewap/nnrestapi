@@ -53,6 +53,13 @@ class Jwt extends AbstractAuthenticator {
 		$feUserUid = $token['uid'] ?? false;
 		if (!$feUserUid) return false;
 
+		// Session exists in table `nnrestapi_sessions`?
+		$session = \nn\rest::Session()->get( $token['token'] );
+		if (!$session) return false;
+		
+		// Update tstamp
+		\nn\rest::Session()->touch( $token['token'] );
+
 		// get `fe_user` from DB
 		if ($user = \nn\t3::Db()->findByUid( 'fe_users', $feUserUid )) {
 			return $user;

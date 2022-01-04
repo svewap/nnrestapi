@@ -66,9 +66,12 @@ class Request {
         $this->setMvcRequest( $request );
 
 		$this->rawBody = $request->getBody()->getContents();
+		
+		$payloadKey = \nn\rest::Settings()->getPayloadKey();
+
 		// Bei `multipart/form-data`: JSON befindet sich an anderer Stelle, weil auch Dateien/Filedata übertragen wurde
 		if (!$this->rawBody && $body = $request->getParsedBody()) {
-			$this->rawBody = json_decode( $body['json'] ?? '', true );
+			$this->rawBody = json_decode( $body[$payloadKey] ?? $body['json'] ?? '', true );
 			$this->body = is_array($this->rawBody) ? $this->rawBody : json_decode( $this->rawBody, true );
 		} else {
 			$this->body = json_decode( $this->rawBody, true ) ?: $this->rawBody ?: [];

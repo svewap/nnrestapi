@@ -21,7 +21,7 @@ class Session extends \Nng\Nnhelpers\Singleton {
 	 * Get the session-data for a given JWT from the `nnrestapi_sessions` table.
 	 * We are __not__ using the standard Model/Repository methods here to increase performance.
      * ```
-	 * $session = \nn\rest::Session()->get( $identifier );
+	 * $session = \nn\rest::Session()->get( $token );
 	 * ```
 	 * @return array
 	 */

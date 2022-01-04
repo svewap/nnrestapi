@@ -1,6 +1,12 @@
 nnrestapi:
+
+  # in a multipart/form-data request: search this variable for the JSON payload
+  payloadKey: 'json'
+
+  # this path will be used as a base-path for all api requests 
   routing:
     basePath: '/api'
+
 routeEnhancers:
   Nnrestapi:
     type: NnrestapiEnhancer
