@@ -16,16 +16,30 @@ In certain cases you might want to remove certain fields from the JSON, e.g. to 
 sensitive data to be passed to the frontend or to reduce the complexity or depth of the returned
 JSON.
 
+**There are two ways to solve this:**
+
+-  Write a :ref:`custom Distiller <annotations_distiller_custom>` to post-process the array before
+   it is returned to the frontend. 
+
+-  Define :ref:`global Distillers <annotations_distiller_global>` on a per-model base using 
+   the TypoScript setup.
+
+.. _annotations_distiller_custom:
+
 Writing a custom Distiller
 ~~~~~~~~
 
-By defining a custom ``Distiller`` this is pretty simple. The basic syntax is:
+A Custom Distiller is a method that receives the data array after the Models, ObjectStorages etc.
+were converted. It can manipulate the array by removing, converting or adding fields. 
+It returns the modified array, which is then converted to a JSON and sent to the frontend.
+
+**The basic syntax is:**
 
 .. code-block:: php
 
    @Api\Distiller( \My\Extension\Distiller\Name::class )
 
-Let's write an example Distiller that removes the password from the resulting JSON before sending it
+Let's write an example Distiller that **removes the password** from the JSON before it gets sent
 to the frontend. 
 
 First, set a Distiller in your REST Api Endpoint using the ``@Api\Distiller()`` annotation:

@@ -9,17 +9,24 @@ HTTP Basic Auth
 How to authenticate a request to your TYPO3 RestApi using HTTP Basic Auth
 ---------
 
-.. tip::
+.. admonition:: Your choice!
 
    HTTP Basic Auth is one of the three ways you can authenticate to the TYPO3 Rest Api when making a request to the backend.
-   The alternative methods are using :ref:`JWT (JSON Web Tokens)<examples_axios_auth>` or the standard TYPO3 fe_user-cookie.
+   The alternative methods are using :ref:`JWT (JSON Web Tokens)<examples_axios_auth>` or the standard 
+   :ref:`TYPO3 fe_user-cookie <authentication_cookies>`.
 
 Basic access authentication (or "HTTP Basic Auth") is a very simple method for an HTTP user agent (browser) to provide user 
 credentials (username and password) when making a request to the TYPO3 Rest api. In basic HTTP authentication, a request contains 
 a header field in the form of ``Authorization: Basic <credentials>`` where "credentials" is the Base64 encoding of ID and password 
 joined by a single colon.
 
-You can define the credentials either on a per-user basis - or as "global" API-keys that can be used by multiple users. 
+**You can define the credentials either...**
+
+- on a :ref:`per-user base <authentication_http_feuser>` by setting an API-key for the frontend user or
+- as :ref:`"global" API-keys <authentication_http_global>` that can be used by multiple users and don't depend on a frontend user
+
+
+.. _authentication_http_feuser:
 
 Setting HTTP Basic Auth credentials for a single frontend-users
 ---------
@@ -73,6 +80,8 @@ HTTP Authorization.
    user login and the API usage. This way, in case you allow frontend users to reset their password, they will not
    automatically have access to the api!
 
+
+.. _authentication_http_global:
 
 Setting global HTTP Basic Auth credentials
 ---------
@@ -522,19 +531,19 @@ Full Testscript
                      <label for="request-method">Request method</label>
                   </div>
                   <div class="form-floating mb-4">
-                     <input class="form-control" id="url-request" value="https://extensions.99grad.dev/api/entry/4" />
+                     <input class="form-control" id="url-request" value="https://www.mysite.com/api/endpoint" />
                      <label for="url">URL to endpoint</label>
                   </div>
                   <div class="row">
                      <div class="col">
                         <div class="form-floating mb-4">
-                           <input class="form-control" id="username" value="david" />
+                           <input class="form-control" id="username" value="" />
                            <label for="username">Username</label>
                         </div>
                      </div>
                      <div class="col">
                         <div class="form-floating mb-4">
-                           <input type="password" class="form-control" id="password" value="malone" />
+                           <input type="password" class="form-control" id="password" value="" />
                            <label for="password">password</label>
                         </div>	
                      </div>

@@ -40,8 +40,8 @@ Url parts in depth
 - :guilabel:`https://www.mywebsite.com/`:kbd:`api`:guilabel:`/article/all`
 
   Every URL is prefixed with ``api`` as the first part of the path. This is the default setting for 
-  every Api. It can be changed in the configuration YAML. In TYPO3 this is important, so the
-  RouteEnhancer can kick in.
+  every Api. It can be changed in the :ref:`configuration YAML <configuration_yaml>`. 
+  In TYPO3 this is important, so the RouteEnhancer can kick in.
 
 - :guilabel:`https://www.mywebsite.com/api/`:kbd:`article`:guilabel:`/all`
 

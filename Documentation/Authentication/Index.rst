@@ -12,11 +12,14 @@ Logging in as a Frontend-User with the TYPO3 RestApi
 The ``EXT:nnrestapi`` ships with an endpoint for logging in as a frontend-user (``fe_user``) and for checking the login-status
 of the current user. 
 
-The TYPO3 Restful Api (nnrestapi) offers three different options for authenticating:
+**The TYPO3 Restful Api (nnrestapi) offers three different options for authenticating**:
 
-- Authorization via **JSON Web Tokens (JWT)**
-- **Cookie-based Authorization** (uses the same ``fe_typo_user`` cookie that is set for "normal" Frontend-Users)
-- **Basic Authorization** via HTTP (https://username:password@www.mysite.com/api/)
+- Authorization via :ref:`JSON Web Tokens (JWT) <authentication_jwt>`
+- :ref:`Cookie-based Authorization <authentication_cookies>`. This uses the same ``fe_typo_user`` cookie that is set for "normal" Frontend-Users.
+- :ref:`Basic Authorization via HTTP <authentication_http>`
+
+Links and recipes
+---------
 
 To learn how to authenticate, dive in to one of the following recipes:
 
@@ -72,6 +75,7 @@ Test your API and play with the code in our TYPO3 Rest Api CodePens:
 
 
 .. toctree::
+   :hidden:
    :glob:
    :maxdepth: 2
 

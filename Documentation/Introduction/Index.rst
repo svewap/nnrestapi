@@ -25,8 +25,8 @@ Roundtrips? Old-school.
 If you've been working with TYPO3 for a while, you've probably been thinking in terms of "content-pages" and "page reloads":
 You have your backend. The backend has many pages. And in the frontend, clicking on a menu will navigate to the requested page. 
 
-With every new page being requested by the browser, there will be a "roundtrip". The screen goes blank for a moment. The backend 
-renders the templates and responds with everything needed to display the page in the frontend: The complete markup (HTML-code), 
+With every page you visit, there is a "roundtrip". The screen goes blank for a moment. The backend renders the templates and 
+responds with everything needed to display the page in the frontend: The complete markup (HTML-code), 
 the styles (CSS) and a little bit of JavaScript-magic to make things more interesting and interactive.
 
 Time for the SPAs
@@ -53,10 +53,10 @@ JavaScript does just about everything in a Single Page Application or Progressiv
 it takes care of dynamically creating and rendering the markup, there is no real need to load bits and chunks of markup from the backend. 
 
 Instead, JavaScript will load raw data-Objects and then "convert" the data to something visible and readable for the user.
-The communication between JavaScript and the backend is based on the JSON-format. Nobody, who has ever touched a ``JSON`` wants to see 
-``XML`` again for the rest of his life.
+The communication between JavaScript and the backend is based on the JSON-format (at least in most applications). 
+Nobody, who has ever touched a ``JSON`` wants to see ``XML`` again for the rest of his life.
 
-So here is a JSON:
+**So here is a JSON:**
 
 .. code-block:: json
 
@@ -70,7 +70,8 @@ above string. From there, it's only a one liner to convert the string to a "norm
     let data = JSON.parse('{"title":"Nice title", "text":"And this is the text!"}');
     console.log( data.title );
 
-What about sending data back to the backend, for example, if you wanted to save it in the database? Let's modify the title and send it back:
+| What about sending data back to the server, for example, if you wanted to change the title and save it in the database? 
+Let's modify the title and send it back:
 
 .. code-block:: javascript
 
@@ -87,13 +88,17 @@ And modifying them and getting them back to the server is fun.
 GETting and PUTting things
 ~~~~~~~
 
-Things start to get fascinating, if you imagine your objects were real objects in a shelf.
-Every object has its own place in the shelf. The place is defined by the endpoint (or URL).
+Things start to get fascinating, if you imagine your JSON-object was like a real "object" in a shelf.
+
+Like every book, every object has its own place in the shelf. The place is defined by the endpoint (or URL).
 (Behind the scenes, most of the time, the "shelf" just a simple database with rows and columns. 
 The shelf-number would correspond to the ``uid`` of the entry)
 
-So to get whatever is in the first shelf we will send a request to the api and get the content in
-shelf number 1 by calling the following URL:
+To now check, which object is in the first shelf, we will send a request to the API and GET the content from
+shelf number 1. To do this all we need to know, is the "unique place" the object has in the shelf.
+And this is nothing other than the URL!
+
+The URL identifies a unique and clear "position" of an object (you could also say "entity") on the server.
 
 .. code-block:: php
 
@@ -117,7 +122,7 @@ The request-type makes the difference!
 ~~~~~~~
 
 Most "frontenders" coming from jQuery or the classic HTML-pages will now think: Simple. I would just 
-use different URLs - one for reading the data, one for writing it. Or they would use URL-parameters
+use different URLs: One for reading the data, one for writing it. Or they would use URL-parameters
 like ``?action=update`` to make a difference between the two requests.
 
 I bet, up until now, you have probably only worked with GET- or POST-requests. 
@@ -127,7 +132,7 @@ And you probably know **POST-requests** from HTML-forms. The POST-body (the form
 after submitting the form.
 
 One of the main ideas with a REST Api, is to use the HTTP-Request-Type to make clear, what you want to do.
-You will be sending a request to the same URL, but using different request types:
+The idea is: You will be sending a request to the same URL, but using different request types.
 
 .. code-block:: php
 
@@ -146,7 +151,7 @@ Some great minds came up with the following definition:
 * ``PATCH`` will update certain fields of an existing entry
 * ``DELETE`` will delete an existing entry
 
-It is pretty much up to you, which request type you use to do what. And people occasionally get confused about the exact difference between ``PUT`` and ``PATCH``.
+It is pretty much up to you, which request type you use to achieve what. And people occasionally get confused about the exact difference between ``PUT`` and ``PATCH``.
 But things get easier to understand later, if you stick with the standards.
 
 Where to go from here?

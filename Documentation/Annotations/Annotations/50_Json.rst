@@ -9,21 +9,22 @@
 Control how your TYPO3 RestAPi renders the JSON result
 ---------
 
-Simple options and settings while converting the response-data to JSON.
+| Options and settings for converting the response-data to JSON.
 Currently, only ``depth`` is implemented.
 
 With ``depth`` you can control, how deep the returned object will be 
-parsed when it is converted to the JSON-array. This is helpful, if you
-are returning Objects with many nested relations that only need to
-be returned to a certain depth. 
+parsed when it is converted to the JSON-array. 
 
-The syntax is:
+This is helpful, if you are returning Objects with many nested relations or recursions, 
+but you only need the first few levels of the data in the frontend.
+
+**The syntax is:**
 
 .. code-block:: php
 
    @Api\Json(depth=4)
 
-Here is a full example:
+**Here is a full example:**
 
 .. code-block:: php
 

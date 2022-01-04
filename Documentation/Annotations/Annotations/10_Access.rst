@@ -16,7 +16,7 @@ The ``@Api\Access()`` annotation can be used to restrict the access to an endpoi
 * Backend-Users or Admins
 * IP-adresses
 
-The basic syntax is:
+**The basic syntax is:**
 
 .. code-block:: php
    
@@ -30,5 +30,8 @@ The basic syntax is:
     * @Api\Access("options")
     */
 
-Check out the :ref:`@Api\\Access(...)<access>` section of this documentation that has detailed 
-information and several examples.
+
+Examples and details?
+---------
+
+Pleaser check out the section :ref:`"how to restrict access" <access>` for detailed information and examples.

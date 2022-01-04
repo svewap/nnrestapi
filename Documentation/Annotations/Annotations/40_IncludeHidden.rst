@@ -6,26 +6,26 @@
 @Api\\IncludeHidden
 ============
 
-Enable retrieving of hidden records and relations from database.
+Retrieve hidden records and relations from the database.
 ---------
 
-This makes an endpoint behave like the Typo3 Backend: Hidden records and records with ``fe_group`` 
-or ``starttime/endtime``-restrictions will be returned to frontend, although they usually would be
-hidden in requests from the frontend.
+This makes the TYPO3 Frontend behave like the Typo3 Backend: Hidden records and records with ``fe_group`` 
+or ``starttime/endtime``-restrictions will be returned to the frontend, although they usually would only
+be visible in the TYPO3 backend for admins.
 
-The syntax is:
+**The syntax is:**
 
 .. code-block:: php
 
-   @Api\IncludeHidden
+   @Api\IncludeHidden()
 
 .. tip::
 
    If you are using frontend-user authentication, you can also set the option to include hidden records
-   on a per-user basis by setting the checkbox "Admin-Mode: Show hidden records" in the tab "RestApi" 
+   on a per-user basis by setting the checkbox :ref:`"Admin-Mode" <configuration_feuser>` in the tab "RestApi" 
    of the frontend user entry.
 
-Here is a full example:
+**Here is a full example:**
 
 .. code-block:: php
 

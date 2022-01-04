@@ -13,13 +13,15 @@ By using the `@Api\Access(...)` annotation above your method, you can restrict t
 your REST API endpoint. This way you can decide, which Frontend-Users, Frontend-Usergroups,
 Backend-Users or Backend-Admins are allowed to call your endpoint.
 
-If you are planning to implement a public endpoint with no user-restrictions, simply use the `@Api\Access("public")` annotation.
-Endpoints marked as `public` can be called by any visitor. No authentication is necessary. 
+**You can restrict access to...**
 
-To use the `@Api\Access`-annotation, you will need to add the `use Nng\Nnrestapi\Annotations as Api;` 
-line at the top of your script.
+- frontend users and/or user groups (the standard TYPO3 frontend users and groups)
+- backend users and admin (the endpoint can only be called, if you are logged in to the backend)
+- global users defined in the Extension Configuration Manager
+- ip-adresses and -ranges
+- by using a :ref:`custom method <access_checkaccess>`
 
-The basic syntax of the `@Api\Access`-Annotation is:
+**The basic syntax of the `@Api\Access`-Annotation is:**
 
 .. code-block:: php
 
@@ -41,13 +43,14 @@ The basic syntax of the `@Api\Access`-Annotation is:
       }
    }
 
-
+Note that to use the ``@Api\Access``-annotation, you will need to add the `use Nng\Nnrestapi\Annotations as Api;` 
+line at the top of your script.
 
 
 Overview of options
 ---------
 
-The following permissions exist for `@Api\Access(...)`:
+The following permissions exist for ``@Api\Access(...)``:
 
 +--------------------------------------------+--------------------------------------------------------------+
 | annotation                                 | permissions: Endpoint can be called by...                    |
@@ -93,7 +96,7 @@ Examples
 Creating a public endpoint
 ~~~~~~~~~~~~
 
-The following endpoint would be reachable as a GET-request at `/test/example`.
+The following endpoint would be reachable as a GET-request at ``/test/example``.
 
 To call the endpoint, the user does not have to be authenticated. It is a public endpoint without
 any restrictions. Unnecessary to mention: Be careful, when exposing public endpoints!
@@ -111,11 +114,11 @@ any restrictions. Unnecessary to mention: Be careful, when exposing public endpo
 Restrict access to ANY frontend-user
 ~~~~~~~~~~~~
 
-The following endpoint would be reachable as a GET-request at `/test/example`.
+The following endpoint would be reachable as a GET-request at ``/test/example``.
 
-Any **logged in frontend users** (`fe_users`) will be able to call it.
+Any **logged in frontend users** (``fe_users``) will be able to call it.
 
-If the user is not logged in, a `HTTP Error 403 Forbidden` will be thrown.
+If the user is not logged in, a ``HTTP Error 403 Forbidden`` will be thrown.
 
 .. code-block:: php
 
@@ -318,6 +321,10 @@ We now can refer to the access group by using the `config[identifier]`-syntax in
     * @Api\Access("config[apiUsers]")
     * ...
     */
+
+
+Read on
+---------
 
 .. toctree::
    :glob:

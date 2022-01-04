@@ -14,6 +14,6 @@ In this section, you can find examples and tutorials:
 
 .. toctree::
    :glob:
-   :maxdepth: 2
+   :maxdepth: 1
 
    Configuration/*

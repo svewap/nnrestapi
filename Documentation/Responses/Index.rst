@@ -15,9 +15,10 @@ or an ``ObjectStorage``.
 
 If no other response header or status code is specified, the nnrestapi will create all headers
 for a ``200 OK`` HTTP Response. It will also automatically send the correct CORS and Credential-headers 
-like ``Access-Control-Allow-Credentials`` etc. 
+like ``Access-Control-Allow-Credentials`` etc.
 
-Check the ``EXT:nnrestapi/Classes/Utilities/Header.php`` to see all headers generated.
+Check :ref:`this section <responses_headers>` to see all default headers generated and find out how
+to remove or add custom headers to the response.
 
 Let's dive into details:
 ~~~~~~~~~~

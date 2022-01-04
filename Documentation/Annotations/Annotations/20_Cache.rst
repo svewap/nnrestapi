@@ -6,7 +6,7 @@
 @Api\\Cache
 ============
 
-Enable full caching of the result from your TYPO3 RestAPi endpoint
+Enable caching for a TYPO3 RestAPi endpoint
 ---------
 
 If the method of an endpoint has the ``@Api\Cache`` annotation set, then its result
@@ -16,13 +16,13 @@ from the cache without calling the method.
 Useful, if static data should be loaded like settings, dropdown-values or country-lists etc.
 The cache will only be cleared and rebuilt, if the "clear cache" button is clicked in the backend.
 
-The syntax is:
+**The syntax is:**
 
 .. code-block:: php
 
    @Api\Cache
 
-Here is a full example:
+**Here is a full example:**
 
 .. code-block:: php
 
@@ -48,6 +48,10 @@ Here is a full example:
       }
 
    }
+
+
+Handling the cache yourself
+---------
 
 In case you would like to handle the caching of data yourself, the ``nnhelpers`` 
 Cache-methods are very useful. Here is a basic example – have a look at the 

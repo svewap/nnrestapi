@@ -120,7 +120,7 @@ That's ONE EURO ...
 
          .. container:: card-body flex-column d-flex
 
-            … to to give 99° more opportunities to support social and sustainable project "pro bono".
+            … to to give 99° more opportunities to support social and sustainable projects "pro bono".
 
             .. rst-class:: horizbuttons-striking-m mt-auto mb-0 ml-auto
 
@@ -136,7 +136,7 @@ That's ONE EURO ...
 
          .. container:: card-body flex-column d-flex
 
-            … to motivate us to publish more great extensions in the TER
+            … to motivate us to publish more great extensions in the TER that we've been hiding for years.
 
             .. rst-class:: horizbuttons-striking-m mt-auto mb-0 ml-auto
 

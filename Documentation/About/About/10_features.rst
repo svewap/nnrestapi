@@ -6,7 +6,7 @@
 Features
 ============
 
-Frontend features:
+⊛ Frontend features:
 -------------
 
 * Supports all common **request types** (GET, POST, DELETE, PUT, PATCH)
@@ -18,7 +18,7 @@ Frontend features:
 * Supports **CORS** for accessing the REST API from cross-origins and while developing in localhost environments
 * Automatic **conversion of JSON-data** to Models and vice-versa
 
-Developing features:
+⊛ Developing features:
 -------------
 
 * Many, many examples. And even many more.
@@ -28,7 +28,7 @@ Developing features:
 * Optional Caching-layer with one line of code
 * A "kick-starter" feature for creating your RESTful Api extension with one click
 
-Backend module:
+⊛ Backend module:
 -------------
 
 * Automatic listing of all registered endpoints

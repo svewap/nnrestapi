@@ -11,6 +11,11 @@ Configuring the TYPO3 Rest Api in the Extension Manager
 
 Use the backend module "Settings -> Extension Configuration" to modify the following settings: 
 
+.. figure:: ../../Images/ext-conf.jpg
+   :class: with-shadow
+   :alt: Extension Manager
+   :width: 100%
+
 basic.apiKeys
 """"""""""""""
 .. container:: table-row

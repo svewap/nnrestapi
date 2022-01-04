@@ -236,6 +236,7 @@ Authors
    Authentication/Index
    FileUploads/Index
    Localization/Index
+   HiddenRecords/Index
    Kickstarter/Index
    WritingDoc/Index
    Examples/Index

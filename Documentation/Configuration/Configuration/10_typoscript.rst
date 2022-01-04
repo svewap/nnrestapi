@@ -69,6 +69,8 @@ apiController
         Nng\Nnrestapi\Controller\ApiController
 
 
+.. _configuration_fileuploads:
+
 fileUploads
 """"""""""""""
 .. container:: table-row

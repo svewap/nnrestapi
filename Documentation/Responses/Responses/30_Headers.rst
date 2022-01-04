@@ -70,7 +70,7 @@ Overview of default headers sent:
 ~~~~~~~~~~
 
 +------------------------------------------------------+------------------------------------------------------------------+
-| HTTP header type                                     | Default value and explanation                                   |
+| HTTP header type                                     | Default value and explanation                                    |
 +======================================================+==================================================================+
 | ``Access-Control-Allow-Origin``                      | ``*``                                                            |
 |                                                      |                                                                  |

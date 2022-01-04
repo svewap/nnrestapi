@@ -66,6 +66,8 @@ To **disable localization / translation** even if the TypoScript settings are se
     */
 
 
+.. _annotations_localize_usecases:
+
 Typical use-cases
 ~~~~~~~~~
 
