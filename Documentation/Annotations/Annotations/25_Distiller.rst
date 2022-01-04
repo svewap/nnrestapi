@@ -13,7 +13,7 @@ By default, any Array, Object, Model or ObjectStorage returned by your endpoint 
 be recursively converted to an array and then sent as JSON response to the client.
 
 In certain cases you might want to remove certain fields from the JSON, e.g. to protect 
-sensitive data to be passed to the frontend or to reduce the complexitiy or depth of the returned
+sensitive data to be passed to the frontend or to reduce the complexity or depth of the returned
 JSON.
 
 Writing a custom Distiller
@@ -37,8 +37,9 @@ First, set a Distiller in your REST Api Endpoint using the ``@Api\Distiller()`` 
    namespace My\Extension\Api;
 
    use Nng\Nnrestapi\Annotations as Api;
-
-   class Example
+   use Nng\Nnrestapi\Api\AbstractApi;
+	
+   class Example extends AbstractApi
    {
       /**
        * @Api\Distiller( \My\Extension\Distiller\RemovePassword::class )
@@ -83,7 +84,7 @@ How to only keep a few keys
 
 If you are removing more keys from the JSON than keeping them, consider simply using the ``$keysToKeep`` property
 which you can set in your custom Distiller. The ``Nng\Nnrestapi\Distiller\AbstractDistiller`` will check, if
-a Distiller has this property set and then autoatically remove alle keys from the JSON that are not defined in the
+a Distiller has this property set and then automatically remove all keys from the JSON that are not defined in the
 array.
 
 .. code-block:: php
@@ -109,12 +110,12 @@ array.
 Defining Global Distillers - by the Model-type
 ~~~~~~~~
 
-In many cases you will probably want to define a Distiller based on the Model-type.
+In many cases, you will probably want to define a Distiller based on the Model-type.
 An example could be: You want to pass the `publicUrl` of a `SysFileReference`, but don't
 need the fields ``crop``, ``uidLocal`` etc. in your frontend.
 
 This can be accomplished by defining a per-model Distiller in the TypoScript setup for
-``globalDistillers``. Use the classname of the Model as a key and define how the Model
+``globalDistillers``. Use the class name of the Model as a key and define how the Model
 should be parsed:
 
 .. code-block:: typoscript
@@ -187,7 +188,7 @@ Flattening SysFileReferences (FAL)
 
 By default, a FAL will be converted to an array containing fields like ``publicUrl``, ``title``, ``description``,
 ``crop`` etc. If you only need the path to the SysFile and not all these fields, you can set ``flattenFileReferences = 1``
-on the top level of the destiller configuration for your Model. It will be recursively applied to all child-relations.
+on the top level of the distiller configuration for your Model. It will be recursively applied to all child-relations.
 
 .. code-block:: typoscript
 

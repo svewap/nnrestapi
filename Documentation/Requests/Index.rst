@@ -15,7 +15,7 @@ it to the frontend application.
 
 Many Single Page Applications (SPA) and Progressive Web Apps (PWA) nowadays are 
 programmed in JavaScript and use the JSON format to communicate between the frontend 
-and backend. Typically the frontend app will want to do a number of thing: 
+and backend. Typically, the frontend app will want to do a number of things: 
 
 - Get data for an **existing entry** from the backend
 - **Create** or insert a new entry, e.g. add a new item to the to-do or shopping list
@@ -23,7 +23,7 @@ and backend. Typically the frontend app will want to do a number of thing:
 - and finally **delete** an item from the database
 
 The idea behind a **RESTful Api** is to define endpoints (URLs) that the frontend application can
-communicate with to get the job done. But instead of defining seperate URLs for every
+communicate with to get the job done. But instead of defining separate URLs for every
 operation needed (``/api/get/entry``, ``/api/save/entry``, ``/api/delete/entry``) or passing
 an action as request parameter (``?action=save``) it uses HTTP Request types to make clear,
 if an entry should be retrieved, inserted, updated or deleted.
@@ -50,9 +50,9 @@ type of request and the request-body passed, different operations are executed:
 
 .. hint::
 
-   In many cases the backend will not make a difference between a ``PUT`` and ``PATCH`` request. 
+   In many cases, the backend will not make a difference between a ``PUT`` and ``PATCH`` request. 
    Both are intended to update existing data. But if you are interested in the details, you
-   can find a good explanaition `on this page <https://rapidapi.com/blog/put-vs-patch/>`__.
+   can find a good explanation `on this page <https://rapidapi.com/blog/put-vs-patch/>`__.
 
 Route a request to your TYPO3 Rest Api
 ---------
@@ -66,12 +66,11 @@ There are two basic ways to accomplish this task:
 - :ref:`custom_routing`
 
 
-Lets dive into details:
+Let's dive into details:
 ~~~~~~~~~~
 
 .. toctree::
    :glob:
-   :maxdepth: 6
+   :maxdepth: 2
 
    Requests/*
-

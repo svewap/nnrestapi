@@ -41,7 +41,7 @@ To learn how to authenticate, dive in to one of the following recipes:
 | :ref:`Frontend example with AXIOS <examples_axios_auth>`               | Pure JavaScript solution, but with a little help from the great JS     |
 |                                                                        | library **"axios"** that makes life a little easier.                   |
 +------------------------------------------------------------------------+------------------------------------------------------------------------+
-| :ref:`Frontend example with jQuery <examples_jquery_auth>`             | If you still like **jQuery** althought the world is moving somewhere   |
+| :ref:`Frontend example with jQuery <examples_jquery_auth>`             | If you still like **jQuery**, although the world is moving somewhere   |
 |                                                                        | else, here is an example for the authentication using jQuery.          |
 +------------------------------------------------------------------------+------------------------------------------------------------------------+
 
@@ -73,6 +73,6 @@ Test your API and play with the code in our TYPO3 Rest Api CodePens:
 
 .. toctree::
    :glob:
-   :maxdepth: 6
+   :maxdepth: 2
 
    Authentication/*

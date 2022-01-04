@@ -10,7 +10,7 @@ Enable retrieving of hidden records and relations from database.
 ---------
 
 This makes an endpoint behave like the Typo3 Backend: Hidden records and records with ``fe_group`` 
-or ``starttime/endtime``-restrictions will be returned to frontend although they usually would be
+or ``starttime/endtime``-restrictions will be returned to frontend, although they usually would be
 hidden in requests from the frontend.
 
 The syntax is:
@@ -22,7 +22,7 @@ The syntax is:
 .. tip::
 
    If you are using frontend-user authentication, you can also set the option to include hidden records
-   on a per-user base by setting the checkbox "Admin-Mode: Show hidden records" in the tab "RestApi" 
+   on a per-user basis by setting the checkbox "Admin-Mode: Show hidden records" in the tab "RestApi" 
    of the frontend user entry.
 
 Here is a full example:
@@ -34,8 +34,9 @@ Here is a full example:
    namespace My\Extension\Api;
 
    use Nng\Nnrestapi\Annotations as Api;
-
-   class Example
+   use Nng\Nnrestapi\Api\AbstractApi;
+   
+   class Example extends AbstractApi
    {
       /**
        * @Api\IncludeHidden
@@ -62,8 +63,9 @@ your data from the repository.
    namespace My\Extension\Api;
    
    use Nng\Nnrestapi\Annotations as Api;
-
-   class Example
+   use Nng\Nnrestapi\Api\AbstractApi;
+   
+   class Example extends AbstractApi
    {
       /**
        * @Api\Access("public")

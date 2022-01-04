@@ -25,11 +25,12 @@ then follow these steps.
       <?php
 
       namespace My\Ext\Annotations;
-
+      use Nng\Nnrestapi\Api\AbstractApi;
+   
       /**
        * @Annotation
        */
-      class Example
+      class Example extends AbstractApi
       {
          public $value;
 

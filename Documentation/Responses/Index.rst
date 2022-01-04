@@ -19,12 +19,11 @@ like ``Access-Control-Allow-Credentials`` etc.
 
 Check the ``EXT:nnrestapi/Classes/Utilities/Header.php`` to see all headers generated.
 
-Lets dive into details:
+Let's dive into details:
 ~~~~~~~~~~
 
 .. toctree::
    :glob:
-   :maxdepth: 6
+   :maxdepth: 2
 
    Responses/*
-

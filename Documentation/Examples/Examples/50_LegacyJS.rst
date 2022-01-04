@@ -18,7 +18,7 @@ with and without authentication and file-uploads using nothing but pure JavaScri
 
 .. toctree::
    :glob:
-   :maxdepth: 6
+   :maxdepth: 2
 
    LegacyJS/*
 

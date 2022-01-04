@@ -9,7 +9,7 @@ Installation
 High speed walk-through: Installing the TYPO3 Rest Api.
 ------------
 
-| For people, who know there way around TYPO3 – no words needed, only enough coffee :)
+| For people, who know their way around TYPO3 – no words needed, only enough coffee :)
 You can find the scripts for the ``YAML``-configuration and ``.htaccess`` below.
 
 .. youtube:: yUAAlnPy3NQ
@@ -33,7 +33,7 @@ Step-by-step instruction
 
    **OR**
 
-   Install the the extension using **composer** on the command-line:
+   Install the extension using **composer** on the command-line:
 
    .. code-block:: bash
 
@@ -41,15 +41,15 @@ Step-by-step instruction
 
 2. Make sure the database-tables were created
 
-   In the TYPO3 backend, switch to the "Maintainance" module and click on "Analyze Database Structure".
+   In the TYPO3 backend, switch to the "Maintenance" module and click on "Analyze Database Structure".
    Create the database-tables for ``nnrestapi``, if necessary. 
-   For more information `read here <https://docs.typo3.org/m/typo3/guide-installation/10.4/en-us/Upgrade/RunTheDatabaseAnalyzer/Index.html>`__.
+   For more information, `read here <https://docs.typo3.org/m/typo3/guide-installation/10.4/en-us/Upgrade/RunTheDatabaseAnalyzer/Index.html>`__.
 
 
 3. Include the TypoScript Templates on your Root-page
 
-   Make sure, the static typoscript configuration for **"RestApi Configuration (nnrestapi)"** was included on your root-page.
-   To do so, follow the standard instructions on `how to include typoscript from extensions <https://docs.typo3.org/m/typo3/reference-typoscript/main/en-us/UsingSetting/Entering.html#include-typoscript-from-extensions>`__.
+   Make sure, the static TypoScript configuration for **"RestApi Configuration (nnrestapi)"** was included on your root-page.
+   To do so, follow the standard instructions on `how to include TypoScript from extensions <https://docs.typo3.org/m/typo3/reference-typoscript/main/en-us/UsingSetting/Entering.html#include-typoscript-from-extensions>`__.
 
 4. Include the YAML-Configuration
 

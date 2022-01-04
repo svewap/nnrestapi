@@ -30,5 +30,5 @@ The basic syntax is:
     * @Api\Access("options")
     */
 
-Check out the :ref:`@Api\\Access(...)<access>` section of this documentation that has detailled 
+Check out the :ref:`@Api\\Access(...)<access>` section of this documentation that has detailed 
 information and several examples.

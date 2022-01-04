@@ -14,7 +14,7 @@ invalid or the requested data could not be retrieved.
 
 Have a look at the class ``Nng\Nnrestapi\Mvc\Response`` to see all available options.
 
-Here we are checking for a model. If it can't be found we return a ``404 NOT FOUND`` error:
+Here we are checking for a model. If it can't be found, we return a ``404 NOT FOUND`` error:
 
 .. code-block:: php
 

@@ -11,9 +11,9 @@ Use comments to create your documentation on-the-fly
 
 Creating a beautiful documentation of your TYPO3 RestApi is simple: No need to use
 an external editor! Anything you write as a comment above your method will be
-parsed and converted in a documenation that can be accessed in the TYPO3 backend.
+parsed and converted in a documentation that can be accessed in the TYPO3 backend.
 
-In the comment you can even use `Markdown <https://www.markdownguide.org/cheat-sheet/>`__ to
+In the comment, you can even use `Markdown <https://www.markdownguide.org/cheat-sheet/>`__ to
 format your text, add headings or example code blocks.
 
 Here is an example:

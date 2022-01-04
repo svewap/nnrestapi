@@ -10,7 +10,7 @@ How to implement your own method for checking access rights to your endpoint
 ---------
 
 In most cases using the :ref:`@Api\\Access(...)<access>` annotation will be sufficient to 
-restrict the access to your TYPO3 Rest Api endpoint to certain frontend-users or usergroups.
+restrict the access to your TYPO3 Rest Api endpoint to certain frontend-users or user groups.
 
 In case you need to implement your own logic for checking access rights, you can simply
 define a ``checkAccess()``-method in the class of your endpoint. This will override the
@@ -51,13 +51,13 @@ Here is an example:
 
 The ``checkAccess()`` method must return ``TRUE``, if the user is allowed to access the endpoint. 
 If it returns ``FALSE``, the script will automatically be aborted and the Api will return 
-a ``HTTP 403 Forbibben`` header.
+a ``HTTP 403 Forbidden`` header.
 
 
 Example: Restricting access to certain IP-adresses
 --------
 
-In this example we will use the ``checkAccess()`` method to check, if the user has a certain IP.
+In this example, we will use the ``checkAccess()`` method to check, if the user has a certain IP.
 The script will only allow access to the methods in this class, if the ``$remoteAddr`` matches
 one of the patterns defined in ``$allowedIpList``:
 

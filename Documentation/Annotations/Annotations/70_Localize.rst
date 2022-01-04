@@ -81,13 +81,13 @@ Two exemplary cases for enabling / disabling the localization settings:
     If you now need to **disable** the localization for certain methods, this can be accomplished by passing 
     ``FALSE`` as argument to the Annotation: ``@Api\Localize(FALSE)``
 
--   Next let's imagine you have created a frontend-application which only needs translated data for the labels,
-    textinformations and dialog-texts. The rest of the applications main purpose is reading and updating data-rows
+-   Next, let's imagine you have created a frontend-application which only needs translated data for the labels,
+    text information and dialog-texts. The rest of the application's main purpose is reading and updating data-rows
     that don't need localization.
 
     This would be a typical case for leaving the default setting to "disabled" by setting  
     ``plugin.tx_nnrestapi.settings.localization.enabled = 0``.
 
-    If you now have an endpoint that **does** needs translation handling, you can override these settings by
+    If you now have an endpoint that **does** need translation handling, you can override these settings by
     using ``@Api\Localize(TRUE)`` (or simply ``@Api\Localize()``) above your method.
     

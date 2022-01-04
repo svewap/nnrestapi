@@ -9,7 +9,7 @@ Headers and CORS
 .. warning::
 
    The default configuration of the nnrestapi is very "open": It allows cross-domain requests (CORS)
-   and cookies. This is great for developing from a localhost environment or testing you API with
+   and cookies. This is great for developing from a localhost environment or testing your API with
    tools like Postman or CodePen.
    
    In a production environment, you should change these settings and make them more secure. Never
@@ -20,7 +20,7 @@ Settings HTTP headers of your TYPO3 RestApi response
 ~~~~~~~~~~
 
 When creating the response, the ``nnrestapi`` sends a list of headers to make the Rest Api as "compatible" as
-possible during development. By default it also enables cross-domain-requests (CORS) and the setting of 
+possible during development. By default, it also enables cross-domain-requests (CORS) and the setting of 
 cross-domain-cookies.
 
 Changing a default header value
@@ -37,10 +37,10 @@ in your TypoScript setup using the existing key:
       }
    }
 
-Adding an additional header to your response
+Adding additional headers to your response
 ~~~~~~~~~~
 
-To add an additional HTTP header to your response, add it to the TypoScript setup:
+To add another HTTP header to your response, add it to the TypoScript setup:
 
 .. code-block:: typoscript
 
@@ -70,7 +70,7 @@ Overview of default headers sent:
 ~~~~~~~~~~
 
 +------------------------------------------------------+------------------------------------------------------------------+
-| HTTP header type                                     | Default value and explaination                                   |
+| HTTP header type                                     | Default value and explanation                                   |
 +======================================================+==================================================================+
 | ``Access-Control-Allow-Origin``                      | ``*``                                                            |
 |                                                      |                                                                  |

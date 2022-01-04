@@ -57,6 +57,8 @@ It will convert the file on the server to a ``SysFile``, create the ``SysFileRef
       need some other solution to keep your server "clean".
 
 
+.. _examples_fileuploads_multipart:
+
 Using mutipart form-data (fun)
 ~~~~~~~~~~~~
 

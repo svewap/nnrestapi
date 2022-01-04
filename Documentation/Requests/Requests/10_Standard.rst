@@ -39,13 +39,13 @@ Url parts in depth
 
 - :guilabel:`https://www.mywebsite.com/`:kbd:`api`:guilabel:`/article/all`
 
-  every URL is prefixed with ``api`` as first part of the path. This is the default setting for 
-  every Api. It can be changed in the configuration YAML. In TYPO3 this is important so the
+  Every URL is prefixed with ``api`` as the first part of the path. This is the default setting for 
+  every Api. It can be changed in the configuration YAML. In TYPO3 this is important, so the
   RouteEnhancer can kick in.
 
 - :guilabel:`https://www.mywebsite.com/api/`:kbd:`article`:guilabel:`/all`
 
-  | the second part of the URL is the lowercased classname of your controller.
+  | the second part of the URL is the lowercase class name of your controller.
   **Example:** The URL ``/api/article/`` will be routed to your ``class Article {}``.
 
 

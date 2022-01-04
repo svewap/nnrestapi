@@ -9,8 +9,204 @@
 .. _start:
 
 =============================================================
-99° Restful API for Typo3 by 99° (nnrestapi)
+RESTful API for Typo3 (nnrestapi by 99°)
 =============================================================
+
+Everything you need to create a RESTful API in TYPO3.
+
+.. container:: row m-0 p-0
+
+   .. container:: col-12 col-md-6 pl-0 pr-3 py-3 m-0
+
+      .. container:: card px-0 h-100
+
+         .. rst-class:: card-header h4
+
+            .. rubric:: :ref:`➔ Screenshots <screenshots>`
+
+         .. container:: card-body
+
+            See what you get. Screenshots of the front- and backend.
+
+   .. container:: col-12 col-md-6 pl-0 pr-3 py-3 m-0
+
+      .. container:: card px-0 h-100
+
+         .. rst-class:: card-header h4
+
+            .. rubric:: :ref:`★ Features <introduction>`
+
+         .. container:: card-body
+
+            :ref:`Motivation <introduction>` and overview of the :ref:`main features <about_features>`.
+
+   .. container:: col-12 col-md-6 pl-0 pr-3 py-3 m-0
+
+      .. container:: card px-0 h-100
+
+         .. rst-class:: card-header h4
+
+            .. rubric:: :ref:`⚑ Installation <installation>`
+
+         .. container:: card-body
+
+            How to :ref:`install <installation>` the extension. How to set up your first TYPO3 RESTful Api in 5 minutes
+            using this :ref:`quick-start <quickstart>`.
+
+   .. container:: col-12 col-md-6 pl-0 pr-3 py-3 m-0
+
+      .. container:: card px-0 h-100
+
+         .. rst-class:: card-header h4
+
+            .. rubric:: :ref:`⌘ Routing <requests>`
+
+         .. container:: card-body
+
+            Routing requests / URLs to your classes and methods (endpoints).
+
+   .. container:: col-12 col-md-6 pl-0 pr-3 py-3 m-0
+
+      .. container:: card px-0 h-100
+
+         .. rst-class:: card-header h4
+
+            .. rubric:: :ref:`↹ Responses <response>`
+
+         .. container:: card-body
+
+            How to create a response and convert Models, ObjectStorages and FileReferences to JSON
+            (by doing nothing ;)
+
+   .. container:: col-12 col-md-6 pl-0 pr-3 py-3 m-0
+
+      .. container:: card px-0 h-100
+
+         .. rst-class:: card-header h4
+
+            .. rubric:: :ref:`@ Annotations <annotations>`
+
+         .. container:: card-body
+
+            Configure almost anything using Annotations, directly at your method.
+
+   .. container:: col-12 col-md-6 pl-0 pr-3 py-3 m-0
+
+      .. container:: card px-0 h-100
+
+         .. rst-class:: card-header h4
+
+            .. rubric:: :ref:`✜ Access <access>`
+
+         .. container:: card-body
+
+            How to only allow certain users to access your Api.
+
+   .. container:: col-12 col-md-6 pl-0 pr-3 py-3 m-0
+
+      .. container:: card px-0 h-100
+
+         .. rst-class:: card-header h4
+
+            .. rubric:: :ref:`⊛ Authentication <authentication>`
+
+         .. container:: card-body
+
+            How to authenticate using :ref:`HTTP Basic Auth <authentication_http>`,
+            :ref:`JSON Web Tokens <authentication_jwt>` and :ref:`Cookies <authentication_cookies>`.
+
+   .. container:: col-12 col-md-6 pl-0 pr-3 py-3 m-0
+
+      .. container:: card px-0 h-100
+
+         .. rst-class:: card-header h4
+
+            .. rubric:: :ref:`❖ Uploading Files <fileupload>`
+
+         .. container:: card-body
+
+            How to upload files from the frontend and create FileReferences (FAL) 
+            in a single request using multipart/form-data.
+
+   .. container:: col-12 col-md-6 pl-0 pr-3 py-3 m-0
+
+      .. container:: card px-0 h-100
+
+         .. rst-class:: card-header h4
+
+            .. rubric:: :ref:`❉ Localization <localization>`
+
+         .. container:: card-body
+
+            Retrieving translated (localized) data from the TYPO3 Rest Api.
+
+   .. container:: col-12 col-md-6 pl-0 pr-3 py-3 m-0
+
+      .. container:: card px-0 h-100
+
+         .. rst-class:: card-header h4
+
+            .. rubric:: :ref:`✿ Kickstarter <kickstarter>`
+
+         .. container:: card-body
+
+            Create a namespaced Rest Api extension with a single click.
+
+   .. container:: col-12 col-md-6 pl-0 pr-3 py-3 m-0
+
+      .. container:: card px-0 h-100
+
+         .. rst-class:: card-header h4
+
+            .. rubric:: :ref:`❂ Writing documentation <access_writedocs>`
+
+         .. container:: card-body
+
+            How to create a beautiful documentation of your endpoints. 
+            Without leaving your code editor.
+
+   .. container:: col-12 col-md-6 pl-0 pr-3 py-3 m-0
+
+      .. container:: card px-0 h-100
+
+         .. rst-class:: card-header h4
+
+            .. rubric:: :ref:`✲ Examples <examples>`
+
+         .. container:: card-body
+
+            Examples for the backend, examples for the frontend. Examples in
+            VanillaJS, jQuery, axios. And examples on CodePen.
+
+   .. container:: col-12 col-md-6 pl-0 pr-3 py-3 m-0
+
+      .. container:: card px-0 h-100
+
+         .. rst-class:: card-header h4
+
+            .. rubric:: :ref:`⨳ Configuration <configuration>`
+
+         .. container:: card-body
+
+            Overview of the :ref:`TypoScript setup <configuration_typoscript>` and 
+            configuration you can set in :ref:`yaml <configuration_yaml>`
+
+
+Is the extension free?
+-----------------------
+
+**Yes**, :ref:`but ...! <support>`
+
+License
+-----------------------
+
+This extension documentation is published under the
+`CC BY-NC-SA 4.0 <https://creativecommons.org/licenses/by-nc-sa/4.0/>`__ (Creative Commons)
+license
+
+
+Authors
+-----------------------
 
 :Version:
    |release|
@@ -19,101 +215,17 @@
    en
 
 :Authors:
-   99°, David Bascom
+   `www.99grad.de <https://www.99grad.de>`__, David Bascom
 
 :Email:
    info@99grad.de
 
-:License:
-   This extension documentation is published under the
-   `CC BY-NC-SA 4.0 <https://creativecommons.org/licenses/by-nc-sa/4.0/>`__ (Creative Commons)
-   license
-
-Restful Api for Typo3
-=====================
-
-Get started with everything you need to create a Restful API in TYPO3 including all common request types,
-frontend-user authentication and file-uploads.
-
-Motivation:
--------------
-
-The goal of this extension was to develop a solution that was **simple to integrate, but as scalable and 
-configurable as possible**.
-
-It should offer simple, comprehensible solutions for the three big challenges when developing a Restful Api:
-:ref:`user-authentication <authentication>`, :ref:`file-upload <fileupload>` (including automatic FAL conversion) 
-and :ref:`localization <localization>`. 
-
-We wanted to offer the possibility to **route requests** to Controller-methods - following a standardized scheme, but
-also allowing custom route definitions, including user defined request parameters.  
-
-We wanted to offer a **good documentation** with as many **examples** as possible. So you (and we) can copy and 
-paste - no matter if you are a front- or backend-developer. And no matter if this is the first time you are building 
-a REST Api - or if you're an expert.
-
-We've invested a lot of time to create working and editable examples on **CodePen** and also integrated a 
-miniature "Postman" in the backend-moduel so you can test your endpoints without having to leave the
-TYPO3 environment.
-
-
-Frontend features:
--------------
-
-* Supports all common request types (GET, POST, DELETE, PUT, PATCH)
-* Shipped with an endpoint for full frontend-user authentication
-* Multiple authentication methods: JSON Web Tokens (JWT), fe-user-Cookies and HTTP-Authorization
-* Supports CORS for accessing the REST API from cross-origins and while developing in localhost environments
-* Automatic conversion of JSON-data to Models
-* Full support for creating, adding and removing FileReferences from the frontend application
-
-Developing features:
--------------
-
-* Highly customizable and configurable
-* Automatic and custom routing to endpoints
-* Fastest possible integration, setup your REST Api in 5 minutes
-* Optional Caching-layer with one line of code
-* Many, many examples
-
-Backend module:
--------------
-
-* Automatic listing of all registered endpoints
-* Automatic documentation of your endpoints from comments and annotations
-* Testbed to send requests with parameters and file-uploads from backend
-
-Limitations and demarcations:
--------------
-
-* We have completely focussed on the JSON-format. We currently see no need to support XML or other formats. But let's discuss!
-* We are 
-
-We've sneaked something in:
--------------
-
-This extension depends on `EXT:nnhelpers <https://extensions.typo3.org/extension/nnhelpers>`__ which takes care of 
-most of the hardcore conversions: from JSON to Model, Array to FAL, FAL-Uploads and other strenuous things... Sorry
-for "sneaking this in" when you install nnrestapi... but it saved us many, many hours of development.
-
-
-Want to git it?
------------------------
-You can get the latest version from bitbucket.org by using the git command:
-
-.. code-block:: bash
-
-   git clone https://bitbucket.org/99grad-team/nnrestapi/src/master/
-
-
-Let's get started:
--------------
-
 .. toctree::
-   :maxdepth: 6
+   :hidden:
+   :maxdepth: 3
 
-   Introduction/Index
    About/Index
+   Introduction/Index
    Installation/Index
    Screenshots/Index
    Quickstart/Index

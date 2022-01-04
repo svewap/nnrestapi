@@ -11,7 +11,7 @@ How to respond with a 403 - Forbidden from inside your method
 
 If for some reason using the :ref:`@Api\\Access(...)<access>` annotation or implementing a custom
 :ref:`checkAccess(...)<access_checkaccess>`-method are not sufficient, you can always use 
-``return $this->response->unauthorized()`` to abort the further processing inside of you TYPO3 Rest Api 
+``return $this->response->unauthorized()`` to abort the further processing inside your TYPO3 Rest Api 
 endpoint and send a ``HTTP 403 Forbidden`` response to the frontend.
 
 Here is an example:

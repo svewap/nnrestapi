@@ -23,7 +23,7 @@ Roundtrips? Old-school.
 ~~~~~~~
 
 If you've been working with TYPO3 for a while, you've probably been thinking in terms of "content-pages" and "page reloads":
-You have your backend. The backend has many pages. And in the frontend, clicking on a menue will navigate to the requested page. 
+You have your backend. The backend has many pages. And in the frontend, clicking on a menu will navigate to the requested page. 
 
 With every new page being requested by the browser, there will be a "roundtrip". The screen goes blank for a moment. The backend 
 renders the templates and responds with everything needed to display the page in the frontend: The complete markup (HTML-code), 
@@ -32,7 +32,7 @@ the styles (CSS) and a little bit of JavaScript-magic to make things more intere
 Time for the SPAs
 ~~~~~~~
 
-Well, nowadays things have changed a little. Everybody is excited about `Single Page Applications (SPAs) <https://de.wikipedia.org/wiki/Single-Page-Webanwendung>`__
+Well, nowadays, things have changed a little. Everybody is excited about `Single Page Applications (SPAs) <https://de.wikipedia.org/wiki/Single-Page-Webanwendung>`__
 and `Progressive Web Apps (PWAs) <https://de.wikipedia.org/wiki/Progressive_Web_App>`__.
 
 These solutions "feel" a lot more like real, native apps and offer a great User Experience (UX). A good SPA or PWA might also dynamically load
@@ -63,14 +63,14 @@ So here is a JSON:
     {"title":"Nice title", "text":"And this is the text!"}
 
 Looks pretty straight forward, right? The JavaScript in the frontend application says: "GET me that data" and the backend delivers the 
-above string. From there it's only a oneliner to convert the string to an "normal" JavaScript Object:
+above string. From there, it's only a one liner to convert the string to a "normal" JavaScript Object:
 
 .. code-block:: javascript
 
     let data = JSON.parse('{"title":"Nice title", "text":"And this is the text!"}');
     console.log( data.title );
 
-What about sending data back to the backend, for example if you wanted to save it in the database? Let's modify the title and send it back:
+What about sending data back to the backend, for example, if you wanted to save it in the database? Let's modify the title and send it back:
 
 .. code-block:: javascript
 
@@ -87,8 +87,8 @@ And modifying them and getting them back to the server is fun.
 GETting and PUTting things
 ~~~~~~~
 
-Things start to get really interesting, if you imagine your objects were real objects in a shelf.
-Every object has it's own place in the shelf. The place is defined by the endpoint (or URL).
+Things start to get fascinating, if you imagine your objects were real objects in a shelf.
+Every object has its own place in the shelf. The place is defined by the endpoint (or URL).
 (Behind the scenes, most of the time, the "shelf" just a simple database with rows and columns. 
 The shelf-number would correspond to the ``uid`` of the entry)
 
@@ -100,7 +100,7 @@ shelf number 1 by calling the following URL:
     https://www.mywebsite.com/api/shelf/1
 
 Fine. We got a data-row. Maybe the data contains the title and description of a book.
-Now we modify the title and want to put the book back in the shelf. So, again, we tell the api:
+Now we modify the title and want to put the book back on the shelf. So, again, we tell the api:
 "Listen, here is the book. I modified the title. Could you put it back in shelf number 1?"
 
 We want to put it back in shelf number 1... so the URL we call should be:
@@ -110,13 +110,13 @@ We want to put it back in shelf number 1... so the URL we call should be:
     https://www.mywebsite.com/api/shelf/1
 
 **But wait... that is the same URL?** Right. So how can the backend know what we want to do? 
-With the first request we want to GET the book and with the second one we want to PUT the book back in the shelf.
+With the first request we want to GET the book and with the second one we want to PUT the book back on the shelf.
 But that can't work, if it is the same URL, right?
 
 The request-type makes the difference!
 ~~~~~~~
 
-Most frontenders coming from jQuery or the classic HTML-pages will now think: Simple. I would just 
+Most "frontenders" coming from jQuery or the classic HTML-pages will now think: Simple. I would just 
 use different URLs - one for reading the data, one for writing it. Or they would use URL-parameters
 like ``?action=update`` to make a difference between the two requests.
 
@@ -146,7 +146,7 @@ Some great minds came up with the following definition:
 * ``PATCH`` will update certain fields of an existing entry
 * ``DELETE`` will delete an existing entry
 
-It is pretty much up to you, which request type you use to do what. And people occasionlly get confused about the exact difference between ``PUT`` and ``PATCH``.
+It is pretty much up to you, which request type you use to do what. And people occasionally get confused about the exact difference between ``PUT`` and ``PATCH``.
 But things get easier to understand later, if you stick with the standards.
 
 Where to go from here?

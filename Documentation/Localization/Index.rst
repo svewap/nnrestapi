@@ -16,7 +16,7 @@ How to handle multiple languages in your TYPO3 RestApi
    #. Define the languages in your **site-configuration**
    #. **Translate your content** and data in the backend like you always would
    #. Set ``plugin.tx_nnrestapi.settings.localization.enabled = 1`` in the **TypoScript setup**
-   #. Optionally use the :ref:`@Api\Localize() <annotations_localize>` Annotation to control localization on a per-method base
+   #. Optionally use the :ref:`@Api\Localize() <annotations_localize>` Annotation to control localization on a per-method basis
    #. Send your requests to the TYPO3 Rest Api using one of the following options:
 
       -  Add a ``Accept-Language`` header to the request, e.g ``Accept-Language: en-US``
@@ -31,10 +31,10 @@ with the basics, you should first have a look at a very good
 `documentation and tutorial <https://docs.typo3.org/m/typo3/tutorial-editors/main/en-us/Languages/Index.html>`__.
 
 -  In the **backend module "sites"** you can add as many languages to your installation as you like.
-   You can add optional fallback languages so the user sees content in a selected language, if his 
+   You can add optional fallback languages, so the user sees content in a selected language, if his 
    preferred language is not available.
    
--  The languages configuration will be stored in the file ``config.yaml``. The array ``languages`` will have
+-  The languages' configuration will be stored in the file ``config.yaml``. The array ``languages`` will have
    an entry for every language. In the following example, two languages ``Deutsch`` and ``English`` were 
    defined:
 
@@ -78,7 +78,7 @@ TYPO3 offers many possibilities
 ~~~~~~~~~
 
 When TYPO3 receives a request for a different language than the standard-language (``languageId = 0``) it will 
-run through a complex procedure. What TYPO3 does exactly depends on your individual configuration. In the 
+run through a complex procedure. What TYPO3 exactly does, depends on your individual configuration. In the 
 **"connected mode"**, every localized content-element has a direct connection to the content-element in the 
 base-language. Depending on your settings, TYPO3 will override or merge data-fields from the base-language with
 fields from the localized data. 
@@ -115,7 +115,7 @@ The response could look something like this:
    {
       "uid": 123,
       "title": "Revenge of the Killer Tomatoes",
-      "description": "A great movie for vegatarians.",
+      "description": "A great movie for vegetarians.",
       "director": "John de Bello"
    }
 
@@ -131,27 +131,27 @@ There are many solutions you could come up with to solve this task:
 
 -  You could use a **different ID** for the German version of the Killer Tomatoes.
 
-   This would be a seperate "shelf-number" for every language. The English version is located in shelf ``123``.
+   This would be a separate "shelf-number" for every language. The English version is located in shelf ``123``.
    The German in shelf ``124`` and so on. 
    The idea is ok - but actually could get a little confusing: We are not really talking about a different movie – 
    we just want the information about the same movie in a different language. 
 
-   Your conclusion probably will be: "No, doesn't really feel good". You might loose the overview and have to
+   Your conclusion probably will be: "No, doesn't really feel good". You might lose the overview and have to
    pay a lot of attention in creating "mapping-tables" that keep track of the shelves for every language-variation
    of every movie.
 
--  You could keep the same book-shelf ID for the movie, but **prefix or suffix the URL** with a path that indicates,
+-  You could keep the same bookshelf ID for the movie, but **prefix or suffix the URL** with a path that indicates,
    which language you are aiming for.
 
    The English version could be accessible at ``/api/movie/123`` and the German version at
    ``/de/api/movie/123`` or ``/api/movie/123/de`` or some other variation.
 
-   This idea is OK as the shelf-number of the movie stays the same and we are only modifying the "language-part"
+   This idea is OK as the shelf-number of the movie stays the same, and we are only modifying the "language-part"
    of the URI. This seems stringent and logical – and once you've understood the principle and know the languages-
    abbreviations you can easily get the translations for every movie without any stress.
 
--  An alternative to the above approach: You could add an additional **URL-parameter** to the request.
-   If you've been working for a longer time with TYPO3 the you should recognize the "famous" L-parameter that
+-  An alternative to the above approach: You could add **another URL-parameter** to the request.
+   If you've been working for a longer time with TYPO3, you should recognize the "famous" L-parameter that
    could be used up until version 8 of TYPO3. 
    
    Without URL-rewriting ("realurl") the language variants of a page would have looked like this:
@@ -161,11 +161,11 @@ There are many solutions you could come up with to solve this task:
       https://www.mymediadatabase.com/api/movie/123?L=1
 
    A little ugly - and not really the aspired way of creating a "beautiful Rest Api". But otherwise is rather
-   comprehensible like the solution discussed above.
+   comprehensible, like the solution discussed above.
 
 -  Last idea: Send the **preferred language "hidden" to the API** - as a kind of "metadata".
 
-   This is actually a very nice idea: In this case the URI is not modified in any way. No path-prefixes. No
+   This is actually a very nice idea: In this case, the URI is not modified in any way. No path-prefixes. No
    additional GET-parameters. The movie ID stays the same. All we are telling the API during the request is:
    "I accept German. So please give me the information in German!"
 
@@ -173,7 +173,7 @@ There are many solutions you could come up with to solve this task:
    a battalion of "hidden" headers. This can be: The format you would like to receive the answer in (JSON, HTML or 
    XML?) and of course the language you want (en-US? de-DE? klingon-Klingon?)
 
-   The header commonly used the tell the server "I want a certain language" is the ``Accept-Language`` header.
+   The header commonly used to tell the server "I want a certain language" is the ``Accept-Language`` header.
    To make it clear in an example: When using the language-header you will physically **always** be sending 
    a request to the same URI:
 
@@ -181,7 +181,7 @@ There are many solutions you could come up with to solve this task:
 
       GET https://www.mymediadatabase.com/api/movie/123
 
-   But depending on the language you will be sending different headers with the request.
+   But depending on the language, you will be sending different headers with the request.
    So it could be one of the following:
 
    .. code-block:: php
@@ -201,11 +201,11 @@ data, correct? Well, almost.
 So where is the problem?
 ~~~~~~~~~
 
-The problem is, the way TYPO3 stores localized data in the database: Under the hood TYPO3 **always** creates unique 
+The difficulty is, the way TYPO3 stores localized data in the database: Under the hood TYPO3 **always** creates unique 
 UIDs for every localized entry and content. This is because TYPO3 uses only **one field** as unique identifier in 
 the database (the field ``uid``) - not two fields (e.g. ``uid`` and ``sys_language_uid``).
 
-The English database-row of the "Killer Tomatoes" might have ``uid = 123``, but the German translation will definitly 
+The English database-row of the "Killer Tomatoes" might have ``uid = 123``, but the German translation will definitely 
 have some other ``uid`` - maybe ``281`` or something else. In the "connected mode" Typo3 will link these two rows
 to each other using the field ``l10n_parent``. The field ``l10n_parent`` of the German translation will be set
 to ``123`` which is the uid of the movie in the base-language (English).
@@ -213,7 +213,7 @@ to ``123`` which is the uid of the movie in the base-language (English).
 **Now things get really confusing:**
 
 If you do a query to the database and want to get the German (= localized) version of the movie number ``123``, then
-at a first glance the result will look like this:
+at a first glance, the result will look like this:
 
 .. code-block:: json
 
@@ -254,9 +254,8 @@ Here is where the frontend needs a certain amount of "intelligence": It might be
 
 But depending on the ``Accept-Language``-header will be retrieving data with the same ``uid``, but needs to be *stored* in different 
 shelves. If the user can edit the title, then - depending on the language he is currently editing - the data must be ``PUT`` back 
-in to the UID ``123`` (for the English version) but ``281`` for the German version.
+in the UID ``123`` (for the English version) but ``281`` for the German version.
 
 This is something you will have to implement yourself – either in the front- or backend. The nnrestapi doesn't take care of
 automatically "changing" the UID of the data to be persisted. It simply ignores the field "_localizedUid" - to not produce 
 uncontrolled results.
-

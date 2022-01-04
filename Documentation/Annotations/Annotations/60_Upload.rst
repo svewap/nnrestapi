@@ -9,7 +9,7 @@
 Control where files are uploaded to in your TYPO3 RestAPi
 ---------
 
-With the ``@Api\Upload(...)`` annotion you can control, where the file uploads of a multipart/form-data request
+With the ``@Api\Upload(...)`` annotation you can control, where the file uploads of a multipart/form-data request
 are moved to.
 
 The syntax is:
@@ -18,7 +18,7 @@ The syntax is:
 
    @Api\Upload( option )
 
-Where ``option`` can have one of the following expressions to either define a direct filepath, a custom Class to 
+Where ``option`` can have one of the following expressions to either define a direct file path, a custom Class to 
 return the upload-path or the key to a configuration in the TypoScript setup: 
 
 +--------------------------------------------------------+----------------------------------------------------------------+
@@ -27,10 +27,10 @@ return the upload-path or the key to a configuration in the TypoScript setup:
 | ``@Api\Upload(FALSE)``                                 | Explicitly **disables** the file-upload. Any file attached to  |
 |                                                        | the request will be discarded and removed from the JSON        |
 |                                                        | without further processing or parsing.                         |
-|                                                        | This is the **default behaviour** to prevent unwanted          |
+|                                                        | This is the **default behavior** to prevent unwanted          |
 |                                                        | file-uploads to the fileadmin.                                 |
 +--------------------------------------------------------+----------------------------------------------------------------+
-| ``@Api\Upload("1:/path/to/upload/folder")``            | The **filepath** to the folder in the combined identifier      |
+| ``@Api\Upload("1:/path/to/upload/folder")``            | The **file path** to the folder in the combined identifier      |
 |                                                        | syntax (by default, ``1:/`` would be interpreted as            |
 |                                                        | the default storage ``fileadmin/``)                            |
 +--------------------------------------------------------+----------------------------------------------------------------+
@@ -42,7 +42,7 @@ return the upload-path or the key to a configuration in the TypoScript setup:
 |                                                        | ``fileadmin/api/``                                             |
 +--------------------------------------------------------+----------------------------------------------------------------+
 | ``@Api\Upload(\My\Extname\UploadProcessor::class)``    | Use a **custom class** to return the upload-path for the       |
-|                                                        | files. The class must have a method calles ``getUploadPath``   |
+|                                                        | files. The class must have a method called ``getUploadPath``   |
 |                                                        | and return an array as described                               |
 |                                                        | :ref:`here <annotations_upload_custom>`                        |
 +--------------------------------------------------------+----------------------------------------------------------------+
@@ -50,7 +50,7 @@ return the upload-path or the key to a configuration in the TypoScript setup:
 .. important::
 
    Note that ``@Api\Upload(...)`` **must explicitly be set** as an Annotation on the endpoint - otherwise the nnrestapi 
-   will ignore any fileupload passed during the request. This is to prevent uncontrolled uploads and misuse of the Api. 
+   will ignore any file upload passed during the request. This is to prevent uncontrolled uploads and misuse of the Api. 
 
 
 The Annotation is placed in the comment block above your method / endpoint:
@@ -62,8 +62,9 @@ The Annotation is placed in the comment block above your method / endpoint:
    namespace My\Extension\Api;
 
    use Nng\Nnrestapi\Annotations as Api;
-
-   class Example
+   use Nng\Nnrestapi\Api\AbstractApi;
+   
+   class Example extends AbstractApi
    {
       /**
        * @Api\Upload("default")
@@ -79,7 +80,7 @@ The Annotation is placed in the comment block above your method / endpoint:
 
    }
 
-Let`s have a look at the configuration in TypoScript setup for ``plugin.tx_nnrestapi.settings.fileUploads``:
+Let’s have a look at the configuration in TypoScript setup for ``plugin.tx_nnrestapi.settings.fileUploads``:
 
 .. code-block:: typoscript
 
@@ -122,7 +123,7 @@ This can either be done by ...
    values need to be returned in the array.
 
 -  Creating a configuration in the **TypoScript setup** at ``plugin.tx_nnrestapi.settings.fileUploads.[name].pathFinderClass``. 
-   In this case you can also set the method name to call:
+   In this case, you can also set the method name to call:
 
    .. code-block:: typoscript
 
@@ -155,7 +156,7 @@ on the current month and date. You probably have seen this structure in WordPres
 The Helper will return a configuration array which has the same keys and structure
 that the TypoScript setup uses. You can keep things simple and just return the
 key ``defaultStoragePath`` which will upload all fileUploads to the same location, 
-independant of their fileKey/name in the POST-data:
+independent of their fileKey/name in the POST-data:
 
 .. code-block:: php
 
@@ -211,8 +212,9 @@ Last step: Use the key ``monthdate`` in the ``@Api\Upload("monthdate")`` annotat
    namespace My\Extension\Api;
 
    use Nng\Nnrestapi\Annotations as Api;
-
-   class Example
+   use Nng\Nnrestapi\Api\AbstractApi;
+   
+   class Example extends AbstractApi
    {
       /**
        * @Api\Upload("config[monthdate]")

@@ -9,6 +9,6 @@ ViewHelpers Index
 
 .. toctree::
    :glob:
-   :maxdepth: 6
+   :maxdepth: 2
 
    Classes/*

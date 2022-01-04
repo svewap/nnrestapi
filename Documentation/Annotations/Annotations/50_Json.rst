@@ -10,7 +10,7 @@ Control how your TYPO3 RestAPi renders the JSON result
 ---------
 
 Simple options and settings while converting the response-data to JSON.
-Currently only ``depth`` is implemented.
+Currently, only ``depth`` is implemented.
 
 With ``depth`` you can control, how deep the returned object will be 
 parsed when it is converted to the JSON-array. This is helpful, if you
@@ -32,8 +32,9 @@ Here is a full example:
    namespace My\Extension\Api;
 
    use Nng\Nnrestapi\Annotations as Api;
-
-   class Example
+   use Nng\Nnrestapi\Api\AbstractApi;
+   
+   class Example extends AbstractApi
    {
       /**
        * @Api\Json(depth=4)

@@ -17,10 +17,10 @@ Get your TYPO3 Rest Api up and running in 5 minutes
 
 2. Create an own extension for your TYPO3 REST Api endpoints
 
-   To implement your own endpoints you will need to create a new extension - or use one of your existing extensions.
+   To implement your own endpoints, you will need to create a new extension - or use one of your existing extensions.
    
    Define the dependencies to the `nnrestapi` extension in your extension.
-   This is important so TYPO3 loads your extension **after** the `nnrestapi` extension.
+   This is important, so TYPO3 loads your extension **after** the `nnrestapi` extension.
 
    This goes in the `ext_emconf.php` of your extension:
 
@@ -92,4 +92,3 @@ Get your TYPO3 Rest Api up and running in 5 minutes
 6. Call your endpoint
 
    Enter the URL `https://www.yourdomain.com/api/demo/example` to see the result!
-

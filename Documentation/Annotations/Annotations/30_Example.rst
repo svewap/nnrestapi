@@ -11,10 +11,10 @@ Add example data to your documentation
 
 The purpose of this annotation is to add example data to the automatically generated documentation
 in the TYPO3 backend module of the ``nnrestapi`` that can be used for composing requests using
-the testbed.
+the test bed.
 
 This annotation has no other function in the frontend. It is just to make working
-with the backend-module easier: The extension comes shipped with a testbed to send
+with the backend-module easier: The extension comes shipped with a test bed to send
 and test your REST Api requests directly in the backend module. The example data
 will appear in the documentation and can be used to compose your request.
 
@@ -43,8 +43,9 @@ Here is a full example:
    namespace My\Extension\Api;
    
    use Nng\Nnrestapi\Annotations as Api;
-
-   class Example
+   use Nng\Nnrestapi\Api\AbstractApi;
+   
+   class Example extends AbstractApi
    {
       /**
        * @Api\Example("this is an example")

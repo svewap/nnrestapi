@@ -26,7 +26,7 @@ you can access the ``Nng\Nnrestapi\Mvc\Request`` in the class property ``$this->
 This section gives you an overview of common variables you might want to access while
 evaluating the request and composing the response.
 
-All of the following examples are placed inside of you endpoints' method.
+All the following examples are placed inside your endpoints' method.
 
 Request arguments
 ~~~~~~~~~~~~
@@ -242,7 +242,7 @@ Here are examples of the resulting array returned by ``$this->request->getArgume
 +--------------------------------------------+---------------------------------------------------------------------+
 
 
-Dependeny injections with request arguments
+Dependency injections with request arguments
 ~~~~~~~~~~~~
 
 Remember, that you can always use Dependeny Injection to automatically pass request-

@@ -38,7 +38,7 @@ All operations can be executed by calling the TYPO3 Rest Api endpoint located at
 
 .. hint::
 
-   To find out more about Routing, have a look at :ref:`routing_standard` and :ref:`custom_routing`.
+   To find out more about routing, have a look at :ref:`routing_standard` and :ref:`custom_routing`.
 
 
 
@@ -48,7 +48,7 @@ Step-by-step
 1. Creating the class
 ~~~~~~~~~~
 
-Let's start by creating the ``Article`` class. Your Api-classes can be located anywhere inside of
+Let's start by creating the ``Article`` class. Your Api classes can be located anywhere inside of
 the ``Classes`` folder of your extension. We would recommend placing them in a folder named
 ``Classes/Api/...``.
 

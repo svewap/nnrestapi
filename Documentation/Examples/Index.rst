@@ -13,7 +13,7 @@ In this section you can find examples and tutorials:
 
 .. toctree::
    :glob:
-   :maxdepth: 6
+   :maxdepth: 2
 
    Examples/*
 

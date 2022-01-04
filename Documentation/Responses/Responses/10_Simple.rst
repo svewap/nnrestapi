@@ -146,7 +146,7 @@ from the database, this recipe will speed things up:
 .. code-block:: php
 
    /**
-    * Fastest way to get massive amount of data from database and return it as JSON
+    * the fastest way to get massive amount of data from database and return it as JSON
     *
     * @Api\Access("public")
     * @return array

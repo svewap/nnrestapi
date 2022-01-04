@@ -21,7 +21,7 @@ To learn how to manage file-uploads, dive in to one of the following recipes:
 |                                                                        | SysFileReferences (FAL)                                                |
 +------------------------------------------------------------------------+------------------------------------------------------------------------+
 | :ref:`Basics of JSON to FAL mapping <example_model_mapping>`           | Example of a **Model with a FileReference**. Show how to add and       |
-|                                                                        | remove SysFileReferences with the API by passing the filepath or the   |
+|                                                                        | remove SysFileReferences with the API by passing the file path or the   |
 |                                                                        | special placeholder ``UPLOAD:/identifier``                             |
 +------------------------------------------------------------------------+------------------------------------------------------------------------+
 | :ref:`Configuring upload paths <annotations_upload>`                   | Control, **which folder** the uploaded files are moved to and how to   |
@@ -41,8 +41,8 @@ To learn how to manage file-uploads, dive in to one of the following recipes:
 | :ref:`Frontend example with AXIOS <examples_axios_fileuploads>`        | Pure JavaScript solution, but with a little help from the great JS     |
 |                                                                        | library **"axios"** that makes life a little easier.                   |
 +------------------------------------------------------------------------+------------------------------------------------------------------------+
-| :ref:`Frontend example with jQuery <examples_jquery_fileuploads>`      | If you still like **jQuery** althought the world is moving somewhere   |
-|                                                                        | else, here is an example for the fileupload using jQuery.              |
+| :ref:`Frontend example with jQuery <examples_jquery_fileuploads>`      | If you still like **jQuery** although the world is moving somewhere   |
+|                                                                        | else, here is an example for the file upload using jQuery.              |
 +------------------------------------------------------------------------+------------------------------------------------------------------------+
 
 Full examples on CodePen

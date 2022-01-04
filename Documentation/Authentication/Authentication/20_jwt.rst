@@ -13,8 +13,8 @@ How to authenticate a user with your TYPO3 RestApi using a JSON Web Token
 
    **Examples, examples, examples!**
 
-   We have spent many hours putting together nice recipies and CodePens that will help you get startet on the topic 
-   "retrieving, storing and authenticating with a JWT" in no time at all. Look at the examples for your favourite 
+   We have spent many hours putting together nice recipes and CodePens that will help you get started on the topic 
+   "retrieving, storing and authenticating with a JWT" in no time at all. Look at the examples for your favorite 
    framework: :ref:`axios <examples_axios_auth>`, :ref:`jQuery <examples_jquery_auth>`, :ref:`Pure JS <examples_plain_auth>` 
    or :ref:`older browsers <examples_legacy_auth>`.
 
@@ -32,7 +32,7 @@ but relying on the TYPO3 cookie while developing a REST Api has a few limitation
    this can be a little "stressful". You will need to keep track of expiring cookies and sessions.
 
 Many applications nowadays have decided to replace the session-cookie with a new way of authenticating: The JSON Web Token (JWT).
-The nnrestapi extension comes equipped with everything you need to login as a frontend-user, retrieve a JWT and send 
+The nnrestapi extension comes equipped with everything you need to log in as a frontend-user, retrieve a JWT and send 
 authenticated requests using the ``Authentication: Bearer`` header.  
 
 
@@ -41,13 +41,13 @@ How to use JSON Web Tokens in TYPO3:
 
 The following steps outline the basic principles.
 
-For a full description with examples, have a look at the recipies and CodePens for :ref:`axios <examples_axios_auth>`,
+For a full description with examples, have a look at the recipes and CodePens for :ref:`axios <examples_axios_auth>`,
 :ref:`jQuery <examples_jquery_auth>`, :ref:`Pure JS <examples_plain_auth>` or :ref:`older browsers <examples_legacy_auth>`.
 
 .. rst-class:: bignums-tip
 
    1. | **Create a frontend user**
-      In the TYPO3-backend: Create a SysFolder for your frontend users, switch to the listview and **add a frontend user**
+      In the TYPO3-backend: Create a SysFolder for your frontend users, switch to the list view and **add a frontend user**
       to the folder. Depending on your TYPO3 version, you will need to first create a **frontend user group**. 
    
    2. | **Set username and password**
@@ -71,7 +71,7 @@ For a full description with examples, have a look at the recipies and CodePens f
          // ... or to the users defined in the TypoScript setup
          @Api\Access("config[myUsers]")
       
-      You can find detailled configuration options in :ref:`this section <access>` of the documentation.
+      You can find detailed configuration options in :ref:`this section <access>` of the documentation.
 
    4. | **Authenticate the user**
       From your frontend application: Send your credentials in a POST-request to the endpoint 
@@ -123,7 +123,7 @@ request to the endpoint
    // ... and add the header:
    Authorization: Bearer some_damn_long_token
 
-This endpoint is part of the nnrestap-extension. Again, include the token in the header of the request using 
+This endpoint is part of the nnrestapi extension. Again, include the token in the header of the request using 
 ``Authorization: Bearer token_string``. If the token is still valid, you will get a JSON with the current
 user information like above.
 

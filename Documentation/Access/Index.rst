@@ -9,14 +9,14 @@ Restricting Access
 Only allow certain users to call your TYPO3 Rest Api endpoint
 ---------
 
-By using the `@Api\Access(...)` annotation above your method you can restrict the access to 
+By using the `@Api\Access(...)` annotation above your method, you can restrict the access to 
 your REST API endpoint. This way you can decide, which Frontend-Users, Frontend-Usergroups,
 Backend-Users or Backend-Admins are allowed to call your endpoint.
 
 If you are planning to implement a public endpoint with no user-restrictions, simply use the `@Api\Access("public")` annotation.
 Endpoints marked as `public` can be called by any visitor. No authentication is necessary. 
 
-To use the `@Api\Access`-annotation, you will need add the `use Nng\Nnrestapi\Annotations as Api;` 
+To use the `@Api\Access`-annotation, you will need to add the `use Nng\Nnrestapi\Annotations as Api;` 
 line at the top of your script.
 
 The basic syntax of the `@Api\Access`-Annotation is:
@@ -191,12 +191,12 @@ And in case you prefer using the **array syntax**, that is also possible:
 Restrict to IP-adresses ADDITIONALLY to other authentications
 ~~~~~~~~~~~~
 
-By using the ``@Api\Access("ip[...]")`` annotation you can limit the request to a given
+By using the ``@Api\Access("ip[...]")`` annotation, you can limit the request to a given
 list of IPs.
 
 Contrary to all other ``@Api\Access()`` restrictions, the IP-restriction will be handled
-like an **AND** contraint. If you set an IP-restriction, then the request **must** come from the
-given IP, independent from other access-restrictions like Frontend-User Authentication etc.
+like an **AND** constraint. If you set an IP-restriction, then the request **must** come from the
+given IP, independent of other access-restrictions like Frontend-User Authentication etc.
 
 .. code-block:: php
 
@@ -208,7 +208,7 @@ given IP, independent from other access-restrictions like Frontend-User Authenti
     */
 
 Multiple IPs can be listed the same way usernames or uids are listed in the examples above.
-All of the following examples are equivilants, choose the syntax you can remember best:
+All the following examples are equivalents, choose the syntax you can remember best:
 
 .. code-block:: php
 
@@ -221,10 +221,10 @@ All of the following examples are equivilants, choose the syntax you can remembe
 Grant access for IP-adresses ALTERNATIVELY to other authentications
 ~~~~~~~~~~~~
 
-By using the ``@Api\Access("ip_users[...]")`` annotation you grant access to the endpoint from
+By using the ``@Api\Access("ip_users[...]")`` annotation, you grant access to the endpoint from
 given IPs without any other limitations.
 
-Other that ``@Api\Access("ip[...]")``, if the IP is correct, there will not be any additional check 
+Other than ``@Api\Access("ip[...]")``, if the IP is correct, there will not be any additional check 
 of ``fe_users`` or ``be_users``.
 
 .. code-block:: php
@@ -259,7 +259,7 @@ difficult to keep all your installation up-to-date with the same code-base.
 **The good news:** 
 With the TYPO3 Rest Api you can also define `accessGroups` in your site-configuration or
 TypoScript Setup and then refer to their identifier in your `@Api\Access()`-annotation instead 
-of repeatingly using usernames or uids above the individual methods.
+of repeating using usernames or uids above the individual methods.
 
 Let's start by adding this to your site-configuration `YAML` or TypoScript Setup
 
@@ -279,13 +279,13 @@ Let's start by adding this to your site-configuration `YAML` or TypoScript Setup
          }
       }
 
-We have defined an accessGroup with the identifier `apiUsers`.
-The frontend-users with the uid `3` and `2` are in this group.
+We have defined an access group with the identifier ``apiUsers``.
+The frontend-users with the uid ``3`` and ``2`` are in this group.
 
-The identifer name `apiUsers` is arbitrary. 
-You may choose any identifier name here you like and that makes sense to you.
+The identifier name ``apiUsers`` is arbitrary. 
+You may choose any identifier name here you like, and that makes sense to you.
 
-Of course you can also define multiple groups and have multiple users per group:
+Of course, you can also define multiple groups and have multiple users per group:
 
 .. tabs::
 
@@ -308,7 +308,7 @@ Of course you can also define multiple groups and have multiple users per group:
       }
 
 
-We now can refer to the accessGroup from tby using the `config[identifier]`-syntax in our Annotation:
+We now can refer to the access group by using the `config[identifier]`-syntax in our annotation:
 
 .. code-block:: php
 
@@ -321,6 +321,6 @@ We now can refer to the accessGroup from tby using the `config[identifier]`-synt
 
 .. toctree::
    :glob:
-   :maxdepth: 6
+   :maxdepth: 1
 
    Access/*

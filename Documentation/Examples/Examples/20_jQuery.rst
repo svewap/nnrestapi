@@ -14,7 +14,7 @@ with and without authentication and file-uploads using `jQuery <https://jquery.c
 
 .. toctree::
    :glob:
-   :maxdepth: 6
+   :maxdepth: 2
 
    jQuery/*
 

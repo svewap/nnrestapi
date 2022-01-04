@@ -16,10 +16,10 @@ How to authenticate a request to your TYPO3 RestApi using HTTP Basic Auth
 
 Basic access authentication (or "HTTP Basic Auth") is a very simple method for an HTTP user agent (browser) to provide user 
 credentials (username and password) when making a request to the TYPO3 Rest api. In basic HTTP authentication, a request contains 
-a header field in the form of ``Authorization: Basic <credentials>`` where credentials is the Base64 encoding of ID and password 
+a header field in the form of ``Authorization: Basic <credentials>`` where "credentials" is the Base64 encoding of ID and password 
 joined by a single colon.
 
-You can define the credentials either on a per-user base - or as "global" API-keys that can be used my multiple users. 
+You can define the credentials either on a per-user basis - or as "global" API-keys that can be used by multiple users. 
 
 Setting HTTP Basic Auth credentials for a single frontend-users
 ---------
@@ -29,12 +29,12 @@ Follow these steps to set up a username and password for a frontend user that ca
 .. rst-class:: bignums-tip
 
    1. | **Create a frontend user**
-      In the TYPO3-backend: Create a SysFolder for your frontend users, switch to the listview and **add a frontend user**
+      In the TYPO3-backend: Create a SysFolder for your frontend users, switch to the list view and **add a frontend user**
       to the folder. Depending on your TYPO3 version, you will need to first create a **frontend user group**. 
    
    2. | **Set the username**
       In the tab "General" of the new frontend user, enter a **Username** and Password.
-      The Username will be used for the HTTP Basic Auth. The password you set in the tab "Genereal" is **not relevant** 
+      The Username will be used for the HTTP Basic Auth. The password you set in the tab "General" is **not relevant** 
       for the HTTP Basic Auth, it will only be used for the standard TYPO3 login form.
       
    3. | **Set the Rest-Api Key**
@@ -56,7 +56,7 @@ Follow these steps to set up a username and password for a frontend user that ca
          // ... or to the users defined in the TypoScript setup
          @Api\Access("config[myUsers]")
       
-      You can find detailled configuration options in :ref:`this section <access>` of the documentation.
+      You can find detailed configuration options in :ref:`this section <access>` of the documentation.
 
 See the :ref:`examples below <authentication_http_examples>` on how to create a request in JavaScript using Basic 
 HTTP Authorization.
@@ -66,10 +66,10 @@ HTTP Authorization.
    **The frontend user is logged in!**
 
    Note that a frontend user authenticating via HTTP basic auth with his username and the apiKey will also be logged in 
-   as a normal frontend user. Consequently you could also use the Annotation ``@Api\Access("fe_users")`` or 
+   as a normal frontend user. Consequently, you could also use the Annotation ``@Api\Access("fe_users")`` or 
    ``@Api\Access("fe_users[john]")`` as an alternative to ``api_users``.
 
-   The advantage of using ``@Api\Access("api_users")`` is, that you can have seperate passwords for the "normal" frontend
+   The advantage of using ``@Api\Access("api_users")`` is, that you can have separate passwords for the "normal" frontend
    user login and the API usage. This way, in case you allow frontend users to reset their password, they will not
    automatically have access to the api!
 
@@ -86,7 +86,7 @@ Follow these steps, if you would like to create a global API Key that is not bou
 
    2. | **Set credentials in the extension configuration**
       In the field "API-Keys for BasicAuth" (basic.apiKeys): Enter one user and key per line. In every line, 
-      seperate the user and key with a colon. The list of users will look like this:
+      separate the user and key with a colon. The list of users will look like this:
 
       .. code-block:: bash
 
@@ -112,7 +112,6 @@ Follow these steps, if you would like to create a global API Key that is not bou
 
    4. | **Clear the TYPO3 cache**
       Click the "clear cache" button (red lightning-icon to "clear all caches")
-
 
 .. hint::
 

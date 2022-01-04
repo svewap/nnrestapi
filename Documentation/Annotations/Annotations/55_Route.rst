@@ -6,7 +6,7 @@
 @Api\\Route
 ============
 
-Use custom routing for your TYPO3 RestAPi endpoint
+Use custom routing for your TYPO3 RestAPI endpoint
 ---------
 
 The ``@Api\Route`` annotation allows you to define custom URLs (Routes) to your endpoint
@@ -22,7 +22,7 @@ A basic example would be:
 After clearing the cache, the method that has this annotation will be reachable at the URL:
 ``https://www.yourwebsite.com/api/your/custom/url``. 
 
-By using custom Routing, the method name can be whatever you like – you doe not have to use
+By using custom Routing, the method name can be whatever you like – you don't not have to use
 the standard method-name **{requestMethod}{pathPart}Action()**
 
 .. code-block:: php
@@ -32,8 +32,9 @@ the standard method-name **{requestMethod}{pathPart}Action()**
    namespace My\Extension\Api;
 
    use Nng\Nnrestapi\Annotations as Api;
-
-   class Example
+   use Nng\Nnrestapi\Api\AbstractApi;
+   
+   class Example extends AbstractApi
    {
       /**
        * @Api\Route("/your/custom/url")
@@ -83,7 +84,7 @@ You can add as many path segments as you like:
 In the two above examples, the routing will only work, if ``{uid}`` or ``{uid}/{test}`` is set. Calling an URL
 without these path-segments (e.g. ``https://www.mywebsite.com/api/test/demo``) will **not** route to your method.
 
-To make the parameters optional you can use the following route patterns:
+To make the parameters optional, you can use the following route patterns:
 
 .. code-block:: php
 
@@ -107,10 +108,10 @@ is not passed. It becomes optional.
 Accessing the parameters
 ~~~~~~~
 
-When using the ``@Api\Route("/test/demo/{uid}/{test}")`` pattern you can access the variables using one
+When using the ``@Api\Route("/test/demo/{uid}/{test}")`` pattern, you can access the variables using one
 of the following method:
 
-- use the variable name as an **argument of your method**. Dependeny Injection will take care of the rest
+- use the variable name as an **argument of your method**. Dependency Injection will take care of the rest
 
 - use ``$this->request->getArguments()`` to get the values
 
@@ -121,8 +122,9 @@ of the following method:
    namespace My\Extension\Api;
 
    use Nng\Nnrestapi\Annotations as Api;
-
-   class Example
+   use Nng\Nnrestapi\Api\AbstractApi;
+   
+   class Example extends AbstractApi
    {
       /**
       * @Api\Route("GET /test/route/{name}")
@@ -145,8 +147,9 @@ You can always use ``$this->request->getArguments()`` as an alternative:
    namespace My\Extension\Api;
 
    use Nng\Nnrestapi\Annotations as Api;
-
-   class Example
+   use Nng\Nnrestapi\Api\AbstractApi;
+   
+   class Example extends AbstractApi
    {
       /**
        * @Api\Route("GET /test/route/{name}")

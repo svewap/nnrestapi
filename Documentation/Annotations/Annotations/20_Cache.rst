@@ -9,7 +9,7 @@
 Enable full caching of the result from your TYPO3 RestAPi endpoint
 ---------
 
-If the method of an endpoint has the ``@Api\Cache`` annotion set, then its result
+If the method of an endpoint has the ``@Api\Cache`` annotation set, then its result
 will be cached. The next time this endpoint is called, the result will be retrieved
 from the cache without calling the method.
 
@@ -31,8 +31,9 @@ Here is a full example:
    namespace My\Extension\Api;
 
    use Nng\Nnrestapi\Annotations as Api;
-
-   class Example
+   use Nng\Nnrestapi\Api\AbstractApi;
+   
+   class Example extends AbstractApi
    {
       /**
        * @Api\Cache
@@ -50,8 +51,8 @@ Here is a full example:
 
 In case you would like to handle the caching of data yourself, the ``nnhelpers`` 
 Cache-methods are very useful. Here is a basic example – have a look at the 
-`nnhelpers documention <https://docs.typo3.org/p/nng/nnhelpers/main/en-us/Helpers/Classes/cache.html>`__
-for more infos:
+`nnhelpers documentation <https://docs.typo3.org/p/nng/nnhelpers/main/en-us/Helpers/Classes/cache.html>`__
+for more info:
 
 .. code-block:: php
 
@@ -60,8 +61,9 @@ for more infos:
    namespace My\Extension\Api;
    
    use Nng\Nnrestapi\Annotations as Api;
-
-   class Example
+   use Nng\Nnrestapi\Api\AbstractApi;
+   
+   class Example extends AbstractApi
    {
       /**
        * @Api\Access("public")

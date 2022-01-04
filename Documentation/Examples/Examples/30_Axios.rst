@@ -14,7 +14,7 @@ with and without authentication and file-uploads using `axios <https://github.co
 
 .. toctree::
    :glob:
-   :maxdepth: 6
+   :maxdepth: 2
 
    Axios/*
 
