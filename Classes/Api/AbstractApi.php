@@ -64,7 +64,7 @@ abstract class AbstractApi {
 	public function determineLanguage( $endpoint = [] ) {
 
 		$localizationSettings = $this->request->getSettings()['localization'] ?? [];
-		
+
 		// localization not configured? Don't localize
 		if (!$localizationSettings) {
 			return 0;
@@ -77,9 +77,8 @@ abstract class AbstractApi {
 		if (!$localizationSettings['enabled'] && $endpoint['localize'] !== true) {
 			return 0;
 		}
-
 		// `L=..` parameter passed in GET-Request?
-		$L = \nn\t3::Request()->GP('L');
+		$L = \nn\t3::Request()->GP()['L'] ?? '';
 		if ($L != '') {
 			return intval($L);
 		}
