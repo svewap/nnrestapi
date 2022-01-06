@@ -3,6 +3,10 @@
     font-size: 0.9rem;
 }
 
+.nnhelpers-be-module a {
+    text-decoration: none;
+}
+
 .nav-pills {
     background: linear-gradient(45deg, #e8e8e8, #f4f4f4);
     font-size: 0.9rem;
@@ -12,14 +16,24 @@
     border-radius: 0;
     padding: 0.5rem 1rem 0.3rem 1rem;
     cursor: pointer;
+    color: inherit;
 }
 
-.nav-pills .nav-link.active, 
+.nav-pills .nav-item.active, 
 .nav-pills .show > .nav-link {
-    background: transparent;
-    color: #000;
+    background: #ddd;
     border-bottom: 0.2rem solid #7090af;
 }
+
+.nav-pills .nav-item a:hover,
+.nav-pills .nav-item.active a:hover,
+.nav-pills .nav-item.active a {
+    background: transparent;
+    color: #000;
+} 
+.nav-pills .nav-item.active i {
+    color: #708faf;
+} 
 
 .form-control, .nav-link, .btn {
     border-radius: 0;
@@ -81,6 +95,8 @@ h2 {
     border-radius: 15px 0 0 15px;
     border-right: none;
     padding-left: 15px;
+    height: 30px;
+    font-size: 0.9rem;
 }
 
 .search ~ .input-group-append {
@@ -144,6 +160,12 @@ h2 {
     text-transform: uppercase;
     letter-spacing: 0.05em;
     font-size: 0.8rem;
+    border-radius: 0;
+    padding: 10px 15px 6px 15px;
+}
+
+.testbed .nav-tabs > li {
+    margin-left: 0;
 }
 
 

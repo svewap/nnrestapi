@@ -5,17 +5,17 @@
 <div class="mb-4 pt-3 auth-form" data-user-url="{rest:uri.api(controller:'user')}">
 	<div class="login" data-auth-url="{rest:uri.api(controller:'auth')}">
 		<div class="d-flex">
-			<input type="text" class="form-control auth-username mr-2" />
-			<input type="password" class="form-control auth-password mr-2" />
+			<input type="text" class="form-control auth-username me-2" />
+			<input type="password" class="form-control auth-password me-2" />
 			<button class="btn btn-primary login-btn">Login</button>		
 		</div>
 	</div>
 	<div class="logout" data-logout-url="{rest:uri.api(controller:'auth', action:'logout')}">
 		<div class="d-flex align-items-center">
 			<div class="form-control">
-				<i class="fas fa-user-lock mr-2"></i> Logged in as: <strong class="username"></strong>
+				<i class="fas fa-user-lock me-2"></i> Logged in as: <strong class="username"></strong>
 			</div>
-			<button class="btn btn-primary logout-btn ml-2">Logout</button>
+			<button class="btn btn-primary logout-btn ms-2">Logout</button>
 		</div>
 	</div>
 </div>

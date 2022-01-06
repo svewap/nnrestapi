@@ -12,7 +12,7 @@
 				<i class="progress-bar"></i>
 				<input type="text" class="form-control requrl" placeholder="enter URL to test" value="{rest:uri.api(controller:'test', ext:'nnrestapi')->nnt3:format.replace(from:urlBase, to:'')}" />
 			</div>
-			<button class="btn btn-primary ml-2 d-flex align-items-center">
+			<button class="btn btn-primary ms-2 d-flex align-items-center">
 				Submit
 			</button>
 		</div>
@@ -40,7 +40,7 @@
 				</div>
 				<div class="tab-pane compose-files">
 					<div class="files d-flex p-3">
-						<input type="text" class="reqfilekey form-control w-25 mr-2" value="file" />
+						<input type="text" class="reqfilekey form-control w-25 me-2" value="file" />
 						<input type="file" multiple="1" class="form-control form-control-file reqfiles" />
 					</div>			
 					<div class="files px-3 pb-3">
@@ -79,8 +79,8 @@
 
 		<div class="result-panel h-100 d-flex flex-column">
 			<div class="rescode px-3 d-flex align-items-center">
-				Status: <span class="ml-2"></span>
-				<i class="fas fa-circle-notch fa-spin ml-auto spinner"></i>
+				Status: <span class="ms-2"></span>
+				<i class="fas fa-circle-notch fa-spin ms-auto spinner"></i>
 			</div>
 			<div class="result">
 				<pre class="mt-0"><code class="resbody language-json">Click „submit“ to show results.</code></pre>
