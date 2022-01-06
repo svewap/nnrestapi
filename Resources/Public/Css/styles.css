@@ -69,6 +69,10 @@ h2 {
     color: #69ad8d;
 }
 
+#hide-nnrestapi {
+    margin-left: -1.5em;
+}
+
 .hide-nnrestapi .ext-nnrestapi {
     display: none;
 }

@@ -3,18 +3,22 @@ namespace Nng\Nnrestapi\Api;
 
 use Nng\Nnrestapi\Annotations as Api;
 
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
-
 /**
  * Nnrestapi
  * 
  */
-class Index extends AbstractApi {
-	
+class Index extends AbstractApi 
+{
 	/**
-	 * Simple test.
+	 * # Simple GET test
 	 * 
-	 * @Api\Access("*")
+	 * If you are logged in as a backend user, you can test this endpoint by sending a GET-request to:
+	 * 
+	 * ```
+	 * https://www.mysite.com/api/
+	 * ```
+	 * 
+	 * @Api\Access("be_users")
 	 * 
 	 * @return array
 	 */
@@ -25,9 +29,18 @@ class Index extends AbstractApi {
 	}
 	
 	/**
-	 * Simple test.
+	 * # Simple POST test
 	 * 
-	 * @Api\Access("*")
+	 * If you are logged in as a backend user, you can test this endpoint by sending a POST-request to:
+	 * 
+	 * It will return the JSON you passed and the list of files you attached.
+	 * No files will be copied to the server because no `@Api\Upload()` Annotation was set on the method.
+	 * 
+	 * ```
+	 * https://www.mysite.com/api/
+	 * ```
+	 * 
+	 * @Api\Access("be_users")
 	 * 
 	 * @return array
 	 */
@@ -39,22 +52,39 @@ class Index extends AbstractApi {
 	}
 	
 	/**
-	 * Simple test.
+	 * # Simple PUT test
 	 * 
-	 * @Api\Access("*")
+	 * If you are logged in as a backend user, you can test this endpoint by sending a PUT-request to:
+	 * 
+	 * It will return the JSON you passed and the list of files you attached.
+	 * No files will be copied to the server because no `@Api\Upload()` Annotation was set on the method.
+	 * 
+	 * ```
+	 * https://www.mysite.com/api/
+	 * ```
+	 * 
+	 * @Api\Access("be_users")
 	 * 
 	 * @return array
 	 */
 	public function putIndexAction()
 	{
-		$result = $this->request->getBody();
-		return ['PUT'=>$result];
+		$files = $this->request->getUploadedFiles();
+		$body = $this->request->getBody();
+		return ['PUT'=>['body'=>$body, 'files'=>$files]];
 	}
-	
-	/**
-	 * Simple test.
+
+	/*	
+	 * # Simple DELETE test
 	 * 
-	 * @Api\Access("*")
+	 * If you are logged in as a backend user, you can test this endpoint by sending a PUT-request to:
+	 * 
+	 * It will return the JSON you passed. Nothing will be deleted - it is just a debug function.
+	 * 
+	 * ```
+	 * https://www.mysite.com/api/
+	 * ```
+	 * @Api\Access("be_users")
 	 * 
 	 * @return array
 	 */
