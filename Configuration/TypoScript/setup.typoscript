@@ -1,3 +1,7 @@
+# ---------------------------------------------------
+# Import the kickstarts
+
+@import 'EXT:nnrestapi/Configuration/TypoScript/kickstarts/verybasic.setup.typoscript'
 
 # ------------------------------------------------
 # Plugin configuration 
@@ -105,23 +109,6 @@ plugin.tx_nnrestapi {
 			headers {
 				# Restrict CORS to certain domains. Please set for higher security!
 				Access-Control-Allow-Origin = *
-			}
-		}
-
-		# Kickstarter-Templates
-		kickstarts {
-			verybasic {
-				title = Very Basic RestApi Extension
-				description = Just a very simple extension with a Model and an endpoint
-				//path = EXT:nnrestapi/Resources/Private/Kickstarts/apitest.zip
-				path = EXT:apitest/
-				replace {
-					nng/apitest = [#vendor-lower#]/[#ext-lower#]
-					Nng\\Apitest\\ = [#vendor-ucc#]\\[#ext-ucc#]\\
-					Nng\Apitest\ = [#vendor-ucc#]\[#ext-ucc#]\
-					\x22apitest\x22 = "[#ext-lower#]"
-					tx_apitest = tx_[#ext-lower#]
-				}
 			}
 		}
 	}

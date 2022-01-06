@@ -1,0 +1,16 @@
+
+plugin.tx_nnrestapi.settings.kickstarts {
+	# Kickstarter-Templates
+	verybasic {
+		title = Very Basic RestApi Extension
+		description = Just a very simple extension with a Model and an endpoint
+		//path = EXT:nnrestapi/Resources/Private/Kickstarts/apitest.zip
+		path = EXT:apitest/
+		replace {
+			nng/apitest = [#vendor-lower#]/[#ext-lower#]
+			Nng\\Apitest\\ = [#vendor-ucc#]\\[#ext-ucc#]\\
+			Nng\Apitest\ = [#vendor-ucc#]\[#ext-ucc#]\
+			apitest = [#ext-lower#]
+		}
+	}
+}
