@@ -109,7 +109,8 @@ Creating your own kickstarter-templates is extremely simple:
 
 4.  Register your kickstarter template
 
-    To make the template available in the backend module, register the path to your zip:
+    | To make the template available in the backend module, register the path to your zip or folder.
+    **Note:** The zip must be somewhere inside the an extension folder - or the fileadmin. 
 
     .. code-block:: typoscript
 

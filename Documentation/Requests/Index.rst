@@ -3,7 +3,7 @@
 .. _requests:
 
 ============
-Handling Requests
+Routing & Requests
 ============
 
 The request type makes the difference!

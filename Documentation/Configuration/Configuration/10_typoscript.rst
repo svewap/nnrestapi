@@ -216,7 +216,7 @@ kickstarts
                     title = A frontend in React
                     description = Example React frontend connection with the TYPO3 Rest Api
 
-                    // path can be a zip or a folder
+                    // path can be a zip or a folder. Must be inside an EXT-folder or fileadmin!
                     path = EXT:myextension/Resources/Private/Kickstarts/react.zip
 
                     // list of texts to replace in source-codes
