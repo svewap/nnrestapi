@@ -65,7 +65,7 @@ class Api extends \Nng\Nnhelpers\Singleton {
 		// `param2` wird zu `param3` verschoben, `controller` wird zu `action` etc.
 		if ($mergedArgs['ext'] ?? false) {
 						
-			if ($mergedArgs['ext'] != $defaultEndpoint['slug'] ?? '') {
+			if ($mergedArgs['ext'] != ($defaultEndpoint['slug'] ?? '')) {
 				$argsToShift = array_reverse(array_slice($argsOrder, 0, -1));
 				foreach ($argsToShift as $n=>$key) {
 					if ($prevKey = $argsToShift[$n+1] ?? false) {

@@ -64,14 +64,6 @@ class Settings extends \Nng\Nnhelpers\Singleton {
 			$site = \nn\t3::Environment()->getSite( $request );
 		}
 
-		// // Fallback nnhelpers 1.4, fixed in 1.5
-		// if (is_a($site, \TYPO3\CMS\Core\Site\Entity\NullSite::class)) {
-		// 	$siteFinder = GeneralUtility::makeInstance( SiteFinder::class );
-		// 	$matcher = GeneralUtility::makeInstance( SiteMatcher::class, $siteFinder );
-		// 	$routeResult = $matcher->matchRequest($request);
-		// 	$site = $routeResult->getSite();	
-		// }
-
 		$siteIdentifier = $site->getIdentifier();
 		if (!is_a($site, \TYPO3\CMS\Core\Site\Entity\NullSite::class)) {
 			$apiConfiguration = $site->getConfiguration()['nnrestapi'] ?? [];
