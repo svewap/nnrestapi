@@ -2,7 +2,7 @@
   "name": "nng/nnrestapi",
   "type": "typo3-cms-extension",
   "license": "GPL-2.0-or-later",
-  "description": "Rest Api Extension",
+  "description": "Rest Api Extension for TYPO3",
   "authors": [],
   "require": {
     "typo3/cms-core": "^9.5 || ^10.0 || ^11.0",
