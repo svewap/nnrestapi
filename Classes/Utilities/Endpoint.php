@@ -401,7 +401,6 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 		}
 
 		$this->classMapCache = $routingMap;
-
 		return \nn\t3::Cache()->write( $cacheIdentifier, $routingMap );
 	}
 

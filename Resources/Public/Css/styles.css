@@ -118,6 +118,8 @@ h2 {
     padding: 0.1rem 0.5rem;
     border: none;
     text-align: center;
+    position: relative;
+    z-index: 1;
 }
 
 .testbed .btn {
@@ -312,6 +314,12 @@ main {
     pointer-events: none;
 }
 
+.compose.pump .req-type {
+    animation: pump-down 0.3s;
+}
+.request-form.pump .reqtype {
+    animation: 0.3s pump-up 0.3s;
+}
 
 .url {
     position: relative;
@@ -419,3 +427,15 @@ b, strong {
 .kickstarts a:hover {   
     text-decoration: none;
 }
+
+@keyframes pump-up {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.4); }
+    100% { transform: scale(1); }
+}
+
+@keyframes pump-down {
+    0% { transform: scale(1); }
+    50% { transform: scale(0.8); }
+    100% { transform: scale(1); }
+} 

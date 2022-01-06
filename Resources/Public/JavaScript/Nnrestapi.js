@@ -279,7 +279,6 @@ define(['jquery', 'TYPO3/CMS/Nnrestapi/Axios'], function($, axios) {
 	$endpoints.find('.compose').click(function (e) {
 		var reqData = $(this).closest('[data-reqtype]').data();
 		var uid = reqData.uid;
-		
 		getFromStorage( uid ).then(( prevReq ) => {
 			$('.requid').val( reqData.uid );
 			$('.reqtype').val( prevReq.type || reqData.reqtype ).change();
@@ -288,6 +287,11 @@ define(['jquery', 'TYPO3/CMS/Nnrestapi/Axios'], function($, axios) {
 			$('.reqbody').val( body );	
 		});
 		
+		$('.request-form, .compose').removeClass('pump');
+		setTimeout(() => {
+			$('.request-form').add($(this)).addClass('pump');
+		}, 10);
+
 		return false;
 	});
 
