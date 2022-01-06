@@ -4,7 +4,6 @@ namespace Nng\Nnrestapi\Controller;
 
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Site\SiteFinder;
 
 /**
  * Backend Module
@@ -51,6 +50,10 @@ class ModController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 	 */
 	public function indexAction () 
 	{
+
+		// Make sure site config.yaml is loaded and parsed in Settings
+		\nn\rest::Settings()->initialize();
+
 		// Check, if database-tables were installed
 		$tablesExist = \nn\rest::Environment()->sessionTableExists();
         if (!$tablesExist) {
@@ -61,7 +64,14 @@ class ModController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 		// Check, if TypoScript template was included
         $settings = \nn\t3::Settings()->getPlugin('nnrestapi');
         if (!$settings) {
-			\nn\t3::Message()->ERROR('Where\'s my TypoScript?', 'No TypoScript Configuration found. Make sure you included the RestApi templates in the root page template.');
+			\nn\t3::Message()->ERROR('Where\'s my TypoScript?', 'No TypoScript configuration found. Make sure you included the RestApi templates in the root page template.');
+			return \nn\t3::Template()->render('EXT:nnrestapi/Resources/Private/Backend/Templates/Mod/Error.html');
+		}
+
+		// Check, if RouteEnhancer was included
+		$config = \nn\rest::Settings()->getConfiguration();
+		if (!$config) {
+			\nn\t3::Message()->ERROR('Where\'s my RouteEnhancer?', 'No YAML configuration found. Make sure you included the EXT:nnrestapi/Configuration/Yaml/default.yaml in your site configuration! See installation guide for more infos.');
 			return \nn\t3::Template()->render('EXT:nnrestapi/Resources/Private/Backend/Templates/Mod/Error.html');
 		}
 
