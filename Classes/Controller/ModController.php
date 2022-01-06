@@ -10,25 +10,22 @@ use TYPO3\CMS\Core\Site\SiteFinder;
  * Backend Module
  * 
  */
-class ModController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController {
-
+class ModController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
+{
     /**
 	 * Backend Template Container
+	 * 
 	 * @var string
 	 */
 	protected $defaultViewObjectName = \TYPO3\CMS\Backend\View\BackendTemplateView::class;
 
-	/** 
-	 * 	Cache des Source-Codes für die Doku
-	 * 	@var array
-	 */
-	protected $sourceCodeCache = [];
-	protected $maxTranslationsPerLoad = 10;
 
 	/**
 	 * 	Initialize View
+	 * 
 	 */
-	public function initializeView ( ViewInterface $view ) {
+	public function initializeView ( ViewInterface $view ) 
+	{
 		parent::initializeView($view);
 
 		if (!$view->getModuleTemplate()) return;
@@ -47,22 +44,28 @@ class ModController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController {
 	}
 
 	/**
+	 * The main backend view with overview of all API endpoints
+	 * and integrated testbed.
+	 * 
 	 * @return void
 	 */
-	public function indexAction () {
-
+	public function indexAction () 
+	{
+		// Check, if database-tables were installed
 		$tablesExist = \nn\rest::Environment()->sessionTableExists();
         if (!$tablesExist) {
 			\nn\t3::Message()->ERROR('Where are my database-tables?', 'The database-tables seem to be missing. Please run the "Analyze Database Structure" in the Maintenance module and create the missing tables.');
 			return \nn\t3::Template()->render('EXT:nnrestapi/Resources/Private/Backend/Templates/Mod/Error.html');
 		}
 
+		// Check, if TypoScript template was included
         $settings = \nn\t3::Settings()->getPlugin('nnrestapi');
         if (!$settings) {
 			\nn\t3::Message()->ERROR('Where\'s my TypoScript?', 'No TypoScript Configuration found. Make sure you included the RestApi templates in the root page template.');
 			return \nn\t3::Template()->render('EXT:nnrestapi/Resources/Private/Backend/Templates/Mod/Error.html');
 		}
 
+		// Render documentation
 		$classMap = \nn\rest::Annotations()->getClassMapWithDocumentation();
 		$urlBase = \nn\t3::Environment()->getBaseUrl();
 
@@ -86,12 +89,32 @@ class ModController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController {
 	 * @param string $vendorname
 	 * @return string
 	 */
-	public function kickstartAction( string $identifier = '', string $extname = '', string $vendorname = '' ) {
-
+	public function kickstartAction( string $identifier = '', string $extname = '', string $vendorname = '' ) 
+	{
 		$config = $this->settings['kickstarts'][$identifier] ?? false;
 		
-		if (!$config) {
-			return 'Kickstart config not defined!';
+		if (!$config || !($config['path'] ?? false)) {
+			return 'Kickstart config not defined or no path to kickstarter template set!';
+		}
+
+		$absPath = \nn\t3::File()->exists($config['path']);
+
+		// basic check
+		if (!$absPath) {
+			return 'Path to kickstarter template invalid.';			
+		}
+
+		// Make sure the path is somewhere inside the EXT: or fileadmin folder. Prevents misuse.
+		$pathSite = \nn\t3::Environment()->getPathSite();
+		$allowedPaths = array_filter([
+			$pathSite . 'typo3conf/ext/',
+			$pathSite . 'fileadmin/',
+		], function ($path) use ($absPath) {
+			return strpos($absPath, $path) !== false;
+		});
+
+		if (!$allowedPaths) {
+			return 'Path to kickstarter template must be in EXT or fileadmin-folder!';
 		}
 
 		$extname = GeneralUtility::camelCaseToLowerCaseUnderscored($extname);

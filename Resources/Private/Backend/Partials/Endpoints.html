@@ -33,7 +33,9 @@
 
 				{f:variable(name:'relUri', value:'{uri->nnt3:format.replace(from:urlBase, to:\'\')}')}
 
-				{f:variable(name:'title', value:'{uri->nnt3:format.replace(from:urlBase, to:\'\')->f:format.htmlspecialchars()}')}
+				{uri->nnt3:format.replace(from:urlBase, to:'')->f:format.htmlspecialchars()->f:variable(name:'uriShort')}
+
+				{f:if(condition:config.label, then:config.label, else:uriShort)->f:variable(name:'title')}
 
 				<div class="request mb-2 ext-{extname}" 
 					data-uid="{reqType}/{relUri}"
@@ -57,6 +59,10 @@
 						<div class="classinfos mb-2">
 							<b>Class infos:</b>
 							<table class="table mt-2 table-bordered table-sm">
+								<tr>
+									<td>Route:</td>
+									<td>{uriShort}</td>
+								</tr>
 								<tr>
 									<td>Access:</td>
 									<td>{config.access->rest:format.access()}</td>

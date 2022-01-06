@@ -2,12 +2,14 @@
 
 namespace Nng\Nnrestapi\Distiller;
 
+use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
+
 /**
- * Distiller für ein Model.
+ * Generic Distiller for a Model.
  * 
  */
-class ModelDistiller {
-
+class ModelDistiller 
+{
 	/**
 	 * ## Destill array-data created from a Model
 	 * 
@@ -36,7 +38,7 @@ class ModelDistiller {
 	public static function process( $model, &$data = [], $config = [], $flattenFileReferences = null ) {
 		
 		if (!$model || (!is_object($model) && !is_array($model))) return;
-
+		
 		$distillers = $config ?: \nn\t3::Settings()->get('tx_nnrestapi')['globalDistillers'] ?: [];
 
 		// find configuration for current Model, if defined in typscript `settings.globalDistillers.Some\Model\Name`
@@ -47,14 +49,23 @@ class ModelDistiller {
 			}
 		}
 		
-		// reduce FileReferences to publicUrl?
-		$flattenFileReferences = $flattenFileReferences ?: !!$distillerConfigForClass['flattenFileReferences'] ?? false;
+		// reduce FileReferences to publicUrl? If set in configuration, this will be passed on recursively from here
+		if ($distillerConfigForClass && isset($distillerConfigForClass['flattenFileReferences'])) {
+			$flattenFileReferences = $distillerConfigForClass['flattenFileReferences'];
+		}
+
+		// flattenFileReference was set for current Model OR by parent Model. Reduce to publicUrl.
 		if ($flattenFileReferences && \nn\t3::Obj()->isFileReference($model)) {
 			$data = $data['publicUrl'] ?? null;
 		}
 
-		if (\nn\t3::Obj()->isStorage($model)) {
-			foreach ($model->toArray() as $n=>$item) {
+		// Convert QueryResult and ObjectStorage to Array
+		if (is_a($model, QueryResult::class, true) || \nn\t3::Obj()->isStorage($model)) {
+			$model = $model->toArray();
+		}
+		
+		if (is_array($model)) {
+			foreach ($model as $n=>$item) {
 				self::process( $item, $data[$n], $distillers, $flattenFileReferences );
 			}
 			return;
