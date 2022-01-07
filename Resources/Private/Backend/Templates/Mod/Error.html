@@ -1,16 +1,69 @@
 
-<link rel="stylesheet" href="/typo3conf/ext/nnrestapi/Resources/Public/Css/bootstrap.min.css" />
+<link rel="stylesheet" href="/typo3conf/ext/nnhelpers/Resources/Public/Vendor/fontawesome/css/all.css" />
+<link rel="stylesheet" href="/typo3conf/ext/nnrestapi/Resources/Public/Vendor/bootstrap.min.css" />
 <link rel="stylesheet" href="/typo3conf/ext/nnhelpers/Resources/Public/Css/styles.css" />
 <link rel="stylesheet" href="/typo3conf/ext/nnrestapi/Resources/Public/Css/styles.css" />
 
-<div class="nnhelpers-be-module">
+<div class="nnhelpers-be-module scrollable">
 	<div class="typo3-fullDoc">
 		<div id="typo3-docbody" class="docbody-fullscreen">
 			<div id="typo3-inner-docbody" class="ps-0 pe-5 pt-5">
-				<main class="p-4">
+				<div class="p-4 nnrestapi-errors mx-auto">
+
 					{nnt3:flashMessages()}
-				</main>
+
+					<h1 class="mb-4">Sorry, just {errors->f:count()} more thing{f:if(condition:'{errors->f:count()} > 1', then:'s')}...</h1>
+
+					<f:if condition="{errors.missingTables}">
+						<f:render section="warning" contentAs="content" arguments="{icon:'fas fa-database'}">
+							<h2>Where are my database-tables?</h2>
+							<p>
+								The database-tables seem to be missing. Please run the "Analyze Database Structure" 
+								in the Maintenance module and create the missing tables.
+							</p>
+						</f:render>
+					</f:if>
+
+					<f:if condition="{errors.missingTypoScript}">
+						<f:render section="warning" contentAs="content" arguments="{icon:'fas fa-code'}">
+							<h2>Where's my TypoScript?</h2>
+							<p>
+								No TypoScript configuration found. Make sure you included the RestApi templates in the root page template.
+							</p>
+						</f:render>
+					</f:if>
+
+					<f:if condition="{errors.missingYaml}">
+						<f:render section="warning" contentAs="content" arguments="{icon:'fas fa-route'}">
+							<h2>Where's my RouteEnhancer?</h2>
+							<p>
+								No YAML configuration found. Make sure you included the <b>EXT:nnrestapi/Configuration/Yaml/default.yaml</b> 
+								in your site configuration! Here is what you are looking for:
+							</p>
+<nnt3:format.code lang="yaml">
+imports:
+  - { resource: "EXT:nnrestapi/Configuration/Yaml/default.yaml" }	
+</nnt3:format.code>
+						</f:render>
+					</f:if>
+
+					<h1 class="my-4">One minute walk-through</h1>
+
+					<div class="ratio ratio-16x9">
+						<iframe src="https://www.youtube-nocookie.com/embed/yUAAlnPy3NQ?&rel=0" allowfullscreen></iframe>
+					</div>					
+
+				</div>
 			</div>
 		</div>
 	</div>
 </div>
+
+<f:section name="warning">
+	<div class="alert alert-danger d-flex">
+		<i class="{icon} fa-2x mt-1"></i>
+		<div class="text ps-3">
+			{content->f:format.raw()}
+		</div>
+	</div>
+</f:section>

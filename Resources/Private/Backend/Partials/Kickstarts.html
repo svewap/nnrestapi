@@ -4,8 +4,8 @@
     <h2>Download, install, play.</h2>
 
     <p>
-        Create your own TYPO3 REST Api extension with one click: Enter a vendor name and an extension name.
-        Then click on an a package below to export your extension. All classes will automatically be namespaced.
+        Create your own TYPO3 REST Api extension with one click: Enter a vendor name and an extension name.<br>
+        Then click on an a package below to export your extension. All classes and files will automatically be namespaced and renamed.
     </p>
 
     <div class="kickstarts-config row mb-4">
@@ -21,19 +21,32 @@
 
     <h2>Available packages:</h2>
 
-    <div class="pt-2">
+    <div class="pt-2 kickstart-packages">
         <f:for each="{settings.kickstarts}" key="identifier" as="config">
             <div class="item">
-                <f:link.action action="kickstart" arguments="{identifier:identifier, extname:'extname', vendorname:'vendorname'}" class="d-flex align-items-center">
-                    <div class="icon me-3 d-flex align-items-center justify-content-center">
-                        { <i class="fas fa-box mx-1"></i> }
+                <f:link.action action="kickstart" arguments="{identifier:identifier, extname:'extname', vendorname:'vendorname'}" class="d-flex align-items-center mb-3">
+                    <div class="icon-col">
+                        <div class="icon me-3 d-flex align-items-center justify-content-center">
+                            { <i class="fas fa-box mx-1"></i> }
+                        </div>
                     </div>
-                    <div class="info">
+                    <div class="info w-100">
                         <h3>{config.title}</h3>
                         {config.description->f:format.html()}
                     </div>
                 </f:link.action>
             </div>
-        </f:for>    
+        </f:for>
+        <a class="add-info d-flex align-items-center">
+            <div class="icon-col">
+                <div class="icon me-3 d-flex align-items-center justify-content-center">
+                    <i class="fas fa-plus mx-1"></i>
+                </div>
+            </div>
+            <div class="info w-100">
+                <h3>Add your package!</h3>
+                <p>Read the docs to find out how.</p>
+            </div>
+        </a>
     </div>
 </div>

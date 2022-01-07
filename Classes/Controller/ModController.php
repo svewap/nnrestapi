@@ -18,6 +18,17 @@ class ModController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 	 */
 	protected $defaultViewObjectName = \TYPO3\CMS\Backend\View\BackendTemplateView::class;
 
+	/**
+	 * Support this project!
+	 * 
+	 * @var array
+	 */
+	protected $donations = [
+		['icon' => 'fas fa-rainbow', 'title'=>'Kaaarma!', 'content'=>'Karma'],
+		['icon' => 'fas fa-cookie', 'title'=>'Gimme Cookie!', 'content'=>'Cookie'],
+		['icon' => 'fas fa-coffee', 'title'=>'Coffee!', 'content'=>'Coffee'],
+		['icon' => 'fas fa-hand-paper', 'title'=>'DON\'t donate!', 'content'=>'Dont'],
+	];
 
 	/**
 	 * 	Initialize View
@@ -32,6 +43,7 @@ class ModController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 		$pageRenderer = $view->getModuleTemplate()->getPageRenderer();
 
 		$pageRenderer->loadRequireJsModule('TYPO3/CMS/Nnrestapi/Axios');
+		$pageRenderer->loadRequireJsModule('TYPO3/CMS/Nnrestapi/Bootstrap');
         $pageRenderer->loadRequireJsModule('TYPO3/CMS/Nnrestapi/Nnrestapi');
 		
 		$pageRenderer->addCssFile('/typo3conf/ext/nnhelpers/Resources/Public/Vendor/prism/prism.css');
@@ -54,30 +66,38 @@ class ModController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 		// Make sure site config.yaml is loaded and parsed in Settings
 		\nn\rest::Settings()->initialize();
 
+		// Collect errors...
+		$errors = [];
+
 		// Check, if database-tables were installed
 		$tablesExist = \nn\rest::Environment()->sessionTableExists();
         if (!$tablesExist) {
-			\nn\t3::Message()->ERROR('Where are my database-tables?', 'The database-tables seem to be missing. Please run the "Analyze Database Structure" in the Maintenance module and create the missing tables.');
-			return \nn\t3::Template()->render('EXT:nnrestapi/Resources/Private/Backend/Templates/Mod/Error.html');
+			$errors['missingTables'] = true;
 		}
 
 		// Check, if TypoScript template was included
         $settings = \nn\t3::Settings()->getPlugin('nnrestapi');
         if (!$settings) {
-			\nn\t3::Message()->ERROR('Where\'s my TypoScript?', 'No TypoScript configuration found. Make sure you included the RestApi templates in the root page template.');
-			return \nn\t3::Template()->render('EXT:nnrestapi/Resources/Private/Backend/Templates/Mod/Error.html');
+			$errors['missingTypoScript'] = true;
 		}
 
 		// Check, if RouteEnhancer was included
 		$config = \nn\rest::Settings()->getConfiguration();
 		if (!$config) {
-			\nn\t3::Message()->ERROR('Where\'s my RouteEnhancer?', 'No YAML configuration found. Make sure you included the EXT:nnrestapi/Configuration/Yaml/default.yaml in your site configuration! See installation guide for more infos.');
-			return \nn\t3::Template()->render('EXT:nnrestapi/Resources/Private/Backend/Templates/Mod/Error.html');
+			$errors['missingYaml'] = true;
+		}
+		
+		// Any errors? Then abort here.
+		if ($errors) {
+			return \nn\t3::Template()->render('EXT:nnrestapi/Resources/Private/Backend/Templates/Mod/Error.html', ['errors'=>$errors]);
 		}
 
-		// Render documentation
+		// Everything fine. Render documentation.
 		$classMap = \nn\rest::Annotations()->getClassMapWithDocumentation();
 		$urlBase = \nn\t3::Environment()->getBaseUrl();
+
+		// Get a random donation message
+		$donation = $this->donations[ rand(0, count($this->donations)-1) ];
 
 		$this->view->assignMultiple([
 			'enhancerExists'	=> \Nng\Nnrestapi\Service\EnvironmentService::enhancerExists(),
@@ -86,6 +106,7 @@ class ModController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 			'urlBase'			=> $urlBase,
 			'absApiUrlPrefix'	=> $urlBase . \nn\rest::Settings()->getApiUrlPrefix(),
 			'endpoints' 		=> $classMap,
+			'donate'			=> $donation,
 		]);
 
 		return $this->view->render();
@@ -147,8 +168,8 @@ class ModController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 
 				// enable escaping keys for replacement (e.g. \x22test\x22 => "test")
 				$k = preg_replace_callback( "(\\\\x([0-9a-f]{2}))i", function ($a) {
-						return chr(hexdec($a[1]));
-					}, $k);
+					return chr(hexdec($a[1]));
+				}, $k);
 
 				// replace placeholders
 				$v = strtr( $v, $marker );
