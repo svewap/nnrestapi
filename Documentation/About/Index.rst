@@ -30,6 +30,15 @@ miniature "Postman" in the :ref:`backend-module <screenshots>` so you can test y
 TYPO3 environment.
 
 
+TYPO3 Rest Api - walkthrough
+-----------------------------
+
+Overview of the installation and backend features of the extension.
+
+.. youtube:: Za07kam3Odc
+   :width: 100%
+
+
 What does this extension do?
 ----------------
 

@@ -92,3 +92,12 @@ Most of the examples are also on CodePen for you to copy, test and modify.
    :class: with-shadow
    :alt: nnrestapi example codepen
    :width: 100%
+
+
+TYPO3 Rest Api - walkthrough
+-----------------------------
+
+Overview of the installation and backend features of the extension.
+
+.. youtube:: Za07kam3Odc
+   :width: 100%
