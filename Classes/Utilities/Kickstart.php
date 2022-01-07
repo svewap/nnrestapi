@@ -125,7 +125,7 @@ class Kickstart extends \Nng\Nnhelpers\Singleton
 
 		$zip->close();
 		\nn\t3::File()->sendDownloadHeader( $archivePath );
-		echo \nn\t3::File()->read( $archivePath );
+		echo file_get_contents( $archivePath );
 
 		@unlink($archivePath);
 		die();
