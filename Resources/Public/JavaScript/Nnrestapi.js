@@ -1,6 +1,6 @@
 
 
-define(['jquery', 'TYPO3/CMS/Nnrestapi/Axios', 'TYPO3/CMS/Nnrestapi/Bootstrap'], function($, axios) {
+define(['jquery', 'TYPO3/CMS/Nnrestapi/Axios'], function($, axios) {
 
 	var $testbed = $('.testbed');
 	var $endpoints = $('.endpoints');

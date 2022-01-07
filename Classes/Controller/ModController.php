@@ -42,8 +42,10 @@ class ModController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 		
 		$pageRenderer = $view->getModuleTemplate()->getPageRenderer();
 
+		if (\nn\t3::t3Version() < 11) {
+			$pageRenderer->loadRequireJsModule('TYPO3/CMS/Nnrestapi/Bootstrap');
+		}
 		$pageRenderer->loadRequireJsModule('TYPO3/CMS/Nnrestapi/Axios');
-		$pageRenderer->loadRequireJsModule('TYPO3/CMS/Nnrestapi/Bootstrap');
         $pageRenderer->loadRequireJsModule('TYPO3/CMS/Nnrestapi/Nnrestapi');
 		
 		$pageRenderer->addCssFile('/typo3conf/ext/nnhelpers/Resources/Public/Vendor/prism/prism.css');

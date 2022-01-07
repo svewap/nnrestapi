@@ -9,17 +9,17 @@
 					{title->f:format.raw()}
 				</a>
 
-				<a href="#" class="ms-auto details ps-3 d-flex" data-toggle="collapse" data-target="#{uniqid}" data-bs-toggle="collapse" data-bs-target="#{uniqid}">
+				<a href="#{uniqid}" class="ms-auto details ps-3 d-flex" data-bs-toggle="collapse">
 					<span>details</span>
 					<i class="fas fa-angle-down ms-2 mb--1"></i>
 				</a>
 
 				<f:if condition="{config.access.public}">
 					<f:then>
-						<i class="access-icon public fas fa-users" data-toggle="tooltip" data-placement="top" title="public access"></i>
+						<i class="access-icon public fas fa-users" data-bs-toggle="tooltip" data-placement="top" title="public access"></i>
 					</f:then>
 					<f:else>
-						<i class="access-icon fas fa-lock" data-toggle="tooltip" data-placement="top" title="restricted access"></i>
+						<i class="access-icon fas fa-lock" data-bs-toggle="tooltip" data-placement="top" title="restricted access"></i>
 					</f:else>
 				</f:if>
 
