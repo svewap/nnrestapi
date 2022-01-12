@@ -1,7 +1,7 @@
 # ---------------------------------------------------
 # Import the kickstarts
 
-@import 'EXT:nnrestapi/Configuration/TypoScript/kickstarts/verybasic.setup.typoscript'
+@import 'EXT:nnrestapi/Configuration/TypoScript/kickstarts/*.setup.typoscript'
 
 # ------------------------------------------------
 # Plugin configuration 

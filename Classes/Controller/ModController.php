@@ -64,7 +64,6 @@ class ModController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 	 */
 	public function indexAction () 
 	{
-
 		// Make sure site config.yaml is loaded and parsed in Settings
 		\nn\rest::Settings()->initialize();
 
@@ -112,6 +111,23 @@ class ModController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 		]);
 
 		return $this->view->render();
+	}
+
+	/**
+	 * Get `README.md` for given kickstart-template
+	 * 
+	 * @param string $identfier
+	 * @return string
+	 */
+	public function readmeAction( string $identifier = '' ) 
+	{
+		$config = $this->settings['kickstarts'][$identifier] ?? false;
+		
+		if (!$config || !($config['path'] ?? false)) {
+			return 'Kickstart config not defined or no path to kickstarter template set!';
+		}
+
+		return \nn\rest::Kickstart()->getReadMe( $config ) ?: 'This package has no README.md';
 	}
 
 	/**

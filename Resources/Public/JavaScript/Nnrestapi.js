@@ -72,6 +72,22 @@ define(['jquery', 'TYPO3/CMS/Nnrestapi/Axios'], function($, axios) {
 		saveInStorage('kickstarts', obj);
 	});
 
+	/**
+	 * Open Kickstarts README.md
+	 * 
+	 */
+	$('.kickstart-packages .readme').click(function () {
+		var $body = $('#nnrestapi-modal .modal-body');
+		$.ajax($(this).attr('href')).done(function ( data ) {
+			$('[data-bs-target="#nnrestapi-modal"]').click();
+			$body.html( data );
+			if (window.Prism) {
+				Prism.highlightAll();
+			}
+		});
+		return false;
+	});
+
 	getFromStorage( 'kickstarts' ).then(( prevConfig ) => {
 		if (!prevConfig) {
 			prevConfig = {};
@@ -82,7 +98,7 @@ define(['jquery', 'TYPO3/CMS/Nnrestapi/Axios'], function($, axios) {
 		});
 		$('.kickstarts-config input').first().change();
 	});
-
+	
 	/**
 	 * Authenticate
 	 * 

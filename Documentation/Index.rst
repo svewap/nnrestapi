@@ -34,11 +34,11 @@ Everything you need to create a RESTful API in TYPO3.
 
          .. rst-class:: card-header h4
 
-            .. rubric:: :ref:`★ Features <introduction>`
+            .. rubric:: :ref:`★ Features <about>`
 
          .. container:: card-body
 
-            :ref:`Motivation <introduction>` and overview of the :ref:`main features <about_features>`.
+            :ref:`Motivation <about>` and overview of the :ref:`main features <about_features>`.
 
    .. container:: col-12 col-md-6 pl-0 pr-3 py-3 m-0
 

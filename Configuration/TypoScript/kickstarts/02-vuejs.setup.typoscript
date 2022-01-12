@@ -1,0 +1,17 @@
+
+plugin.tx_nnrestapi.settings.kickstarts {
+	# Kickstarter-Templates
+	vuejs {
+		title = VueJS Example
+		icon = fab fa-vuejs
+		description = Example with a VueJS Frontend as TYPO3 plugin that connects to the RestAPI
+		path = EXT:nnrestapi/Resources/Private/Kickstarts/vuejs.zip
+		path = EXT:apitest/
+		replace {
+			nng/apitest = [#vendor-lower#]/[#ext-lower#]
+			Nng\\Apitest\\ = [#vendor-ucc#]\\[#ext-ucc#]\\
+			Nng\Apitest\ = [#vendor-ucc#]\[#ext-ucc#]\
+			apitest = [#ext-lower#]
+		}
+	}
+}

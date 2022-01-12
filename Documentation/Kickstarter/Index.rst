@@ -117,6 +117,7 @@ Creating your own kickstarter-templates is extremely simple:
         plugin.tx_nnrestapi.settings.kickstarts {
             mytemplate {
                 title = The title
+                icon = fas fa-box
                 description = The description goes here
                 path = EXT:yourext/Resources/Private/Kickstarts/yourpackage.zip
                 replace {

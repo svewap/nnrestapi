@@ -23,6 +23,45 @@ class Kickstart extends \Nng\Nnhelpers\Singleton
 	protected $useExternalLib = false;
 
 	/**
+	 * Get README.md from EXT-path or zipped extension file.
+	 * README.md must be in the root-folder of the extension.
+	 * Parse the markdown and return HTML.
+	 * ```
+	 * \nn\rest::Kickstart()->getReadMe( $config );
+	 * \nn\rest::Kickstart()->getReadMe( 'EXT:apitest' );
+	 * \nn\rest::Kickstart()->getReadMe( 'EXT:nnrestapi/path/to/extension.zip' );
+	 * ```
+	 * @param string|array $pathOrZip 	path or a configuration array containing the path in the key `path`
+	 * @return string
+	 */
+	public function getReadMe( $pathOrZip = '' ) 
+	{
+		// `['path'=>'...']` passed from TypoScript configuration?
+		if (is_array($pathOrZip)) {
+			$pathOrZip = $pathOrZip['path'] ?? false;
+		}
+
+		// get all files
+		if (\nn\t3::File()->isFolder( $pathOrZip )) {
+			$files = \nn\rest::File()->getFolderContent( $pathOrZip );
+		} else {
+			$files = \nn\rest::File()->getZipContent( $pathOrZip );
+		}
+
+		// get all `README.md` files
+		$files = array_change_key_case($files, CASE_LOWER);
+		$files = array_filter( $files, function( $path ) {
+			return strpos(pathinfo($path, PATHINFO_BASENAME), 'readme.md') !== false;
+		}, ARRAY_FILTER_USE_KEY);
+
+		// reduce to first `README.md` found
+		$content = current($files);
+
+		// return parsed markdown
+		return \Nng\Nnhelpers\Helpers\MarkdownHelper::toHTML( $content );
+	}
+
+	/**
 	 * Read all files from a ZIP file, replaces markers in source code and 
 	 * repack it to a ZIP (or TAR) that is downloaded.
 	 * 
@@ -36,8 +75,8 @@ class Kickstart extends \Nng\Nnhelpers\Singleton
 	 * 
 	 * @return void
 	 */
-	public function createExtensionFromTemplate( $config = [], $marker = [] ) {
-
+	public function createExtensionFromTemplate( $config = [], $marker = [] ) 
+	{
 		// extension-name
 		$extname = $marker['[#ext-lower#]'];
 

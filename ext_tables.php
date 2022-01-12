@@ -15,7 +15,7 @@ call_user_func(
 			'mod1',
 			'',
 			\nn\t3::Registry()->parseControllerActions([
-				\Nng\Nnrestapi\Controller\ModController::class => 'index, kickstart',
+				\Nng\Nnrestapi\Controller\ModController::class => 'index, kickstart, readme',
 			]),
 			[
 				'access'	=> 'user,group',

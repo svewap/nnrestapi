@@ -491,6 +491,41 @@ b, strong {
     margin: 0 0 0.25rem 0;
 }
 
+.kickstart-packages .item .text {
+    transition: ease-in 0.2s all;
+}
+
+.kickstart-packages .item .info {
+    position: relative;
+}
+
+.kickstart-packages .actions {
+    opacity: 0;
+    transition: ease-out 0.2s all;
+    transform: translateX(40px);
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.kickstart-packages .item:hover .actions {
+    transform: translateX(0);
+    opacity: 1;
+}
+.kickstart-packages .item:hover .text {
+    transform: translateX(-20px);
+    opacity: 0;
+}
+
+.kickstart-packages .actions a,
+.kickstart-packages .actions a:hover {
+    border-radius: 3px;
+    color: #fff;
+    background: #15b5a2;
+}
+
 .kickstart-packages p {
     margin: 0;
 }

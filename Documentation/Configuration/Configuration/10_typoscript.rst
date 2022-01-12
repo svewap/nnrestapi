@@ -216,6 +216,9 @@ kickstarts
                     title = A frontend in React
                     description = Example React frontend connection with the TYPO3 Rest Api
 
+                    // icon-class (FontAwesome/Free supported)
+                    icon = fas fa-box
+
                     // path can be a zip or a folder. Must be inside an EXT-folder or fileadmin!
                     path = EXT:myextension/Resources/Private/Kickstarts/react.zip
 

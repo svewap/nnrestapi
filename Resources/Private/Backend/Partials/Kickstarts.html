@@ -24,17 +24,27 @@
     <div class="pt-2 kickstart-packages">
         <f:for each="{settings.kickstarts}" key="identifier" as="config">
             <div class="item">
-                <f:link.action action="kickstart" arguments="{identifier:identifier, extname:'extname', vendorname:'vendorname'}" class="d-flex align-items-center mb-3">
+                <div class="d-flex align-items-center mb-3">
                     <div class="icon-col">
                         <div class="icon me-3 d-flex align-items-center justify-content-center">
-                            { <i class="fas fa-box mx-1"></i> }
+                            { <i class="{f:if(condition:config.icon, then:config.icon, else:'fas fa-box')} mx-1"></i> }
                         </div>
                     </div>
                     <div class="info w-100">
-                        <h3>{config.title}</h3>
-                        {config.description->f:format.html()}
+                        <div class="text">
+                            <h3>{config.title}</h3>
+                            {config.description->f:format.html()}
+                        </div>
+                        <div class="d-flex align-items-center actions justify-content-end">
+                            <f:link.action action="kickstart" arguments="{identifier:identifier, extname:'extname', vendorname:'vendorname'}" class="d-flex align-items-center me-4 btn btn-primary">
+                                <i class="fas fa-cloud-download-alt mx-1"></i> Download
+                            </f:link.action>
+                            <f:link.action action="readme" arguments="{identifier:identifier}" class="d-flex align-items-center btn btn-primary readme">
+                                <i class="fas fa-book-medical mx-1"></i> Read Me
+                            </f:link.action>
+                        </div>        
                     </div>
-                </f:link.action>
+                </div>
             </div>
         </f:for>
         <a class="add-info d-flex align-items-center">

@@ -1,6 +1,6 @@
 .. include:: ../Includes.txt
 
-.. _introduction:
+.. _about:
 
 ============
 About the extension
