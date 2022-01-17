@@ -2,19 +2,18 @@
 
 namespace Nng\Nnrestapi\Utilities;
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Composer\Autoload\ClassMapGenerator;
 
 /**
- * Helper für häufig genutzte Api-Funktionen.
+ * Utility for registering and evaluation Endpoints
  * 
  */
 class Endpoint extends \Nng\Nnhelpers\Singleton {
 
 	/**
-	 * Methodennamen, die mit diesem Prefix beginnen (und mit `Action` enden) 
-	 * werden automatisch als Endpoints berücksichtigt. Beispiel:
-	 * `getSomethingAction()` oder `deleteSomethingAction()`
+	 * Method names starting with this prefix (and ending with `Action`) 
+	 * are automatically included as endpoints. Example:
+	 * `getSomethingAction()` or `deleteSomethingAction()`.
 	 * 
 	 * @var array
 	 */
@@ -28,10 +27,16 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 	private $uriToParameterMapping = ['controller', 'action', 'uid', 'param1', 'param2', 'param3'];
 
 	/**
-	 * Liste aller registrierten Endpoints
+	 * List of all endpoints that were registered via `localconf.php`
 	 * @var array
 	 */
 	private $endpoints = [];
+	
+	/**
+	 * List of all endpoints registered via `localconf.php` and using the `@Api\Endpoint` annotation
+	 * @var array
+	 */
+	private $mergedEndpoints = [];
 	
 	/**
 	 * Cache der Endpoints zu Klassen Maps
@@ -41,55 +46,36 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 	
 
 	/**
-	 * Initialisieren.
-	 * Lädt die `nnrestapi` Konfiguration aus der YAML.
+	 * Initialize
 	 * 
 	 * @return void
 	 */
 	public function initialize( $request = null ) {
-
-		// \nn\t3::debug( \nn\rest::Settings()->getConfiguration() );
-
-		// if ($this->siteIdentifier) return;
-
-		// $request = $request ?: $GLOBALS['TYPO3_REQUEST'];
-		// if (!$request) return;
-
-		// $siteIdentifier = '';
-		// $apiConfiguration = [];
-
-		// $site = $request->getAttribute('site');
-		// $siteIdentifier = $site->getIdentifier();
-		// if (!is_a($site, \TYPO3\CMS\Core\Site\Entity\NullSite::class)) {
-		// 	$apiConfiguration = $site->getConfiguration()['nnrestapi'] ?? [];
-		// }
-
-		// $this->siteIdentifier = $siteIdentifier;
-		// $this->apiConfiguration = $apiConfiguration;
 	}
 
 	/**
-	 * Einen neuen Endpoint registrieren.
+	 * Register a new endpoint.
 	 * 
-	 * Kommt in die `ext_localconf.php` der Extension, die ein Api bereitstellen soll.
-	 * Dazu muss die Extension in `ext_emconf.php` eine Abhängigkeit zu `nnrestapi` haben.
+	 * Placed in the `ext_localconf.php` of the extension that should provide an api.
+	 * Important: The extension must have a dependency on `nnrestapi` in `ext_emconf.php`.
 	 *  
-	 * __Parameter:__
+	 * __parameters:__
 	 * 
-	 * `priority` 	Sollten mehrere Endpoints den gleichen Controllername besitzen,
-	 * 				wird der Endpoint mit höchster Prio angesteuert
+	 * `priority` 	If several endpoints have the same controller name,
+	 * 				the endpoint with the highest priority will be used.
 	 * 
-	 * `slug`		Optional: Bei Konflikten zwischen mehreren Controllern mit gleichen
-	 * 				Namen bestimmt der Slug, welcher Controller angesteuert wird.
-	 * 				In dem Beispiel unten wäre der Controller `TestController` über 
-	 * 				`api/test` erreichbar. Falls eine andere Extension einen `TestController`
-	 * 				hat und dieser mit höherer Priorität registriert wurden, kann der
-	 * 				TestController alternativ über `api/example/test` erreicht werden.
+	 * `slug` 		Optional: In case of conflicts between multiple controllers with the same
+	 * 				names, the slug determines which controller is called.
 	 * 
-	 * `namespace`	Der Basis-Pfad (Ordner) zu allen Klassen, die als Controller erreichbar
-	 * 				sein sollen. Um den Endpoint `api/test` zu erreichen, müsste es im
-	 * 				Beispiel unten eine Klasse mit dem Namespace `Nng\Nnrestapi\Api\Test` 
-	 * 				geben.
+	 * 				In the example below, the controller `TestController` would be accessible via 
+	 * 				`api/test`. If another extension has a `TestController`
+	 * 				and it has been registered with a higher priority, then the
+	 * 				TestController can alternatively be reached via `api/example/test`.
+	 * 
+	 * `namespace` 	The base path (folder) to all classes that should be reachable as a controller.
+	 * 				To reach the endpoint `api/test`, there would have to be a class with the namespace 
+	 * 				in the example below, there would have to be a class with the namespace 
+	 * 				`Nng\Nnrestapi\Api\Test`.
 	 * 
 	 * ```
 	 * \nn\rest::Endpoint()->register([
@@ -117,14 +103,35 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 	}
 
 	/**
-	 * Alle registrierten Endpoints holen
+	 * Get all registered Endpoints.
+	 * 
+	 * This is the list of raw, registered endpoints which were...
+	 * - Registered via `\nn\rest::Endpoint()->register()` in the `localconf.php`
+	 * - Registered by using the `@Api\Endpoint()` annotation
+	 * 
+	 * You should ALWAYS use this method instead of accessing `$this->endpoints` as
+	 * the result is cached and it contains the merge data of the above endpoints.
+	 * 
 	 * ```
 	 * \nn\rest::Endpoint()->getAll()
 	 * ```
 	 * @return array
 	 */
-	public function getAll() {
-		return $this->endpoints;
+	public function getAll() 
+	{
+		$cacheIdentifier = 'nnrestapi_endpointreg' . \nn\rest::Settings()->getSiteIdentifier();
+
+		if ($cache = $this->mergedEndpoints ?: \nn\t3::Cache()->read( $cacheIdentifier )) {
+			return $cache;
+		}
+
+		// parse Classes for `@Api\Endpoint()` Annotation
+		$this->registerEndpointsWithAnnotation();
+
+		$mergedEndpoints = $this->endpoints;
+		$this->mergedEndpoints = $mergedEndpoints;
+
+		return \nn\t3::Cache()->write( $cacheIdentifier, $mergedEndpoints );
 	}
 	
 	/**
@@ -156,7 +163,7 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 			$uri = substr( $uri, strlen($languagePath) );
 		};
 
-		// Prefix in URL nicht vorhanden? Dann Abbruch.
+		// `api/`-prefix not in URL? Then abort.
 		if (strpos($uri, $apiPrefix) !== 0) return null;
 
 		// `/api/test/something/1/2/3/4` => ['controller'=>'test', 'action'=>'something', 'uid'=>1, 'param1'=>'2', ...]
@@ -166,20 +173,20 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 		$paramKeys = $this->uriToParameterMapping;
 		$paramValues = array_pad( $parts, $numParamsToParse, '' );
 		
-		// Slugs, die über `\nn\rest::Endpoint()->register()` registriert wurden, z.B. ['nnrestdemo', 'nnrestapi']
+		// Slugs, that were registered with `\nn\rest::Endpoint()->register()`, e.g. ['nnrestdemo', 'nnrestapi']
 		$endpointSlugs = array_column( $this->getAll(), 'slug' );
 		
-		// War der URL-Pfad `api/{slug}/...` statt `api/{controller}/...`?
+		// Was the URL-path `api/{slug}/...` instead of `api/{controller}/...`?
 		if (in_array($paramValues[0] ?? '', $endpointSlugs)) {
 			
-			// dann schieben wir noch ein `ext` vor die keys. Und einen leeren Wert in die Values
+			// ... then we will add an `ext` as first key and an empty value
 			array_unshift( $paramKeys, 'ext' );
 			array_push( $paramValues, '' );
 		}
 		
 		$params = array_combine( $paramKeys, $paramValues );
 		
-		// Ist der `controller` oder `action` ein intval? Dann Ergebnis verschieben.
+		// Is the `controller` oder `action` an `intval`? Then use it as `uid`.
 		$search = ['controller', 'action'];
 		foreach ($search as $key) {
 			if (is_numeric($params[$key]) && intval($params[$key]) == $params[$key]) {
@@ -221,7 +228,33 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 	}
 
 	/**
-	 * Endpoint mit Klassenname und Methode für ReqType, Controller und Methode finden
+	 * Find all Endpoints related to a certain className.
+	 * This method is mainly for debugging purposes – and also for outputting a better
+	 * error message in the `MiddleWare/PageResolver` if endpoint could not be found.
+	 * 
+	 * ```
+	 * \nn\rest::Endpoint()->findEndpointsForController( 'example' );
+	 * ```
+	 * @return array
+	 */
+	public function findEndpointsForController( $controllerName = '' ) {
+		$classMap = $this->getClassMap();
+		$endpoints = [];
+		foreach ($classMap as $reqType=>$paths) {
+			foreach ($paths as $path=>$list) {
+				foreach ($list as $extname=>$config) {
+					if ($controllerName != $config['controller'] ?? '') {
+						continue;
+					}
+					$endpoints[] = $config;
+				}
+			}
+		}
+		return $endpoints;
+	}
+
+	/**
+	 * Find an Endpoint by Classname and method (ReqType). Return enpoint array with controller / method 
 	 * ```
 	 * \nn\rest::Endpoint()->find( 'get', 'controller', 'action' );
 	 * \nn\rest::Endpoint()->find( true, 'controller', 'action' );
@@ -246,7 +279,7 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 	}
 
 	/**
-	 * Endpoint finden für eine bestimmte Route (URI).
+	 * Find endpoint for a given Route (URI).
 	 * ```
 	 * \nn\rest::Endpoint()->find( 'get', 'api/test/to/some/{name}/{uid}/somewhere' );
 	 * ```
@@ -271,10 +304,10 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 	}
 
 	/**
-	 * Herzstück des Routings. 
+	 * Heart of the routing. 
 	 * 
-	 * Mapping aller Klassen und Methoden zu den Endpoints holen.
-	 * Das Ergebnis wird vollständig gecached, um Performance-Probleme zu vermeiden.
+	 * Get mapping of all classes and methods to endpoints.
+	 * The result is fully cached to avoid performance problems.
 	 * ```
 	 * \nn\rest::Endpoint()->getClassMap();
 	 * ```
@@ -285,10 +318,7 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 		$this->initialize();
 		$cacheIdentifier = 'nnrestapi_endpoints_' . \nn\rest::Settings()->getSiteIdentifier();
 
-		if ($cache = $this->classMapCache) return $cache;
-
-		//if (!\nn\t3::BackendUser()->isLoggedIn() && $cache = \nn\t3::Cache()->read( $cacheIdentifier )) {
-		if ($cache = \nn\t3::Cache()->read( $cacheIdentifier )) {
+		if ($cache = $this->classMapCache ?: \nn\t3::Cache()->read( $cacheIdentifier )) {
 			return $cache;
 		}
 
@@ -299,11 +329,11 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 
 		foreach ($classesToParse as $path=>$className) {
 
-			// Zu welchem registrierten Endpoint gehört die Klasse?
+			// To which registered endpoint does the class belong?
 			$endpoint = array_shift(array_filter($endpoints, function( $endpoint ) use ( $className) {
 				return strpos( $className, $endpoint['namespace'] ) !== false;
 			}));
-			
+
 			if (!$endpoint) continue;
 
 			$slug = $endpoint['slug'] ?? $endpoint['namespace'];
@@ -312,27 +342,40 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 			$methods = $classReflection->getMethods();
 			$classShortName = lcfirst($classReflection->getShortName());
 
-			// Der RegEx, der für das automatische parsen der Methodennamen verwendet wird, z.B. `getSomethingAction`
+			// The regex used for automatic parsing of method names, e.g. `getSomethingAction`
 			$methodNameRegex = '/(' . join('|', self::SUPPORTED_METHOD_PREFIXES) . ')(.*)(Action)/i';
 
 			foreach ($methods as $method) {
 
-				$methodReflection = new \ReflectionMethod( $className, $method->name );
 
-				// Alle Annotations parsen
+				// Parse all Annotations
 				$annotationReader = new \Doctrine\Common\Annotations\AnnotationReader();
 				$annotations = $annotationReader->getMethodAnnotations( $method ) ?: [];
 
-				
+				// Parse the DocComment of the class
+				$classAnnotations = $annotationReader->getClassAnnotations( $classReflection ) ?: [];
+				$classAnnotationData = [];
+
+				// Call `mergeDataForClassInfo()` in the annotation-class, if exists
+				foreach ($classAnnotations as $annotation) {
+					if (method_exists($annotation, 'mergeDataForClassInfo')) {
+						$annotation->mergeDataForClassInfo( $classAnnotationData );
+					}
+				}
+
+				// Prefer `@Api\Endpoint("pathname")`, if defined in DocComment of Class
+				$customClassName = $classAnnotationData['customClassName'] ?? '';
+				$classShortName = $customClassName ?: $classShortName;
+
 				$reqTypes = [];
 				$action = '';
 				$arguments = [];
 
 				$endpointData = [
-					'slug'			=> $slug,
-					'method'		=> $method->name,
-					'class' 		=> $className,
-					'controller' 	=> $classShortName,
+					'slug'				=> $slug,
+					'method'			=> $method->name,
+					'class' 			=> $className,
+					'controller' 		=> $classShortName,
 				];
 
 				// Call `mergeDataForEndpoint()` in the annotation-class, if exists
@@ -345,7 +388,6 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 				if ($route = &$endpointData['route'] ?? false) {
 
 					// Custom Route was defined in annotation
-
 					$reqTypesFromRoute = $route['reqTypes'] ?? [];
 					array_push( $reqTypes, ...$reqTypesFromRoute );
 					
@@ -406,14 +448,75 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 
 
 	/**
-	 * Alle Klassen holen, die registriert wurden und nach Endpoints durchsucht werden müssen.
-	 * Key ist der absolute Pfad zur Klasse, Value der Klassenname inkl. Namespace.
+	 * Get a list of all Classes that have the `@Api\Endpoint` Annotation in the DocComment.
+	 * This is the alternative way of registering an endpoint.
+	 * 
+	 * @return array
+	 */
+	public function registerEndpointsWithAnnotation() {
+		
+		$packageManager = \nn\t3::injectClass( \TYPO3\CMS\Core\Package\PackageManager::class );
+		$regexPattern = "/@[a-zA-Z]*\\\Endpoint/";
+		$registeredClasses = [];
+
+		foreach($packageManager->getActivePackages() as $extkey=>$package ) {
+
+			// Exclude core extensions
+			if ($package->isPartOfFactoryDefault()) continue;
+			
+			// ignore nnhelpers
+			if ($extkey == 'nnhelpers') continue;
+
+			// Normalize path to `Classes`
+			$key = 'psr-4';
+			$psr4 = array_map(function ( $item ) {
+				return is_array($item) ? $item : [$item];
+			}, (array) $package->getValueFromComposerManifest( 'autoload' )->$key);
+			
+			$extPath = $package->getPackagePath();
+
+			foreach ($psr4 as $classPaths) {
+				foreach ($classPaths as $classPath) {
+					$files = \nn\rest::File()->getAllInFolder( $extPath . $classPath , true, 'php' );
+					foreach ($files as $file) {
+
+						// preflight: string-compare if `@Api\Endpoint` is somewhere in the script. Not pretty, but `ReflectionClass` throws an uncatchable Exception.
+						$className = \Nng\Nnhelpers\Helpers\DocumentationHelper::getClassNameFromFile($file);
+						$content = file_get_contents( $file );
+						if (!$content || !preg_match($regexPattern, $content)) {
+							continue;
+						}
+
+						// then make sure, the `@Api\Endpoint` string is in the DocComment
+						$reflection = new \ReflectionClass($className);
+						if (preg_match($regexPattern, $reflection->getDocComment())) {
+
+							
+							$this->register([
+								'priority' 	=> 0,
+								'slug' 		=> $extkey,
+								'namespace'	=> $className,
+							]);
+							$registeredClasses[$file] = $className;
+						}
+					}
+				}
+			}
+		}
+
+		return $registeredClasses;
+	}
+
+	/**
+	 * Get all classes that have been registered and need to be searched for endpoints.
+	 * Key is the absolute path to the class, value is the class name incl. namespace.
 	 * ```
 	 * \nn\rest::Endpoint()->getClassesToParse();
 	 * ```
 	 * @return array
 	 */
-	public function getClassesToParse() {
+	public function getClassesToParse() 
+	{
 		$this->initialize();
 
 		$endpoints = $this->getAll();
@@ -429,30 +532,34 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 			$psr4prefixes = require( $psr4path );
 		}
 
-		// Pfade zu den Klassen ermitteln, deren Namespace über `register` registriert wurden
+		// Filter namespaces that were registered with `\nn\rest::Endpoint()->register(...)` 
 		$pathsToParse = [];
 		foreach ($psr4prefixes as $name=>$paths) {
-			$found = array_filter($namespaces, function ($classPrefix) use ($name) {
-				return strpos($classPrefix, $name) !== false;
-			});
+			$found = array_filter($namespaces, function ($classPrefix) use ($name, $paths) {
+				if (strpos($classPrefix, $name) !== false) {
+					return true;
+				}
+			}, ARRAY_FILTER_USE_BOTH);
 			if ($found) {
 				$pathsToParse = array_merge($pathsToParse, $paths);
 			}
 		}
 
-		// Pfade zu den PHP-Dateien ermitteln, die Api-Endpoints haben
+		// Determine paths to PHP files that have Api endpoints
 		$classesToParse = [];
 		foreach ($pathsToParse as $path) {
 			$mappedClasses = array_flip(ClassMapGenerator::createMap( $path ));
 			
-			$found = array_filter($mappedClasses, function ($className) use ($namespaces) {
+			$found = array_filter($mappedClasses, function ($className, $path) use ($namespaces) {
 				foreach ($namespaces as $name) {
 					if (strpos($className, $name) !== false) return true;
 				}
 				return false;
-			});
+			}, ARRAY_FILTER_USE_BOTH);
 			$classesToParse = array_merge( $classesToParse, $found );
 		}
+
+		$classesToParse = array_unique($classesToParse);
 
 		return $classesToParse;
 	}

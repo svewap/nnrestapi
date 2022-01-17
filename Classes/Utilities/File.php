@@ -230,17 +230,22 @@ class File extends \Nng\Nnhelpers\Singleton {
 	 * ```
 	 * @return array
 	 */
-	public function getAllInFolder( $path = '', $recursive = true ) 
+	public function getAllInFolder( $path = '', $recursive = true, $suffix = false ) 
 	{
 		$files = [];
 		$path = \nn\t3::File()->absPath( $path );
-
+		if (!$path || !\nn\t3::File()->exists($path)) return [];
+		
 		$flags = \FilesystemIterator::KEY_AS_PATHNAME | \FilesystemIterator::CURRENT_AS_FILEINFO | \FilesystemIterator::SKIP_DOTS | \FilesystemIterator::UNIX_PATHS;
 		$iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator( $path, $flags ));
 
 		foreach ($iterator as $fileObject) {
 			if (!$fileObject->isDir()) {
-				$files[] = $fileObject->getPathname();
+				$pathName = $fileObject->getPathname();
+				$extension = pathinfo($pathName, PATHINFO_EXTENSION);
+				if (!$suffix || $extension == $suffix) {
+					$files[] = $pathName;
+				}
 			}
 		}
 		

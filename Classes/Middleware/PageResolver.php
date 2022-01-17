@@ -8,28 +8,26 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Psr\Http\Message\ResponseFactoryInterface;
 
 /**
+ * PageResolver MiddleWare.
  * 
- * https://docs.typo3.org/m/typo3/reference-coreapi/master/en-us/ApiOverview/RequestHandling/Index.html
+ * Takes care of analysing the request and checking, if an Endpoint was defined for the request.
+ * Creates an Instance of the `ApiController` which will then handle the actual method call in
+ * the Endpoint.
+ * 
+ * Request handling in MiddleWare / TYPO3 docs:
+ * https://bit.ly/3GBcveH
  * 
  */
 class PageResolver implements MiddlewareInterface {
-	
-	/** 
-	 * @var ResponseFactoryInterface 
-	 */
-    private $responseFactory;
-	
+		
 	/** 
 	 * @var \Nng\Nnrestapi\Mvc\Response
 	 */
     private $response;
 
-
 	/**
-	 * 
 	 * @return void
 	 */
     public function __construct() {
@@ -37,7 +35,6 @@ class PageResolver implements MiddlewareInterface {
     }
 
 	/**
-	 * 
 	 *	@param ServerRequestInterface $request
 	 *	@param RequestHandlerInterface $handler
 	 *	@return ResponseInterface
@@ -51,20 +48,25 @@ class PageResolver implements MiddlewareInterface {
 		$method = strtolower($request->getMethod());
 		$endpoint = \nn\rest::Endpoint()->findForRequest( $request );
 
-		// URL enthält nicht den Basispfad zur Api (z.B. `/api/...`)? Dann abbrechen.
+		// URL does not contain the base path to the api (e.g. `/api/...`)? Then abort.
 		if ($endpoint === null) {
 			return $handler->handle($request);
 		}
 
-		// `OPTIONS` prerequest? Dann Abbruch mit "bin da, alles ok!"
+		// `OPTIONS` prerequest? Then abort with "am there, everything ok!"
 		if ($method == 'options') {
 			return $this->response->noContent();
 		}
 
-		// Sollte an API gehen, aber URL konnte auf Controller gemapped werden? 404 ausgeben
+		// Should go to API, but URL could be mapped to controller? Output 404
 		if (!($endpoint['class'] ?? false)) {
+
 			$args = $endpoint['args'];
-			$classMethodInfo = ucfirst($args['controller']) . '-&gt;' . $method . ucfirst($args['action']) . 'Action()';
+			$endpointsForController = \nn\rest::Endpoint()->findEndpointsForController( $args['controller'] );
+			$firstEndpoint = array_shift($endpointsForController);
+			$className = $firstEndpoint['class'] ?? ucfirst($args['controller']);
+
+			$classMethodInfo = $className . '::' . $method . ucfirst($args['action']) . 'Action()';
 			return $this->response->notFound('RestApi-endpoint not found. Based on your request the endpoint would be `' . $classMethodInfo . '`' );
 		}
 
