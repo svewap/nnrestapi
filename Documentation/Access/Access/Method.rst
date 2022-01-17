@@ -22,8 +22,12 @@ Here is an example:
    namespace My\Extension\Api;
    
    use Nng\Nnrestapi\Annotations as Api;
-
-   class Test extends \Nng\Nnrestapi\Api\AbstractApi {
+   use Nng\Nnrestapi\Api\AbstractApi;
+   
+   /**
+    * @Api\Endpoint()
+    */
+   class Test extends AbstractApi {
 
       /**
        * @Api\Access("public")

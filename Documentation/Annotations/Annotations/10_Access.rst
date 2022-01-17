@@ -13,22 +13,44 @@ The ``@Api\Access()`` annotation can be used to restrict the access to an endpoi
 
 * Frontend-Users (fe_users)
 * Frontend-User-Groups (fe_user_groups)
+* Api-Users (defined in the Extension Manager)
 * Backend-Users or Admins
 * IP-adresses
 
 **The basic syntax is:**
 
 .. code-block:: php
-   
-   namespace My\Extension\Api;
-   
-   use Nng\Nnrestapi\Annotations as Api;
 
-   ... 
+   @Api\Access("options")
+
+
+**Full example:**
+
+.. code-block:: php
+   
+   <?php
+
+   namespace My\Extension\Api;
+
+   use Nng\Nnrestapi\Annotations as Api;
+   use Nng\Nnrestapi\Api\AbstractApi;
    
    /**
-    * @Api\Access("options")
+    * @Api\Endpoint()
     */
+   class Example extends AbstractApi
+   {
+      /**
+       * Only Frontend-Users will be able to access this endpoint
+       *
+       * @Api\Access("fe_users")
+       * @return array
+       */
+      public function getIndexAction() 
+      {
+         return ['nice'=>'works!'];
+      }
+   }
 
 
 Examples and details?

@@ -41,7 +41,10 @@ Use ``$this->request->getArguments()`` to access the Request variables.
 
    use Nng\Nnrestapi\Annotations as Api;
    use Nng\Nnrestapi\Api\AbstractApi;
-
+   
+   /**
+    * @Api\Endpoint()
+    */
    class Example extends AbstractApi
    {
       /**
@@ -189,6 +192,9 @@ beginning like this: ``/api/example/news/...``:
    use Nng\Nnrestapi\Annotations as Api;
    use Nng\Nnrestapi\Api\AbstractApi;
 
+   /**
+    * @Api\Endpoint()
+    */
    class Example extends AbstractApi
    {
       /**

@@ -41,7 +41,10 @@ for handling edge cases.
    
    use Nng\Nnrestapi\Annotations as Api;
    use Nng\Nnrestapi\Api\AbstractApi;
-   
+
+   /**
+    * @Api\Endpoint()
+    */   
    class Example extends AbstractApi
    {
       /**

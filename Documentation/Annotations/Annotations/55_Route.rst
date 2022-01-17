@@ -34,6 +34,9 @@ the standard method-name **{requestMethod}{pathPart}Action()**
    use Nng\Nnrestapi\Annotations as Api;
    use Nng\Nnrestapi\Api\AbstractApi;
    
+   /**
+    * @Api\Endpoint()
+    */
    class Example extends AbstractApi
    {
       /**
@@ -124,6 +127,9 @@ of the following method:
    use Nng\Nnrestapi\Annotations as Api;
    use Nng\Nnrestapi\Api\AbstractApi;
    
+   /**
+    * @Api\Endpoint()
+    */
    class Example extends AbstractApi
    {
       /**
@@ -149,6 +155,9 @@ You can always use ``$this->request->getArguments()`` as an alternative:
    use Nng\Nnrestapi\Annotations as Api;
    use Nng\Nnrestapi\Api\AbstractApi;
    
+   /**
+    * @Api\Endpoint()
+    */   
    class Example extends AbstractApi
    {
       /**

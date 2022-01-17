@@ -52,7 +52,10 @@ First, set a Distiller in your REST Api Endpoint using the ``@Api\Distiller()`` 
 
    use Nng\Nnrestapi\Annotations as Api;
    use Nng\Nnrestapi\Api\AbstractApi;
-	
+
+   /**
+    * @Api\Endpoint()
+    */	
    class Example extends AbstractApi
    {
       /**

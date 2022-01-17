@@ -47,6 +47,9 @@ Step-by-step
       use Nng\Nnrestapi\Annotations as Api;
       use Nng\Nnrestapi\Api\AbstractApi;
 
+      /**
+       * @Api\Endpoint()
+       */
       class Content extends AbstractApi {   
       }
 
@@ -78,7 +81,10 @@ Step-by-step
 
       use Nng\Nnrestapi\Annotations as Api;
       use Nng\Nnrestapi\Api\AbstractApi;
-
+      
+      /**
+       * @Api\Endpoint()
+       */
       class Content extends AbstractApi 
       {
          /**

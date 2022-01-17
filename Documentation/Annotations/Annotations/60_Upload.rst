@@ -63,7 +63,10 @@ The Annotation is placed in the comment block above your method / endpoint:
 
    use Nng\Nnrestapi\Annotations as Api;
    use Nng\Nnrestapi\Api\AbstractApi;
-   
+
+   /**
+    * @Api\Endpoint()
+    */   
    class Example extends AbstractApi
    {
       /**
@@ -214,6 +217,9 @@ Last step: Use the key ``monthdate`` in the ``@Api\Upload("monthdate")`` annotat
    use Nng\Nnrestapi\Annotations as Api;
    use Nng\Nnrestapi\Api\AbstractApi;
    
+   /**
+    * @Api\Endpoint()
+    */
    class Example extends AbstractApi
    {
       /**

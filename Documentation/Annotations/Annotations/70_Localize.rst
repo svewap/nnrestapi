@@ -13,7 +13,8 @@ The ``@Api\Localize()`` annotation can be used to force or disable the localizat
 from the database.
 
 It allows overriding the default settings defined in the TypoScript setup. 
-By default localization is disabled. This can be changed by setting the following flag in the TypoScript setup:
+
+**By default localization is disabled.** This can be changed by setting the following flag in the TypoScript setup:
 
 .. code-block:: typoscript
 
@@ -21,19 +22,38 @@ By default localization is disabled. This can be changed by setting the followin
         localization.enabled = 1
     }
 
-The basic syntax of ``@Api\Localize()`` is:
+**The basic syntax of @Api\Localize() is:**
+
+.. code-block:: php
+   
+   @Api\Localize()
+   @Api\Localize(TRUE)
+   @Api\Localize(FALSE)
+
+**Full example:**
 
 .. code-block:: php
    
    namespace My\Extension\Api;
    
    use Nng\Nnrestapi\Annotations as Api;
-
-   ... 
-   
+   use Nng\Nnrestapi\Api\AbstractApi;
+    
    /**
-    * @Api\Localize()
+    * @Api\Endpoint()
     */
+   class Example extends AbstractApi
+   {
+      /**
+       * @Api\Localize()
+       * @Api\Access("public");
+       * @return array
+       */
+       public function getIndexAction() {
+           return ['this'=>'works!'];
+       }
+   }
+
 
 Enabling localization
 ~~~~~~~~~~~

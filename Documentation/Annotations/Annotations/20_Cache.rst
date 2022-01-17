@@ -32,7 +32,10 @@ The cache will only be cleared and rebuilt, if the "clear cache" button is click
 
    use Nng\Nnrestapi\Annotations as Api;
    use Nng\Nnrestapi\Api\AbstractApi;
-   
+
+   /**
+    * @Api\Endpoint()
+    */   
    class Example extends AbstractApi
    {
       /**
@@ -66,7 +69,10 @@ for more info:
    
    use Nng\Nnrestapi\Annotations as Api;
    use Nng\Nnrestapi\Api\AbstractApi;
-   
+
+   /**
+    * @Api\Endpoint()
+    */   
    class Example extends AbstractApi
    {
       /**

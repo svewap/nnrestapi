@@ -20,6 +20,9 @@ now render all content-elements that were placed in a certain column ("colPos") 
    use Nng\Nnrestapi\Annotations as Api;
    use Nng\Nnrestapi\Api\AbstractApi;
 
+   /**
+    * @Api\Endpoint()
+    */
    class Content extends AbstractApi 
    {
       /**

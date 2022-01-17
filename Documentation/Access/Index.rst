@@ -15,13 +15,21 @@ Backend-Users or Backend-Admins are allowed to call your endpoint.
 
 **You can restrict access to...**
 
-- frontend users and/or user groups (the standard TYPO3 frontend users and groups)
-- backend users and admin (the endpoint can only be called, if you are logged in to the backend)
-- global users defined in the Extension Configuration Manager
-- ip-adresses and -ranges
+- **frontend users**  (the standard TYPO3 frontend users)
+- **frontend user groups**
+- **backend users** (the endpoint can only be called, if you are logged in to the backend)
+- **backend admins** (you must be logged in to the backend as admin)
+- **global API-users** - defined in the Extension Configuration Manager
+- **IP-adresses** and -ranges
 - by using a :ref:`custom method <access_checkaccess>`
 
-**The basic syntax of the `@Api\Access`-Annotation is:**
+**The basic syntax of the @Api\Access-Annotation is:**
+
+.. code-block:: php
+
+   @Api\Access("options")
+
+**Full example**
 
 .. code-block:: php
 
@@ -29,12 +37,15 @@ Backend-Users or Backend-Admins are allowed to call your endpoint.
    namespace My\Extension\Api;
 
    use Nng\Nnrestapi\Annotations as Api;
-
-   class Test extends \Nng\Nnrestapi\Api\AbstractApi {
-
+   use Nng\Nnrestapi\Api\AbstractApi;
+   
+   /**
+    * @Api\Endpoint()
+    */
+   class Test extends AbstractApi 
+   {
       /**
        * @Api\Access("public")
-       * 
        * @return array
        */
       public function getExampleAction()

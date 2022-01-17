@@ -34,7 +34,10 @@ but you only need the first few levels of the data in the frontend.
 
    use Nng\Nnrestapi\Annotations as Api;
    use Nng\Nnrestapi\Api\AbstractApi;
-   
+
+   /**
+    * @Api\Endpoint()
+    */
    class Example extends AbstractApi
    {
       /**

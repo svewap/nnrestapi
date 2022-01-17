@@ -31,6 +31,9 @@ which is installed as a dependency for EXT:nnrestapi. In other words: They are t
    use Nng\Nnrestapi\Annotations as Api;
    use Nng\Nnrestapi\Api\AbstractApi;
 
+   /**
+    * @Api\Endpoint()
+    */
    class Settings extends AbstractApi 
    {
       /**
@@ -41,7 +44,7 @@ which is installed as a dependency for EXT:nnrestapi. In other words: They are t
       public function getIndexAction()
       {
          $settings = [];
-		
+        
          // Get baseUrl of current website
          $settings['baseUrl'] = \nn\t3::Environment()->getBaseUrl();
 

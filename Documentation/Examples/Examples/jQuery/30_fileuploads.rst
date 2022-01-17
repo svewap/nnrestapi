@@ -118,8 +118,12 @@ Here is s step-by-step example:
         namespace My\Extname\Api;
 
         use Nng\Nnrestapi\Annotations as Api;
-
-        class Index extends \Nng\Nnrestapi\Api\AbstractApi 
+		use Nng\Nnrestapi\Api\AbstractApi;
+		
+		/**
+    	 * @Api\Endpoint()
+    	 */
+        class Index extends AbstractApi 
         {
             /**
              * @Api\Access("*")
@@ -247,8 +251,9 @@ Let's use the above example and modify the scripts to automatically create a Mod
         namespace My\Extname\Domain\Model;
 
         use \TYPO3\CMS\Extbase\Domain\Model\FileReference;
-
-        class MyModel extends \Nng\Nnrestapi\Domain\Model\AbstractRestApiModel
+		use \Nng\Nnrestapi\Domain\Model\AbstractRestApiModel;
+		
+        class MyModel extends AbstractRestApiModel
         {
             /**
              * @var string
@@ -336,9 +341,13 @@ Let's use the above example and modify the scripts to automatically create a Mod
 
         use My\Extname\Domain\Model\MyModel;
         use Nng\Nnrestapi\Annotations as Api;
-
-        class Index extends \Nng\Nnrestapi\Api\AbstractApi {
-        
+		use Nng\Nnrestapi\Api\AbstractApi;
+		
+ 		/**
+    	 * @Api\Endpoint()
+    	 */
+        class Index extends AbstractApi 
+        {
             /**
              * @Api\Access("*")
              * @param MyModel $model

@@ -66,6 +66,9 @@ access-rights and other things later.
    use Nng\Nnrestapi\Annotations as Api;
    use Nng\Nnrestapi\Api\AbstractApi;
 
+   /**
+    * @Api\Endpoint()
+    */
    class Article extends AbstractApi {   
    }
 
@@ -102,8 +105,11 @@ etc. is called.
    use Nng\Nnrestapi\Annotations as Api;
    use Nng\Nnrestapi\Api\AbstractApi;
 
-   class Article extends AbstractApi {
-
+   /**
+    * @Api\Endpoint()
+    */
+   class Article extends AbstractApi 
+   {
       /**
        * @Api\Access("public")
        * 
@@ -290,8 +296,11 @@ Full example
    use Nng\Nnrestapi\Annotations as Api;
    use Nng\Nnrestapi\Api\AbstractApi;
 
-   class Article extends AbstractApi {
-
+   /**
+    * @Api\Endpoint()
+    */
+   class Article extends AbstractApi 
+   {
       /**
        * GET an article via: /api/article/{uid}
        *

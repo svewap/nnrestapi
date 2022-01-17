@@ -16,15 +16,24 @@ In case you need to implement your own logic for checking access rights, you can
 define a ``checkAccess()``-method in the class of your endpoint. This will override the
 default ``checkAccess()``-method from ``\Nng\Nnrestapi\Api\AbstractApi``.
 
-Here is an example:
+The ``checkAccess()`` method must return ``TRUE``, if the user is allowed to access the endpoint. 
+If it returns ``FALSE``, the script will automatically be aborted and the Api will return 
+a ``HTTP 403 Forbidden`` header.
+
+**Here is an example:**
 
 .. code-block:: php
 
    <?php   
    namespace My\Extension\Api;
 
-   class Test extends \Nng\Nnrestapi\Api\AbstractApi {
-
+   use Nng\Nnrestapi\Api\AbstractApi;
+   
+   /**
+    * @Api\Endpoint()
+    */
+   class Test extends AbstractApi 
+   {
       /**
        * Completely senseless, but nice demo: 
        * Decide randomly, if the user may access your endpoint.
@@ -49,9 +58,11 @@ Here is an example:
       }
    }
 
-The ``checkAccess()`` method must return ``TRUE``, if the user is allowed to access the endpoint. 
-If it returns ``FALSE``, the script will automatically be aborted and the Api will return 
-a ``HTTP 403 Forbidden`` header.
+The above example can be reached with a ``GET`` request to:
+
+.. code-block:: php
+
+   https://www.mysite.com/api/test/example
 
 
 Example: Restricting access to certain IP-adresses
@@ -66,8 +77,13 @@ one of the patterns defined in ``$allowedIpList``:
    <?php   
    namespace My\Extension\Api;
 
-   class Test extends \Nng\Nnrestapi\Api\AbstractApi {
-
+   use Nng\Nnrestapi\Api\AbstractApi;
+   
+   /**
+    * @Api\Endpoint()
+    */
+   class Test extends AbstractApi 
+   {
       /**
        * Checks, if the IP of the user matches a given adress or pattern.
        *
@@ -101,8 +117,13 @@ handles restrictions made in the annotations.
    <?php   
    namespace My\Extension\Api;
 
-   class Test extends \Nng\Nnrestapi\Api\AbstractApi {
-
+   use Nng\Nnrestapi\Api\AbstractApi;
+   
+   /**
+    * @Api\Endpoint()
+    */
+   class Test extends AbstractApi 
+   {
       /**
        * Checks, if the IP of the user matches a given adress or pattern.
        *

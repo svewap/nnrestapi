@@ -39,7 +39,8 @@ then follow these steps.
           * Only needed, if you allow single AND multiple arguments in your annotation.
           *
           */
-         public function __construct( $arr ) {
+         public function __construct( $arr ) 
+         {
             $this->value = is_array( $arr['value'] ) ? $arr['value'] : [$arr['value']];
          }
         
@@ -49,7 +50,8 @@ then follow these steps.
           * data to be cached and accessible later in your endpoint.
           *
           */
-         public function mergeDataForEndpoint( &$data ) {
+         public function mergeDataForEndpoint( &$data ) 
+         {
             $data['myIdentifer'] = $this->value;
          }
       }
@@ -67,8 +69,11 @@ then follow these steps.
       use My\Ext\Annotations as MyApi;
       use Nng\Nnrestapi\Annotations as Api;
 
-      class Test {
-
+      /**
+       * @Api\Endpoint()
+       */
+      class Test 
+      {
          /**
           * @MyApi\Example("somevalue")
           * @Api\Access("public")
@@ -97,9 +102,12 @@ then follow these steps.
 
       use My\Ext\Annotations as MyApi;
       use Nng\Nnrestapi\Annotations as Api;
-
-      class Test {
-
+      
+      /**
+       * @Api\Endpoint()
+       */
+      class Test
+      {
          /**
           * @return boolean
           */

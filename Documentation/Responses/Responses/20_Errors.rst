@@ -22,9 +22,13 @@ Here we are checking for a model. If it can't be found, we return a ``404 NOT FO
    namespace My\Extension\Api;
 
    use Nng\Nnrestapi\Annotations as Api;
+   use Nng\Nnrestapi\Api\AbstractApi;
 
-   class Test extends \Nng\Nnrestapi\Api\AbstractApi {
-
+   /**
+    * @Api\Endpoint()
+    */
+   class Test extends AbstractApi 
+   {
       /**
        * Call via GET-request with an uid: https://www.mywebsite.com/api/test/1 
        *

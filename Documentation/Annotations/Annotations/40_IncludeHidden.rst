@@ -35,7 +35,10 @@ be visible in the TYPO3 backend for admins.
 
    use Nng\Nnrestapi\Annotations as Api;
    use Nng\Nnrestapi\Api\AbstractApi;
-   
+
+   /**
+    * @Api\Endpoint()
+    */   
    class Example extends AbstractApi
    {
       /**
@@ -64,7 +67,10 @@ your data from the repository.
    
    use Nng\Nnrestapi\Annotations as Api;
    use Nng\Nnrestapi\Api\AbstractApi;
-   
+
+   /**
+    * @Api\Endpoint()
+    */
    class Example extends AbstractApi
    {
       /**

@@ -17,12 +17,15 @@ The most basic return value is an array:
    namespace My\Extension\Api;
 
    use Nng\Nnrestapi\Annotations as Api;
+   use Nng\Nnrestapi\Api\AbstractApi;
 
-   class Test extends \Nng\Nnrestapi\Api\AbstractApi {
+   /**
+    * @Api\Endpoint()
+    */
+   class Test extends AbstractApi {
 
       /**
        * @Api\Access("public")
-       * 
        * @return array
        */
       public function getExampleAction()
