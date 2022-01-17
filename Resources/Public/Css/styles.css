@@ -580,6 +580,10 @@ b, strong {
     color: #bbb;
 }
 
+.modal.fade.show {
+    opacity: 1;
+}
+
 @keyframes pump-up {
     0% { transform: scale(1); }
     50% { transform: scale(1.4); }
