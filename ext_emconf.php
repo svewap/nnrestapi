@@ -1,7 +1,7 @@
 <?php
 
 $EM_CONF[$_EXTKEY] = [
-    'title' => 'REST Api',
+    'title' => 'TYPO3 Restful API by 99°',
     'description' => 'Build a REST Api for your TYPO3 project. Equipped with everything you need: Routing with annotations. User authentication. Fileupload and FAL conversion. Testbed and automatic documentation of your API. The backend module comes with a "Kickstarter" to get your RESTful API up and running in minutes.',
     'category' => 'services',
     'author' => '99grad.de',
@@ -11,7 +11,7 @@ $EM_CONF[$_EXTKEY] = [
     'uploadfolder' => '0',
     'createDirs' => '',
     'clearCacheOnLoad' => 0,
-    'version' => '1.0.0',
+    'version' => '1.1.0',
     'constraints' => [
         'depends' => [
             'typo3' => '9.5.0-11.9.99',
