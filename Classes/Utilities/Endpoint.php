@@ -3,6 +3,8 @@
 namespace Nng\Nnrestapi\Utilities;
 
 use Composer\Autoload\ClassMapGenerator;
+use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\Core\ClassLoadingInformation;
 
 /**
  * Utility for registering and evaluation Endpoints
@@ -523,12 +525,16 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 		$namespaces = array_column( $endpoints, 'namespace' );
 
 		if (\nn\t3::t3Version() >= 11) {
-			$composerClassLoader = \TYPO3\CMS\Core\Core\ClassLoadingInformation::getClassLoader();
-			$psr4prefixes = $composerClassLoader->getPrefixesPsr4();	
+			$composerClassLoader = ClassLoadingInformation::getClassLoader();
+			$psr4prefixes = $composerClassLoader->getPrefixesPsr4();
 		} else {
-			$psr4path = \TYPO3\CMS\Core\Core\Environment::getLegacyConfigPath() . '/' .
-						\TYPO3\CMS\Core\Core\ClassLoadingInformation::AUTOLOAD_INFO_DIR .
-						\TYPO3\CMS\Core\Core\ClassLoadingInformation::AUTOLOAD_PSR4_FILENAME;
+			if (Environment::isComposerMode()){
+				$psr4path = Environment::getProjectPath() . '/vendor/composer/' . ClassLoadingInformation::AUTOLOAD_PSR4_FILENAME;
+			} else {
+				$psr4path = Environment::getLegacyConfigPath() . '/' .
+							ClassLoadingInformation::AUTOLOAD_INFO_DIR .
+							ClassLoadingInformation::AUTOLOAD_PSR4_FILENAME;
+			}
 			$psr4prefixes = require( $psr4path );
 		}
 
