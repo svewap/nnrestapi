@@ -69,14 +69,14 @@ abstract class AbstractApi {
 		if (!$localizationSettings) {
 			return 0;
 		}
-		// localization enabled, but locally disabled by `@Api\Localize(FALSE)` Annotation? Don't localize
-		if ($localizationSettings['enabled'] && $endpoint['localize'] === false) {
-			return 0;
-		}
-		// localization disabled, and not enabled locally by `@Api\Localize(TRUE)` Annotation? Don't localize
-		if (!$localizationSettings['enabled'] && $endpoint['localize'] !== true) {
-			return 0;
-		}
+        // localization enabled, but locally disabled by `@Api\Localize(FALSE)` Annotation? Don't localize
+        if ($localizationSettings['enabled'] && (isset($endpoint['localize']) && $endpoint['localize'] === false)) {
+            return 0;
+        }
+        // localization disabled, and not enabled locally by `@Api\Localize(TRUE)` Annotation? Don't localize
+        if (!$localizationSettings['enabled'] && (isset($endpoint['localize']) && $endpoint['localize'] !== true)) {
+            return 0;
+        }
 		// `L=..` parameter passed in GET-Request?
 		$L = \nn\t3::Request()->GP()['L'] ?? '';
 		if ($L != '') {
