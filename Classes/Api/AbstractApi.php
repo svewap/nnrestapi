@@ -129,12 +129,12 @@ abstract class AbstractApi {
 		}
 		
 		// @Api\Access("be_admins") will grant access only to logged in backend-admins
-		if (\nn\t3::BackendUser()->isAdmin() && $endpoint['access']['be_admins'] ?? false) {
+		if (\nn\t3::BackendUser()->isAdmin() && ($endpoint['access']['be_admins'] ?? false)) {
 			return true;
 		}
 
 		// @Api\Access("be_users") will grant access only to logged in backend-users (and admins)
-		if (\nn\t3::BackendUser()->get() && \nn\t3::BackendUser()->get()->user && $endpoint['access']['be_users'] ?? false) {
+		if (\nn\t3::BackendUser()->get() && \nn\t3::BackendUser()->get()->user && ($endpoint['access']['be_users'] ?? false)) {
 			return true;
 		}
 		
