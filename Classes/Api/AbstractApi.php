@@ -2,6 +2,7 @@
 namespace Nng\Nnrestapi\Api;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use Nng\Nnrestapi\Mvc\Response;
 use Nng\Nnrestapi\Mvc\Request;
 use Nng\Nnrestapi\Annotations as Api;
 
