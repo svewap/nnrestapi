@@ -70,11 +70,11 @@ abstract class AbstractApi {
 			return 0;
 		}
         // localization enabled, but locally disabled by `@Api\Localize(FALSE)` Annotation? Don't localize
-        if ($localizationSettings['enabled'] && (isset($endpoint['localize']) && $endpoint['localize'] === false)) {
+        if ($localizationSettings['enabled'] && ($endpoint['localize'] ?? false) === false) {
             return 0;
         }
         // localization disabled, and not enabled locally by `@Api\Localize(TRUE)` Annotation? Don't localize
-        if (!$localizationSettings['enabled'] && (isset($endpoint['localize']) && $endpoint['localize'] !== true)) {
+        if (!$localizationSettings['enabled'] && ($endpoint['localize'] ?? false) !== true) {
             return 0;
         }
 		// `L=..` parameter passed in GET-Request?
