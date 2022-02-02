@@ -98,7 +98,7 @@ class ApiController extends AbstractApiController
 						// @todo: parse ObjectStorages and Arrays in future versions
 
 						// was a uid passed? Then get existing model from database
-                        if ($uid = ($model['uid'] ?? ($request->getArguments()['uid'] ?? false))) {
+                        if ($uid = $model['uid'] ?? $request->getArguments()['uid'] ?? false) {
 
 							// uid was passed. Retrieve Model (without the need of instanciating the repository)
 							$existingModel = \nn\t3::Db()->get( $uid, $modelName );
