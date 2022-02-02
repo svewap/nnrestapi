@@ -67,9 +67,11 @@ class Response {
 		\nn\rest::Header()->addControls( $this->response )->addContentType( $this->response );
 	}
 
-	/**
-	 * 
-	 */
+    /**
+     * @param $body
+     *
+     * @return \TYPO3\CMS\Core\Http\Response
+     */
 	public function render( $body = [] ) {
 
 		$body = $body ?: $this->getBody();
@@ -122,11 +124,11 @@ class Response {
 			'error'		=> $message
 		];
 	}
-	
+
 	/**
 	 * Alias to `unauthorized`.
 	 * Makes programmers think less.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function forbidden( $message = '' ) {
@@ -135,8 +137,8 @@ class Response {
 
 	/**
 	 * Not found ausgeben
-	 * 
-	 * @return void
+	 *
+     * @return \TYPO3\CMS\Core\Http\Response
 	 */
 	public function notFound( $message = 'Not found.' ) {
 		return $this->setStatus(404)->setMessage($message)->render([
@@ -147,8 +149,8 @@ class Response {
 	
 	/**
 	 * Return `invalid parameters` Error
-	 * 
-	 * @return void
+	 *
+     * @return \TYPO3\CMS\Core\Http\Response
 	 */
 	public function invalid( $message = 'Invalid parameters.' ) {
 		return $this->setStatus(422)->setMessage($message)->render([
@@ -159,8 +161,8 @@ class Response {
 
 	/**
 	 * 200 OK
-	 * 
-	 * @return void 
+	 *
+     * @return \TYPO3\CMS\Core\Http\Response
 	 */
 	public function success( $body = [], $message = 'OK' ) {
 		return $this->setStatus(200)->setMessage($message)->render( $body );
@@ -168,8 +170,8 @@ class Response {
 	
 	/**
 	 * 204 No Content
-	 * 
-	 * @return \TYPO3\CMS\Core\Http\Response 
+	 *
+	 * @return \TYPO3\CMS\Core\Http\Response
 	 */
 	public function noContent( $message = 'No Content' ) {
 		return $this->setStatus(204)->setMessage( $message )->render();

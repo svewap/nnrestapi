@@ -72,14 +72,14 @@ class ModelDistiller
 		}
 
 		// exclude certain fields?
-		if ($exclude = \nn\t3::Arrays($distillerConfigForClass['exclude'])->trimExplode()) {
+        if (isset($distillerConfigForClass['exclude']) && $exclude = \nn\t3::Arrays($distillerConfigForClass['exclude'])->trimExplode()) {
 			foreach ($exclude as $key) {
 				unset( $data[$key] );
 			}
 		}
 
 		// only include certain fields?
-		$include = \nn\t3::Arrays($distillerConfigForClass['include'])->trimExplode();
+        $include = isset($distillerConfigForClass['include'])?\nn\t3::Arrays($distillerConfigForClass['include'])->trimExplode():false;
 		
 		$props = \nn\t3::Obj()->getKeys( $model );
 
