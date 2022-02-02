@@ -6,10 +6,10 @@
 YAML Configuration
 ============
 
-Configuring the TYPO3 Rest Api in the TypoScript Setup
+Configuring with TypoScript Setup
 -------------------------------
 
-The nnrest api comes with the following default-settings in the YAML-configuration:
+The extension comes with the following default-settings in the YAML-configuration:
 
 .. code-block:: yaml
 

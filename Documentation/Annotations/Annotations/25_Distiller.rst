@@ -42,7 +42,7 @@ It returns the modified array, which is then converted to a JSON and sent to the
 Let's write an example Distiller that **removes the password** from the JSON before it gets sent
 to the frontend. 
 
-First, set a Distiller in your REST Api Endpoint using the ``@Api\Distiller()`` annotation:
+First, define a Distiller in your endpoint using the ``@Api\Distiller()`` annotation:
 
 .. code-block:: php
 

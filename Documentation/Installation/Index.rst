@@ -6,7 +6,7 @@
 Installation
 ============
 
-High speed walk-through: Installing the TYPO3 Rest Api.
+High speed walk-through: Installation
 ------------
 
 | For people, who know their way around TYPO3 – no words needed, only enough coffee :)

@@ -12,7 +12,7 @@
 RESTful API for Typo3 (nnrestapi by 99°)
 =============================================================
 
-Everything you need to create a RESTful API in TYPO3.
+Everything you need to create a "Representational State Transfer Application Programming Interface" in TYPO3.
 
 .. container:: row m-0 p-0
 
@@ -50,7 +50,7 @@ Everything you need to create a RESTful API in TYPO3.
 
          .. container:: card-body
 
-            How to :ref:`install <installation>` the extension. How to set up your first TYPO3 RESTful Api in 5 minutes
+            How to :ref:`install <installation>` the extension. How to set up an Api in 5 minutes
             using this :ref:`quick-start <quickstart>`.
 
    .. container:: col-12 col-md-6 pl-0 pr-3 py-3 m-0
@@ -138,7 +138,7 @@ Everything you need to create a RESTful API in TYPO3.
 
          .. container:: card-body
 
-            Retrieving translated (localized) data from the TYPO3 Rest Api.
+            Retrieving translated (localized) data
 
    .. container:: col-12 col-md-6 pl-0 pr-3 py-3 m-0
 
@@ -150,7 +150,7 @@ Everything you need to create a RESTful API in TYPO3.
 
          .. container:: card-body
 
-            Create a namespaced Rest Api extension with a single click.
+            Create a namespaced extension with a single click.
 
    .. container:: col-12 col-md-6 pl-0 pr-3 py-3 m-0
 

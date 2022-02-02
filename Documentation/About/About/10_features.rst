@@ -15,7 +15,7 @@ Features
 * Possibility to **retrieve hidden records** in the Frontend (like a backend user)
 * Full support for creating, adding and removing **FileReferences** from the frontend application
 * Supports **multipart/form-data** requests to send file-uploads in combination with JSON-payloads 
-* Supports **CORS** for accessing the REST API from cross-origins and while developing in localhost environments
+* Supports **CORS** for accessing the endpoint from cross-origins and while developing in localhost environments
 * Automatic **conversion of JSON-data** to Models and vice-versa
 
 ⊛ Developing features:
@@ -24,9 +24,9 @@ Features
 * Many, many examples. And even many more.
 * Highly customizable and configurable
 * Automatic and custom routing to endpoints
-* Fastest possible integration, set up your REST Api in 5 minutes
+* Fastest possible integration, set up your implementation in 5 minutes
 * Optional Caching-layer with one line of code
-* A "kick-starter" feature for creating your RESTful Api extension with one click
+* A "kick-starter" feature for creating your own extension with one click
 
 ⊛ Backend module:
 -------------

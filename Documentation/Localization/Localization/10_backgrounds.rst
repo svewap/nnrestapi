@@ -73,15 +73,15 @@ In other words: There is no real "connection" between the languages.
 `Read the docs <https://docs.typo3.org/m/typo3/guide-frontendlocalization/main/en-us/Index.html#start>`__ to find 
 out more about the topic.
 
-"A movie database" – example for localization in a REST Api
+"A movie database" – example for localization
 ~~~~~~~~~
 
-In the context of your REST Api the **"connected mode"** will probably be the most common use-case.
-To make this clear, let's think of an REST Api that you can address to get information about a certain. 
+In the context of your application the **"connected mode"** will probably be the most common use-case.
+To make this clear, let's think of an endpoint that you can address to get information about a certain. 
 This could be the title, description and director of the movie. 
 
 Let's think of every movie being located in a unique "shelf-number" of our movie-wall. To get information
-about a certain movie, we will need to know its number - or speaking in terms related to a REST Api:
+about a certain movie, we will need to know its number - or speaking in terms of endpoints:
 We need to know its unique URL or URI.
 
 Our Api could offer an endpoint in this style:
@@ -104,7 +104,7 @@ The response could look something like this:
 
 So far, so good. But what about handling translations / localizations?
 
-The problem with localized data in context of a Rest API
+The problem with localized data
 ~~~~~~~~~
 
 Looking at the example above, we are currently looking at shelf number ``123`` and getting a result in English.

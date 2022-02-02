@@ -6,14 +6,14 @@
 About the extension
 ============
 
-A RESTful Api for TYPO3: Simple, scaleable, flexible
+Simple, scaleable, flexible
 -------------
 
 The goal of this extension was to develop a **REST Api framework for TYPO3** that was **simple to integrate**, but as scalable and 
 :ref:`configurable <configuration>` as possible. Using :ref:`Annotations <annotations>` to accomplish this, seemed 
 obvious and intuitive to us (and `others <https://docs.typo3.org/p/sourcebroker/t3api/main/en-us/Index.html>`__).
 
-It should offer simple, comprehensible solutions for the three big challenges when developing a Restful Api:
+It should offer simple, comprehensible solutions for the three big challenges during the implementation:
 :ref:`user-authentication <authentication>`, :ref:`file-upload <fileupload>` (including automatic FAL conversion) 
 and :ref:`localization <localization>`. 
 
@@ -23,14 +23,14 @@ that includes parsing of custom request parameter.
 
 We wanted to offer a **good documentation** with as many :ref:`examples <examples>` as possible. So you (and we) can copy and 
 paste - no matter if you are a front- or backend-developer. And no matter if this is the first time you are building 
-a REST Api - or if you're an expert.
+an Api in TYPO3 - or if you're an expert.
 
 We've invested a lot of time in creating functional and editable examples on **CodePen** and also integrated a 
 miniature "Postman" in the :ref:`backend-module <screenshots>` so you can test your endpoints without having to leave the
 TYPO3 environment.
 
 
-TYPO3 Rest Api - walkthrough
+Quick Walkthrough
 -----------------------------
 
 Overview of the installation and backend features of the extension.
@@ -42,7 +42,7 @@ Overview of the installation and backend features of the extension.
 What does this extension do?
 ----------------
 
-This extension makes implementing your own **TYPO3 Restful Api** simple. 
+This extension makes implementing your own **Rest Api** with TYPO3 as a backend simple. 
 
 It takes care of all of the "dirty work" like **parsing the JSON requests**, moving uploaded files to their destination, converting JSON-data to 
 ``Models`` and ``Models``, ``ObjectStorages``, ``SysFileRefences`` etc. back to a JSON for the Reponse.
@@ -62,7 +62,7 @@ The backend module offers a :ref:`test bed <screenshots>` similar to `Postman <h
 requests without having to use an additional tool. This saves you time and keeps development and testing centralized in your project!
 
 Comments and annotations above the methods of your endpoints are automatically parsed and converted to a beautiful
-:ref:`REST Api documentation <access_writedocs>` in the backend module. Development and documentation stay centralized!
+:ref:`documentation <access_writedocs>` in the backend module. Development and documentation stay centralized!
 
 |
 
@@ -76,7 +76,7 @@ Comments and annotations above the methods of your endpoints are automatically p
    Many other solutions only offer one of the two: Either you have a great architecture with Routing, File-Abstraction and solid request-handling - 
    but the moment you also need to have pages with editable content-elements, things tend to get extremely cumbersome. 
 
-   Or you have content-based CMS (Joomla, WordPress) with an architecture that makes the integration of a Restful Api feel as if you were
+   Or you have content-based CMS (Joomla, WordPress) with an architecture that makes the implementation feel as if you were
    gluing a shelf to the wall because you're missing the right screws.
 
    With TYPO3 and a Restful Api integrated directly in one and the same system, many things become possible that would require a lot 

@@ -59,7 +59,7 @@ Step-by-step
 
 3. Request the language
 
-   Once you have localization enabled you can retrieve the translated records by sending a requests to the TYPO3 Rest Api 
+   Once you have localization enabled you can retrieve the translated records by sending a requests
    using one of the following options:
 
    -  Add a ``Accept-Language`` header to the request, e.g ``Accept-Language: en-US``
@@ -211,7 +211,7 @@ Dive deeper?
 ---------
 
 If you are interested to find out more about localization in TYPO3 and the reason why it is not 
-a trivial topic in combination with a RESTful Api, head on :ref:`to this chapter <localization_background>`.
+a trivial topic, head on :ref:`to this chapter <localization_background>`.
 
 .. toctree::
    :hidden:

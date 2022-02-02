@@ -10,7 +10,7 @@ How to implement your own method for checking access rights to your endpoint
 ---------
 
 In most cases using the :ref:`@Api\\Access(...)<access>` annotation will be sufficient to 
-restrict the access to your TYPO3 Rest Api endpoint to certain frontend-users or user groups.
+restrict the access to your endpoint to certain frontend-users or user groups.
 
 In case you need to implement your own logic for checking access rights, you can simply
 define a ``checkAccess()``-method in the class of your endpoint. This will override the

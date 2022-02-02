@@ -6,10 +6,10 @@
 Authentication
 ============
 
-How to login as a Frontend-User using axios and send requests to the TYPO3 Rest Api
+How to login as a Frontend-User using axios and send requests
 ------------
 
-In most cases you will want to restrict access to your TYPO3 Rest Api to certain users or usergroups.
+In most cases you will want to restrict the access to your endpoint to certain users or usergroups.
 The basic way to do this in your classes and methods, is to use the :ref:`@Api\Access() Annotation <access>`.
 
 The nnrestapi-extension comes with a default endpoint to authenticate as a Frontend User using the
@@ -22,7 +22,7 @@ environment.
 The nnrestapi solves this by also allowing authentication via **JWT (Json Web Token)**. 
 
 Let's have a look, how to authenticate, retrieve a JWT with axios and pass it to the server when making 
-follow-up request to your TYPO3 Rest Api.
+follow-up request to your Rest Api.
 
 .. tip::
 
@@ -203,7 +203,7 @@ Full axios "Starter Template" with login-form
 ~~~~~~~~~~~~
 
 Here is a template with login-form and testbed to get you started. It will show a login-form and - after successful authentication -
-a testform to send JSON-requests with ``GET``, ``POST``, ``PUT``, ``DELETE`` and ``PATCH`` requests to your TYPO3 Restful Api. 
+a testform to send JSON-requests with ``GET``, ``POST``, ``PUT``, ``DELETE`` and ``PATCH`` requests. 
 
 
 .. tip::

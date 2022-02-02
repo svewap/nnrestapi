@@ -10,7 +10,7 @@ Retrieving pre-rendered, translated content-elements
 ------------
 
 Let's imagine you are creating a SPA / frontend-application in VueJS, React or Angular and are using
-TYPO3 as a Restful Api.
+TYPO3 as a backend.
 
 In your application you have various texts and labels, for example in dialog-modals, on the onboarding 
 screen, the privacy policy, imprint and so on. Of course, all of these texts are translated in to
@@ -20,7 +20,7 @@ Wouldn't it be great to keep these texts editable in the TYPO3 backend and load 
 in the language the user has his browser set to?
 
 The following example illustrates, how easy it is to **get pre-rendered and localized content-elements** 
-from the TYPO3 Rest Api.
+from an endpoint.
 
 | **Want to render all content-elements of a page?** 
 Then check out :ref:`how to render a complete column <examples_pages>`.
@@ -64,10 +64,10 @@ Step-by-step
       https://www.mysite.com/api/content/{uid}
 
    **Reminder:** If no :ref:`custom_routing` is defined for the method, the **first part** of the URL-path 
-   after ``api/`` will be interpreted as the controller-name of your Rest Api. In this case ``content``
+   after ``api/`` will be interpreted as the controller-name of your endpoint. In this case ``content``
    automatically will route to methods in your class ``Content``.
 
-   If the next part of the URL is an **integer**, the TYPO3 Rest Api automatically maps this to the request 
+   If the next part of the URL is an **integer**. This will automatically be mapped to the request 
    argument ``$uid`` and will call the ``indexAction`` of your class. 
 
    As we want a ``GET`` request here, all we need to do is define a method called ``getIndexAction()``.
@@ -154,7 +154,7 @@ Step-by-step
 
    | **3. Use the "L"-parameter in the URL**
    Last option: add the famous "L"-parameter with the language-uid to the URL. This option was actually removed in
-   one of the last TYPO3 versions - but we are "reintroducing" it for the Rest Api because it might make life a
+   one of the last TYPO3 versions - but we are "reintroducing" it because it might make life a
    little easier:
 
    .. code-block:: php

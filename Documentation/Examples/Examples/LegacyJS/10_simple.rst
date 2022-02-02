@@ -14,13 +14,13 @@ Basic requests
     a library that saves a lot of headaches like :ref:`Axios <examples_axios>`
 
 
-How to make a request to your TYPO3 Restful Api with pure JavaScript (no libraries) that supports older browsers (like Internet Explorer 11 and below).
+How to make a request with pure JavaScript (no libraries) that supports older browsers (like Internet Explorer 11 and below).
 ------------
 
 .. tip::
 
     | **Want to play, not read?**
-    | Here is a ready-to-go codepen that demonstrates how to use VanillaJS to connect to your REST Api. Run and have fun!
+    | Here is a ready-to-go codepen that demonstrates how to use VanillaJS to make requests. Run and have fun!
     | `nnrestapi vanillajs demo <https://codepen.io/99grad/pen/xxXryem>`__
 
 
@@ -56,7 +56,7 @@ Let's create a ``GET`` request to the nnrestapi backend:
     xhr.send();
 
 
-Of course you can also send a payload / JSON data to the TYPO3 Restful Api using a ``POST``, ``PUT`` or ``PATCH`` request:
+Of course you can also send a payload / JSON data using a ``POST``, ``PUT`` or ``PATCH`` request:
 
 .. code-block:: javascript
 
@@ -159,7 +159,7 @@ You can also test and play with it on `this codepen <https://codepen.io/99grad/p
                 var $result = document.getElementById('result');
 
                 /**
-                 * Helper-function to send REST Api requests for older
+                 * Helper-function to requests for older
                  * browsers not supporting fetch()
                  * 
                  */

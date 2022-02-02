@@ -6,13 +6,13 @@
 Example Api Endpoint
 ============
 
-Creating a TYPO3 Restful Api for articles
+Creating an example "Article"-Application
 ------------
 
 In the following example we would like to create an endpoint that can read, update, insert and
 delete articles in a news-system.
 
-All operations can be executed by calling the TYPO3 Rest Api endpoint located at  
+All operations can be executed by calling the endpoint located at  
 ``https://www.mysite.com/api/article``. Here is an overview of what we are planning to do:
 
 +------------+---------------------+-------------------------------------+--------------------------------------------------+
@@ -91,7 +91,7 @@ As a last part of the URL we want to be able to pass the ``uid`` of the Article 
 after ``api/`` will be interpreted as the controller-name of your Rest Api. In this case ``article``
 automatically will route to methods in your class ``Article``.
 
-If the next part of the URL is an **integer**, the TYPO3 Rest Api automatically maps this to the request 
+If the next part of the URL is an **integer**, the extension automatically maps this to the request 
 argument ``$uid`` and will call the ``indexAction`` of your class. 
 
 Depending on the HTTP Request method, the ``getIndexAction()``, ``postIndexAction()``, ``putIndexAction()`` 

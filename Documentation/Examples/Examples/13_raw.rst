@@ -10,7 +10,7 @@ Retrieving the raw, unrendered data of content-elements
 ------------
 
 In contrast to the example of :ref:`how to retrieve rendered content elements <examples_contentelements>` 
-let's create an endpoint in our TYPO3 Restful Api that returns the "raw" data from the table ``tt_content`` 
+let's create an endpoint that returns the "raw" data from the table ``tt_content`` 
 for a given ``uid``:
 
 .. code-block:: php

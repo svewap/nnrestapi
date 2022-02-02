@@ -15,7 +15,7 @@ the test bed.
 
 This annotation has no other function in the frontend. It is just to make working
 with the backend-module easier: The extension comes shipped with a test bed to send
-and test your REST Api requests directly in the backend module. The example data
+and test your requests directly in the backend module. The example data
 will appear in the documentation and can be used to compose your request.
 
 .. image:: ../../Images/01.gif

@@ -11,12 +11,12 @@ How to authenticate a request to your TYPO3 RestApi using HTTP Basic Auth
 
 .. admonition:: Your choice!
 
-   HTTP Basic Auth is one of the three ways you can authenticate to the TYPO3 Rest Api when making a request to the backend.
+   HTTP Basic Auth is one of the three ways you can authenticate when making a request to the backend.
    The alternative methods are using :ref:`JWT (JSON Web Tokens)<examples_axios_auth>` or the standard 
    :ref:`TYPO3 fe_user-cookie <authentication_cookies>`.
 
 Basic access authentication (or "HTTP Basic Auth") is a very simple method for an HTTP user agent (browser) to provide user 
-credentials (username and password) when making a request to the TYPO3 Rest api. In basic HTTP authentication, a request contains 
+credentials (username and password) when making a request. In basic HTTP authentication, a request contains 
 a header field in the form of ``Authorization: Basic <credentials>`` where "credentials" is the Base64 encoding of ID and password 
 joined by a single colon.
 
@@ -46,7 +46,7 @@ Follow these steps to set up a username and password for a frontend user that ca
       
    3. | **Set the Rest-Api Key**
       Switch to the **tab "RestAPI"**. Enter a password in the field **"Rest-Api Key"**. This will be the password 
-      that must be used when sending requests with HTTP Basic Authentication to the TYPO3 Rest Api.
+      that must be used when sending requests with HTTP Basic Authentication.
 
    4. | **Check your @Api\Access()-annotations**
       Make sure, the endpoints that should be accessible by the user have the correct rights set using the ``@Api\Access()``
@@ -134,7 +134,7 @@ Follow these steps, if you would like to create a global API Key that is not bou
 
 .. _authentication_http_examples:
 
-Sending request to the TYPO3 Rest Api using HTTP Basic Auth
+Sending request using HTTP Basic Auth
 ---------
 
 Here are some basic examples of how to send requests to your API using HTTP basic authentication:
@@ -674,7 +674,7 @@ Full Testscript
                <script>
 
                   /**
-                   * Helper-function to send REST Api requests for older
+                   * Helper-function for older
                    * browsers not supporting fetch()
                    * 
                    */

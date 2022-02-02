@@ -6,7 +6,7 @@
 Quick Start
 ============
 
-Get your TYPO3 Rest Api up and running in 5 minutes
+Up and running in 5 minutes
 -------------------------------
 
 .. rst-class:: bignums
@@ -15,7 +15,7 @@ Get your TYPO3 Rest Api up and running in 5 minutes
 
    Follow the instructions under :ref:`installation` to install the ``nnrestapi`` extension.
 
-2. Create an own extension for your TYPO3 REST Api endpoints
+2. Create an own extension
 
    To implement your own endpoints, you will need to create a new extension - or use one of your existing extensions.
    
@@ -46,7 +46,7 @@ Get your TYPO3 Rest Api up and running in 5 minutes
          },
       }
 
-3. Create your first TYPO3 REST Api endpoint
+3. Create your first endpoint
 
    Create a file located at ``Classes/Api/Demo.php`` in your extension with this code.
 

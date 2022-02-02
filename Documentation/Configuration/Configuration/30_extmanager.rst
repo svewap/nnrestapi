@@ -6,7 +6,7 @@
 Extension Manager Configuration
 ============
 
-Configuring the TYPO3 Rest Api in the Extension Manager
+Configurations in the Extension Manager
 -------------------------------
 
 Use the backend module "Settings -> Extension Configuration" to modify the following settings: 
@@ -25,7 +25,7 @@ basic.apiKeys
    Data type
         text
    Description
-        List of global api users that can access the REST Api.
+        List of global api users that can access the endpoint.
         One user per line. Username and ApiKey separated by a single colon (:)
         
         All usernames will work, except for the default "examplefeUserName".

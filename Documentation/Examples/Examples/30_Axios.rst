@@ -6,7 +6,7 @@
 Axios
 ============
 
-Creating requests to the TYPO3 Rest Api using axios
+Creating requests using axios
 ---------
 
 Find out, how to create ``GET``, ``POST``, ``PUT``, ``PATCH`` and ``DELETE`` requests,

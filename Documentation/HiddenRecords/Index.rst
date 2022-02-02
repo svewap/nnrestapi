@@ -6,7 +6,7 @@
 Get hidden records
 ============
 
-How to retrieve hidden records in your TYPO3 RESTful Api
+How to retrieve hidden records
 ---------
 
 Imagine you are developing a frontend based on JavaScript (VueJS or React) to administrate 
@@ -17,7 +17,7 @@ If you were logged in to the backend, you would simply set the "hidden" flag on 
 happily edit the news until things look fine. This is possible, because you are logged in to the
 backend which allows you to view records that are hidden or have a start- and end-date set.
 
-With the TYPO3 REST Api we are facing a problem. We are sending all requests to the API from 
+With a normal TYPO3-extension we would be facing a problem. We are sending all requests to the API from 
 a **frontend context**. And frontend means: Hidden is hidden!
 
 Yes, you can.

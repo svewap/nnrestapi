@@ -20,7 +20,7 @@ How to authenticate a user with your TYPO3 RestApi using a JSON Web Token
 
 
 To keep the frontend user logged in, TYPO3 usually sets a cookie. This cookie (``fe_typo_user``) serves fine in most contexts - 
-but relying on the TYPO3 cookie while developing a REST Api has a few limitations:
+but relying on the TYPO3 cookie has a few limitations:
 
 -  **Cookies are domain-bound**. Out of the box, TYPO3 only allows cookies from the same domain. 
    Although there are ways to let TYPO3 accept cross domain (or subdomain) cookies, the main focus in TYPO3 was not

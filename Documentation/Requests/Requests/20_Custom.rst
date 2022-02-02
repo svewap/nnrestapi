@@ -6,7 +6,7 @@
 Routing by custom Routes
 ============
 
-Defining custom URL paths to your TYPO3 Restful Api
+Defining custom URL paths
 ------------
 
 In certain cases, you might want to define a custom routing instead of using the :ref:`routing_standard`

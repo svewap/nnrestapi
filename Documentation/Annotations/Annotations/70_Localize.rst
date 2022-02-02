@@ -6,7 +6,7 @@
 @Api\\Localize
 ============
 
-Enable/disable localization (translation) of data received from TYPO3 Rest Api requests
+Enable/disable localization (translation) of data
 ---------
 
 The ``@Api\Localize()`` annotation can be used to force or disable the localization of models and entries retrieved
@@ -93,7 +93,7 @@ Typical use-cases
 
 Two exemplary cases for enabling / disabling the localization settings:
 
--   Let's assume, the main focus of your Rest Api is to return a list of news-feed, calendar-events or a list
+-   Let's assume, the main focus of your backend is to return a list of news-feed, calendar-events or a list
     of the latest movies on Netflix. You have most of these lists stored in multiple languages in the database
     using the standard TYPO3 ways of localizing data. 
 

@@ -6,7 +6,7 @@
 Configuration
 ============
 
-The following chapters describe how to configure your TYPO3 Restful Api with TypoScript, YAML and in the extension manager. 
+The following chapters describe how to configure your application with TypoScript, YAML and in the extension manager. 
 
 ---------
 

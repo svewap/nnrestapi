@@ -9,7 +9,7 @@
 Mark a class as endpoint for the TYPO3 RestAPi
 ---------
 
-There are two basic ways to register a Class as endpoint so the TYPO3 Restful API will route
+There are two basic ways to register a Class as endpoint so the extension will route
 requests to it:
 
 -  by using the :ref:`\nn\rest::Endpoint()->register()<routing_prerequisites>` method in the 

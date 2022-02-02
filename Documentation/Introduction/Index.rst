@@ -8,7 +8,7 @@ What is a RESTful Api?
 
 .. tip::
 
-    If you are not new to the topic "Restful Api", skip this. It's going to bore you ;)
+    If you are not new to the topic, skip this. It's going to bore you ;)
 
 
 A simplified explanation
@@ -157,7 +157,7 @@ But things get easier to understand later, if you stick with the standards.
 Where to go from here?
 ~~~~~~~
 
-This TYPO3 extension is not only a good starting point to get a Rest Api "up and running" in a few minutes – it also offers a nice module in 
+This TYPO3 extension is not only a good starting point to get things "up and running" in a few minutes – it also offers a nice module in 
 the backend for testing your endpoints. And it comes with many examples and step-by-step tutorials about the front- and backend-implementation.
 
 We hope you have fun using ``nnrestapi`` - feel free to contact us if you find a bug or have ideas on how to improve the extension.

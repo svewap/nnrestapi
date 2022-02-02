@@ -12,7 +12,7 @@ Simple requests without authentication using jQuery
 .. tip::
 
     | **Want to play, not read?**
-    | Here is a ready-to-go codepen that demonstrates how to use jQuery to connect to your REST Api. Run and have fun!
+    | Here is a ready-to-go codepen that demonstrates how to use jQuery to connect to an endpoint. Run and have fun!
     | `nnrestapi jQuery demo <https://codepen.io/99grad/full/LYzbzaW>`__
 
 .. important::
@@ -26,7 +26,7 @@ Simple requests without authentication using jQuery
 Sending a GET-Request
 ~~~~~~~~~~~~
 
-A very basic example of how to send a ``GET`` request to your TYPO3 Restful APi using 
+A very basic example of how to send a ``GET`` request using 
 jQuery's `$.get() <https://api.jquery.com/jquery.get/>`__ command.
 
 .. code-block:: javascript
@@ -43,7 +43,7 @@ jQuery's `$.get() <https://api.jquery.com/jquery.get/>`__ command.
 Sending a POST-Request
 ~~~~~~~~~~~~
 
-Here is a example of how to send a ``POST`` request to your Rest APi using 
+Here is a example of how to send a ``POST`` request using 
 jQuery's `$.post() <https://api.jquery.com/jquery.post/>`__ command.
 
 Note that the object-data is converted to a JSON-string using `JSON.stringify() <https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify>`__.
@@ -67,7 +67,7 @@ This makes sure the data can be parsed by the backend.
 Sending a PUT, PATCH or DELETE request
 ~~~~~~~~~~~~
 
-If you would like to send a ``PUT``, ``PATCH`` or ``DELETE`` request to your Rest APi, you will need to use 
+If you would like to send a ``PUT``, ``PATCH`` or ``DELETE`` request, you will need to use 
 jQuery's `$.ajax() <https://api.jquery.com/jquery.ajax/>`__ method with the appropriate ``type`` in the 
 request settings.
 
