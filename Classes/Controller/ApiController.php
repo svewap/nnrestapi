@@ -114,7 +114,18 @@ class ApiController extends AbstractApiController
 								if ($nothingToMerge) {
 									$model = $existingModel;
 								} else {
+
+									// merge data from request with existing model
 									$model = \nn\t3::Obj( $existingModel )->merge( $model );
+
+									// validate (use `@TYPO3\CMS\Extbase\Annotation\Validate` on properties of the model)
+									$errors = \nn\rest::Validator()->validateModel( $model );
+									if ($errors) {
+										array_walk( $errors, function( &$errors, $field ) {
+											$errors = "`{$field}` [" . join(' - ', $errors) . "]";
+										});
+										return $response->invalid("Error validating properties: " . join('; ', $errors) );
+									}
 								}
 								
 							} else {
