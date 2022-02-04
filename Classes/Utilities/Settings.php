@@ -27,6 +27,12 @@ class Settings extends \Nng\Nnhelpers\Singleton {
 	private $siteIdentifier = '';
 
 	/**
+	 * Current site
+	 * @var \TYPO3\CMS\Core\Site\Entity\Site
+	 */
+	private $site;
+
+	/**
 	 * Api configuration (Array from the siteConfig-yaml)
 	 * @var string
 	 */
@@ -69,6 +75,7 @@ class Settings extends \Nng\Nnhelpers\Singleton {
 			$apiConfiguration = $site->getConfiguration()['nnrestapi'] ?? [];
 		}		
 
+		$this->site = $site;
 		$this->siteIdentifier = $siteIdentifier;
 		$this->apiConfiguration = $apiConfiguration;
 	}
@@ -179,6 +186,22 @@ class Settings extends \Nng\Nnhelpers\Singleton {
 	 */
 	public function setIgnoreEnableFields( $ignoreEnableFields = false ) {
 		$this->querySettings['ignoreEnableFields'] = $ignoreEnableFields;
+		return $this;
+	}
+
+	/**
+	 * @return \TYPO3\CMS\Core\Site\Entity\Site
+	 */
+	public function getSite() {
+		return $this->site;
+	}
+
+	/**
+	 * @param   \TYPO3\CMS\Core\Site\Entity\Site  $site  Current site
+	 * @return  self
+	 */
+	public function setSite($site) {
+		$this->site = $site;
 		return $this;
 	}
 }

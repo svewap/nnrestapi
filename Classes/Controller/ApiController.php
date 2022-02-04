@@ -6,6 +6,8 @@ namespace Nng\Nnrestapi\Controller;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\LanguageAspect;
+use TYPO3\CMS\Core\Context\LanguageAspectFactory;
+
 
 /**
  * ApiController
@@ -55,8 +57,12 @@ class ApiController extends AbstractApiController
 		// checks, if LanguageAspect needs to be set to different language. Will decide, if language-overlay is loaded for records.
 		$overlayLanguageUid = $classInstance->determineLanguage( $endpoint );
 		if ($overlayLanguageUid > 0) {
+			$site = \nn\rest::Settings()->getSite();
+			$language = $site->getLanguageById( $overlayLanguageUid );
+
+			$languageAspect = LanguageAspectFactory::createFromSiteLanguage($language);
 			$context = GeneralUtility::makeInstance(Context::class);
-			$context->setAspect('language', new LanguageAspect($overlayLanguageUid));
+			$context->setAspect('language', $languageAspect);
 		}
 
 		// check if access is granted to requested class->method
