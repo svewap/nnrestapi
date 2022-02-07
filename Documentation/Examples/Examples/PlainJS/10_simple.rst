@@ -6,13 +6,13 @@
 Basic requests
 ============
 
-How to make a request to your TYPO3 Restful Api with pure JavaScript
+How to make a request with pure JavaScript
 ------------
 
 .. tip::
 
     | **Want to play, not read?**
-    | Here is a ready-to-go codepen that demonstrates how to use VanillaJS to connect to your REST Api. Run and have fun!
+    | Here is a ready-to-go codepen that demonstrates how to use VanillaJS for requests. Run and have fun!
     | `nnrestapi vanillajs demo <https://codepen.io/99grad/pen/xxXryem>`__
 
 
@@ -45,7 +45,7 @@ Let's create a ``GET`` request to the nnrestapi backend:
         });
 
 Without further configuration, ``fetch()`` will send a ``GET``-request. Of course you can also send a payload / JSON data 
-to the TYPO3 Restful Api using a ``POST``, ``PUT`` or ``PATCH`` request:
+to the backend using a ``POST``, ``PUT`` or ``PATCH`` request:
 
 .. code-block:: javascript
 

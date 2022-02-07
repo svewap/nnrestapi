@@ -6,10 +6,10 @@
 Authentication
 ============
 
-How to login as a Frontend-User using jQuery and send requests to the TYPO3 Rest Api
+How to login as a Frontend-User using jQuery and send requests
 ------------
 
-In most cases you will want to restrict access to your TYPO3 Rest Api to certain users or usergroups.
+In most cases you will want to restrict access to your an endpoint to certain users or usergroups.
 The basic way to do this in your classes and methods, is to use the :ref:`@Api\Access() Annotation <access>`.
 
 The nnrestapi-extension comes with a default endpoint to authenticate as a Frontend User using the

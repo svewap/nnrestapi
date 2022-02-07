@@ -6,7 +6,7 @@
 Examples & Recipes
 ============
 
-Cheat sheets for your TYPO3 Rest Api
+Cheat sheets that help you get started
 ---------
 
 In this section you can find examples and tutorials:

@@ -10,7 +10,7 @@ The request type makes the difference!
 ---------
 
 A typical project setup will have of a frontend application that requests something 
-and a backend with a **REST Api** that retrieves this data from the database and returns 
+and a backend that retrieves this data from the database and returns 
 it to the frontend application.
 
 Many Single Page Applications (SPA) and Progressive Web Apps (PWA) nowadays are 
@@ -54,7 +54,7 @@ type of request and the request-body passed, different operations are executed:
    Both are intended to update existing data. But if you are interested in the details, you
    can find a good explanation `on this page <https://rapidapi.com/blog/put-vs-patch/>`__.
 
-Route a request to your TYPO3 Rest Api
+Route a request to endpoints
 ---------
 
 The whole deal is about getting a certain HTTP Request Type "connected" to a Controller and method of your

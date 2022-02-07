@@ -6,10 +6,10 @@
 Creating Responses
 ============
 
-How to send a response from your TYPO3 Restful Api
+How to send a response from your endpoint
 ---------
 
-Your REST Api endpoint can return almost anything. The ``nnrestapi`` extension will take care  
+Your Api can return almost anything. The ``nnrestapi`` extension will take care  
 of converting your return value to a JSON, no matter if you pass a simple array, a Domain Model
 or an ``ObjectStorage``.
 

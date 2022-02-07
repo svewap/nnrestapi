@@ -16,7 +16,7 @@ To learn how to manage file-uploads, dive in to one of the following recipes:
 +------------------------------------------------------------------------+------------------------------------------------------------------------+
 | Link to documentation                                                  | Content                                                                |
 +========================================================================+========================================================================+
-| :ref:`Full example of creating a Rest Api<examples_article>`           | Describes step-by-step how to **setup your TYPO3 Restful Api**,        |
+| :ref:`Full example<examples_article>`                                  | Describes step-by-step how to **setup your TYPO3 Restful Api**,        |
 |                                                                        | including mapping of your JSON to a Model and attaching                |
 |                                                                        | SysFileReferences (FAL)                                                |
 +------------------------------------------------------------------------+------------------------------------------------------------------------+
@@ -48,11 +48,11 @@ To learn how to manage file-uploads, dive in to one of the following recipes:
 Full examples on CodePen
 ---------
 
-Test your API and play with the code in our `TYPO3 Rest Api CodePens <https://codepen.io/99grad/full/dyVRwbN>`__:
+Test your API and play with the code in our `CodePens <https://codepen.io/99grad/full/dyVRwbN>`__:
 
 .. figure:: ../Images/codepen-upload.jpg
    :class: with-shadow
-   :alt: TYPO3 Rest Api - Codepen example
+   :alt: Codepen example
    :width: 100%
    :target: https://codepen.io/99grad/full/dyVRwbN
 

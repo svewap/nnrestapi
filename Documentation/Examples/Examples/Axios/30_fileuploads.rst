@@ -8,12 +8,12 @@ Uploading Files
 
 .. hint::
 
-    This chapter explains how to upload files to the ``nnrestapi`` (TYPO3 Restful Api) using the JavaScript library **axios**.
+    This chapter explains how to upload files to the ``nnrestapi`` using the JavaScript library **axios**.
 
-    If you are interested in finding out, how to create the TYPO Rest Api Endpoint that processes the fileupload, attaches the SysFileReference 
+    If you are interested in finding out, how to create an endpoint that processes the fileupload, attaches the SysFileReference 
     to a model and then persists the model in the database, please refer to the examples in :ref:`this section <examples_jquery_fileuploads>`
 
-How to upload files to your TYPO3 Rest Api with axios
+How to upload files using the axios library
 ------------
 
 .. tip::

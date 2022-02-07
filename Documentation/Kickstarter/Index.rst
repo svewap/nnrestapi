@@ -12,7 +12,7 @@ The fastest way to start your TYPO3 RestApi project
 The backend-module of nnrestapi offers "Kickstarter" templates, which you can customize and download with a single click.
 
 The idea was to create a helper similar to the TYPO3 "Extension Builder": You can define the vendor- and extension-name, 
-click "export" to download the customized extension and then install it as a starting point for your own TYPO3 Restful Api 
+click "export" to download the customized extension and then install it as a starting point for your own
 extension development.
 
 
@@ -22,7 +22,7 @@ Creating own kickstarter templates
 You can add your own "Kickstarter"-templates to the backend module.
 It would be great to add as many examples and templates as possible in the future, e.g. for a frontend in VueJS, React or Angular.
 
-**So: Please, please...** if you are developing an application that connects to the TYPO3 Rest Api and are using technologies 
+**So: Please, please...** if you are developing an application that connects to a backend and are using technologies 
 like Swift, Kotlin, VueJS, React, Angular or other frameworks: Consider sharing your knowledge and contribute a "Kickstarter"-template
 for the community to reduce development time and get started faster.
 
@@ -33,7 +33,7 @@ Creating your own kickstarter-templates is extremely simple:
 1.  Build something
 
     Create a web app, app, plugin, extension, pwa or whatever - in the language and framework you prefer working in.
-    Make it connect to the TYPO3 Rest Api.
+    Make it connect to your Api.
 
 2.  Make your code customizable 
 

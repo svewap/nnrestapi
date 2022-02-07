@@ -8,12 +8,12 @@ Uploading Files
 
 .. hint::
 
-    This chapter explains how to upload files to the ``nnrestapi`` (TYPO3 Restful Api) using pure JavaScript without any libraries.
+    This chapter explains how to upload files to the ``nnrestapi`` using pure JavaScript without any libraries.
 
-    If you are interested in finding out, how to create the TYPO Rest Api Endpoint that processes the fileupload, attaches the SysFileReference 
+    If you are interested in finding out, how to create an endpoint that processes the fileupload, attaches the SysFileReference 
     to a model and then persists the model in the database, please refer to the examples in :ref:`this section <examples_jquery_fileuploads>`
 
-How to upload files to your TYPO3 Rest Api with pure JavaScript
+How to upload files with pure JavaScript
 ------------
 
 .. tip::

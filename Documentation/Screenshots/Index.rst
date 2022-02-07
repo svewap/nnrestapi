@@ -34,7 +34,7 @@ Automatic documentation
 -----------------------------
 
 Use Markdown in your method annotations to automatically create the
-documentation for your TYPO3 Restful Api. This saves a lot of time and keeps code and
+documentation. This saves a lot of time and keeps code and
 documentation at one place.
 
 .. figure:: ../Images/03.gif
@@ -94,7 +94,7 @@ Most of the examples are also on CodePen for you to copy, test and modify.
    :width: 100%
 
 
-TYPO3 Rest Api - walkthrough
+Walkthrough
 -----------------------------
 
 Overview of the installation and backend features of the extension.

@@ -7,7 +7,7 @@ Contribute
 ============
 
 Contributions are essential to keep open-source projects alive.
-We are thankful for any improvement and contribution you make to the TYPO3 Rest Api.
+We are thankful for any improvement and contribution you make to this extension.
 
 Contribution workflow
 ^^^^^^^^^^^^^^^^^^^^^

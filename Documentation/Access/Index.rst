@@ -6,11 +6,11 @@
 Restricting Access
 ============
 
-Only allow certain users to call your TYPO3 Rest Api endpoint
+Only allow certain users to access your endpoints
 ---------
 
 By using the `@Api\Access(...)` annotation above your method, you can restrict the access to 
-your REST API endpoint. This way you can decide, which Frontend-Users, Frontend-Usergroups,
+your an endpoint. This way you can decide, which Frontend-Users, Frontend-Usergroups,
 Backend-Users or Backend-Admins are allowed to call your endpoint.
 
 **You can restrict access to...**
@@ -143,7 +143,7 @@ If the user is not logged in, a ``HTTP Error 403 Forbidden`` will be thrown.
 Restrict access to SPECIFIC frontend-user(s)
 ~~~~~~~~~~~~
 
-To be more specific about which Frontend-User is allowed to call the REST API endpoint
+To be more specific about which Frontend-User is allowed to access an endpoint,
 you can restrict it in the `@Api\Access`-annotation by using the square brackets syntax 
 `fe_users[...]`.
 
@@ -259,19 +259,19 @@ Defining centralized access-groups in your site YAML or TypoScript Setup
 ~~~~~~~~~~~~
 
 Of course it might not "feel" very good, to define users and usergroup-restrictions in
-your TYPO3 Rest Api by using a static `username` or `uid` directly in the annotation. 
+your Api by using a static `username` or `uid` directly in the annotation. 
 
-What if you need to add a user to the TYPO3 Restful Api that has access to all endpoints?
+What if you need to add a user that has access to all endpoints?
 You would have to go through all your scripts and add the `username` or `uid` to the
 `@Api\Access()` annotation.
 
-The next problem might be: What if you plan to deploy your TYPO3 Rest Api to other environments
+The next problem might be: What if you plan to deploy your setup to other environments
 or installations. Every installation might have different usernames or `uids` . Defining
 users by their `username` or `uid` in the `@Api\Access()` annotation directly will make it very 
 difficult to keep all your installation up-to-date with the same code-base.
 
 **The good news:** 
-With the TYPO3 Rest Api you can also define `accessGroups` in your site-configuration or
+You can also define `accessGroups` in your site-configuration or
 TypoScript Setup and then refer to their identifier in your `@Api\Access()`-annotation instead 
 of repeating using usernames or uids above the individual methods.
 

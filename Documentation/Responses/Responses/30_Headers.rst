@@ -19,7 +19,7 @@ Headers and CORS
 Settings HTTP headers of your TYPO3 RestApi response
 ~~~~~~~~~~
 
-When creating the response, the ``nnrestapi`` sends a list of headers to make the Rest Api as "compatible" as
+When creating the response, the ``nnrestapi`` sends a list of headers to make things as "compatible" as
 possible during development. By default, it also enables cross-domain-requests (CORS) and the setting of 
 cross-domain-cookies.
 
@@ -53,7 +53,7 @@ To add another HTTP header to your response, add it to the TypoScript setup:
 Removing a header to your response
 ~~~~~~~~~~
 
-If you would like to remove any of the default headers sent by the TYPO3 Rest Api, simply set the value
+If you would like to remove any of the default headers sent by the extension, simply set the value
 in the TypoScript setup to an empty string:
 
 .. code-block:: typoscript
@@ -74,7 +74,7 @@ Overview of default headers sent:
 +======================================================+==================================================================+
 | ``Access-Control-Allow-Origin``                      | ``*``                                                            |
 |                                                      |                                                                  |
-|                                                      | The REST Api may be accessed from **any** domain. Makes life     |
+|                                                      | The endpoint may be accessed from **any** domain. Makes life     |
 |                                                      | easier during development, because you can test from a           |
 |                                                      | localhost or CodePen environment.                                |
 |                                                      |                                                                  |
@@ -110,7 +110,7 @@ Overview of default headers sent:
 |                                                      | might send a `preflight request <https://mzl.la/3sTjIT9>`__ to   |
 |                                                      | make sure, the request method for the real request is allowed    |
 |                                                      |                                                                  |
-|                                                      | With this header, our REST Api is saying: All request methods    |
+|                                                      | With this header, our endpoint is saying: All request methods    |
 |                                                      | are allowed, so go on and send the actual request.               |
 +------------------------------------------------------+------------------------------------------------------------------+
 | ``Allow``                                            | ``GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS``                 |

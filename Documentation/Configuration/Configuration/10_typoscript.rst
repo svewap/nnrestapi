@@ -6,7 +6,7 @@
 TypoScript Setup
 ============
 
-Configuring the TYPO3 Rest Api in the TypoScript Setup
+Configuring with TypoScript Setup
 -------------------------------
 
 All of the following settings are configured at 
@@ -200,7 +200,7 @@ kickstarts
    Data type
         array
    Description
-        Allows adding templates to the REST Api kickstarter-examples.
+        Allows adding templates to the kickstarter-examples.
 
         These can be accessed in the "RestApi" backend module by clicking on the tab "Kickstarter".
 
@@ -214,7 +214,7 @@ kickstarts
 
                     // title and description for the list view
                     title = A frontend in React
-                    description = Example React frontend connection with the TYPO3 Rest Api
+                    description = Example React frontend application
 
                     // icon-class (FontAwesome/Free supported)
                     icon = fas fa-box
@@ -253,7 +253,7 @@ localization
         the header sent by the frontend-application. Use ``languageHeader`` to define
         which headers of the request to take into consideration. 
 
-        Read :ref:`how localization is handled <localization>` in the TYPO3 Rest Api.
+        Read :ref:`how localization is handled <localization>`.
 
         ::
 
@@ -280,7 +280,7 @@ response.headers
    Data type
         array
    Description
-        Allows you to add, modify or remove the default headers sent by the TYPO3 Restful Api.
+        Allows you to add, modify or remove the default headers sent to the frontend.
 
         You can define simple key/value pairs here that will be sent with every response.
         All headers are sent without parsing or modification, with one exception: The 

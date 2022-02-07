@@ -6,7 +6,7 @@
 Basic requests
 ============
 
-How to make a request to your TYPO3 Restful Api with axios
+How to make a request with axios
 ------------
 
 **axios** is a JavaScript library to create promise based HTTP requests. Many frameworks like `VueJs <https://www.npmjs.com/package/vue-axios>`__,
@@ -30,7 +30,7 @@ You can find out more about axios `here <https://github.com/axios/axios>`__
 .. tip::
 
     | **Want to play, not read?**
-    | Here is a ready-to-go codepen that demonstrates how to use axios to connect to your REST Api. Run and have fun!
+    | Here is a ready-to-go codepen that demonstrates how to use axios to connect to your endpoint. Run and have fun!
     | `nnrestapi AXIOS demo <https://codepen.io/99grad/full/LYzbzaW>`__
 
 
@@ -52,7 +52,7 @@ Let's create a ``GET`` request to the nnrestapi backend:
         alert( `Error ${response.data.status}: ${response.data.error}` );   
     });
 
-Sending a payload / JSON data to the TYPO3 Restful Api with the ``POST``, ``PUT`` or ``PATCH`` request
+Sending a payload / JSON data with the ``POST``, ``PUT`` or ``PATCH`` request
 is also very easy: Axios takes a javascript object as second argument and will automatically serialize
 it to a string. No need to ``JSON.stringify`` before sending the request:
 

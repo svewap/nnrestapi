@@ -2,6 +2,7 @@
 namespace Nng\Nnrestapi\Api;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use Nng\Nnrestapi\Mvc\Response;
 use Nng\Nnrestapi\Mvc\Request;
 use Nng\Nnrestapi\Annotations as Api;
 
@@ -69,14 +70,14 @@ abstract class AbstractApi {
 		if (!$localizationSettings) {
 			return 0;
 		}
-		// localization enabled, but locally disabled by `@Api\Localize(FALSE)` Annotation? Don't localize
-		if ($localizationSettings['enabled'] && $endpoint['localize'] === false) {
-			return 0;
-		}
-		// localization disabled, and not enabled locally by `@Api\Localize(TRUE)` Annotation? Don't localize
-		if (!$localizationSettings['enabled'] && $endpoint['localize'] !== true) {
-			return 0;
-		}
+        // localization enabled, but locally disabled by `@Api\Localize(FALSE)` Annotation? Don't localize
+        if ($localizationSettings['enabled'] && ($endpoint['localize'] ?? false) === false) {
+            return 0;
+        }
+        // localization disabled, and not enabled locally by `@Api\Localize(TRUE)` Annotation? Don't localize
+        if (!$localizationSettings['enabled'] && ($endpoint['localize'] ?? false) !== true) {
+            return 0;
+        }
 		// `L=..` parameter passed in GET-Request?
 		$L = \nn\t3::Request()->GP()['L'] ?? '';
 		if ($L != '') {
@@ -129,12 +130,12 @@ abstract class AbstractApi {
 		}
 		
 		// @Api\Access("be_admins") will grant access only to logged in backend-admins
-		if (\nn\t3::BackendUser()->isAdmin() && $endpoint['access']['be_admins'] ?? false) {
+		if (\nn\t3::BackendUser()->isAdmin() && ($endpoint['access']['be_admins'] ?? false)) {
 			return true;
 		}
 
 		// @Api\Access("be_users") will grant access only to logged in backend-users (and admins)
-		if (\nn\t3::BackendUser()->get() && \nn\t3::BackendUser()->get()->user && $endpoint['access']['be_users'] ?? false) {
+		if (\nn\t3::BackendUser()->get() && \nn\t3::BackendUser()->get()->user && ($endpoint['access']['be_users'] ?? false)) {
 			return true;
 		}
 		

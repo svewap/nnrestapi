@@ -12,13 +12,13 @@ How to authenticate a user using the TYPO3 frontend user cookie
 When you log in as a frontend user, TYPO3 will automatically set a cookie named ``fe_typo_user`` containing
 a session ID to identify the user. In a standard TYPO3 website, this cookie is sent with every subsequent request.
 
-The same applies to AJAX-requests you make from JavaScript. As long as your frontend application and TYPO3 Rest Api are 
+The same applies to AJAX-requests you make from JavaScript. As long as your frontend application and your REST Api are 
 hosted on the same domain, things should run pretty smooth.
 
 Using the fe_typo_user-cookie on same domain
 ---------
 
-If your frontend application is running under the same domain that the REST Api is located on, there is really 
+If your frontend application is running under the same domain that the Api is located on, there is really 
 not much to pay attention to.
 
 Simply send your credentials in a POST-request to the endpoint 
@@ -34,7 +34,7 @@ TYPO3 will respond with information about the user. TYPO3 will also send a cooki
 a session ID. This cookie will automatically be set in the browser and passed back to the server in your next request.
 
 Here is a full script to test cookie based authentication. Please upload it to the **same domain** that your 
-TYPO3 REST Api is located on.
+application is located on.
 
 .. tabs::
 
@@ -322,7 +322,7 @@ TYPO3 REST Api is located on.
 Cross domain fe_typo_user-cookie
 ---------
 
-For cross domain requests, e.g. if your Rest API backend is running on a different server than your application or
+For cross domain requests, e.g. if your backend is running on a different server than your application or
 you are connection from a localhost environment to a remote server, using cookies will get complicated. 
 
 In this case, we would recommend using one of the other methods for authentication:  :ref:`HTTP basic auth <authentication_http>` 

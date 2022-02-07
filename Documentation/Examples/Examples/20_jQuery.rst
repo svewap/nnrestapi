@@ -6,7 +6,7 @@
 jQuery
 ============
 
-Creating requests to the TYPO3 Rest Api with jQuery
+Creating requests using jQuery
 ---------
 
 Find out, how to create ``GET``, ``POST``, ``PUT``, ``PATCH`` and ``DELETE`` requests,

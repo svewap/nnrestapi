@@ -6,12 +6,12 @@
 Uploading Files
 ============
 
-How to upload files to your TYPO3 Rest Api with jQuery
+How to upload files using jQuery
 ------------
 
 **Yes, nnrestapi can handle fileuploads.** 
 
-If you have tried other TYPO3 Rest Api extensions you might know
+If you have tried other extensions you might know
 this is the part where things tend to get complicated. With ``nnrestapi`` we have tried to keep file uploads
 as simple as possible.
 
@@ -48,7 +48,7 @@ It will convert the file on the server to a ``SysFile``, create the ``SysFileRef
 
 .. hint::
 
-    This is the way most other REST Apis handle file-uploads. Works fine – but there are some downsides to 
+    This is the way most other extensions handle file-uploads. Works fine – but there are some downsides to 
     this solution:
 
     - You need a **seperate logic** or form for the fileupload
@@ -62,7 +62,7 @@ It will convert the file on the server to a ``SysFile``, create the ``SysFileRef
 Using mutipart form-data (fun)
 ~~~~~~~~~~~~
 
-The recommended way to upload files to your TYPO3 Restful Api is by using ``multipart/form-data``.
+The recommended way to upload files to your endpoint is by using ``multipart/form-data``.
 
 All you need is a normal file-upload field in your form. Then, before sending the ``POST``, ``PUT`` or ``PATCH`` request:
 
@@ -231,7 +231,7 @@ Here is s step-by-step example:
 Example with Model-mapping
 ~~~~~~~~~~~~
 
-Let's use the above example and modify the scripts to automatically create a Model with a FAL (SysFileReference) in your TYPO3 Restful Api.
+Let's use the above example and modify the scripts to automatically create a Model with a FAL (SysFileReference):
 
 .. rst-class:: bignums
 
@@ -392,7 +392,7 @@ Removing FileReferences from a Model or ObjectStorage
 ~~~~~~~~~~~~
 
 To remove a FileReference from a Model or ObjectStorage, simple remove it from the JSON-Object or Array and send it 
-to the Rest Api. Let's look at an example.
+to the Api. Let's look at an example.
 
 To remove ``file-1.jpg`` from the ObjectStorage of the following Model, all we need to do is **remove it from the Array**:
 
@@ -407,7 +407,7 @@ To remove ``file-1.jpg`` from the ObjectStorage of the following Model, all we n
         ]
     }
 
-... and send the **resulting JSON** to the Rest Api:
+... and send the **resulting JSON** to the server:
 
 .. code-block:: json
 

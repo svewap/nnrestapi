@@ -16,7 +16,7 @@ other static data from the server. This could be:
 - TypoScript settings that are needed in the frontend 
 - A list of countries or languages that should be selectable in the frontend
 
-This example illustrates how you could create an public endpoint in your TYPO3 Restful Api that **returns various 
+This example illustrates how you could create an public endpoint that **returns various 
 settings and configurations** to the frontend application.
 
 Almost all the values are retrieved using oneliners from the extension `nnhelpers <https://extensions.typo3.org/extension/nnhelpers>`__ 
