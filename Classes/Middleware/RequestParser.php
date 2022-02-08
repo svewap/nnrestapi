@@ -75,7 +75,7 @@ class RequestParser implements MiddlewareInterface {
 	public function handler() {
 
 		// Ist es ein relevanter RequestType?
-		$reqMethod = $_SERVER['REQUEST_METHOD'];
+		$reqMethod = $_SERVER['REQUEST_METHOD'] ?? [];
 		if (!in_array($reqMethod, $this->requestMethodsToParse)) return;
 		
 		// Check if there was a problem with the content-length, e.g. stream or tmp-file could not be written
