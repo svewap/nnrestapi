@@ -476,32 +476,42 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 			}, (array) $package->getValueFromComposerManifest( 'autoload' )->$key);
 			
 			$extPath = $package->getPackagePath();
+			$filesToParse = [];
 
 			foreach ($psr4 as $classPaths) {
 				foreach ($classPaths as $classPath) {
 					$files = \nn\rest::File()->getAllInFolder( $extPath . $classPath , true, 'php' );
 					foreach ($files as $file) {
-
-						// preflight: string-compare if `@Api\Endpoint` is somewhere in the script. Not pretty, but `ReflectionClass` throws an uncatchable Exception.
-						$className = \Nng\Nnhelpers\Helpers\DocumentationHelper::getClassNameFromFile($file);
-						$content = file_get_contents( $file );
-						if (!$content || !preg_match($regexPattern, $content)) {
-							continue;
-						}
-
-						// then make sure, the `@Api\Endpoint` string is in the DocComment
-						$reflection = new \ReflectionClass($className);
-						if (preg_match($regexPattern, $reflection->getDocComment())) {
-
-							
-							$this->register([
-								'priority' 	=> 0,
-								'slug' 		=> $extkey,
-								'namespace'	=> $className,
-							]);
-							$registeredClasses[$file] = $className;
-						}
+						$filesToParse[] = $file;
 					}
+				}
+			}
+
+			// No composer psr-4 / autoload? Fallback...
+			if (!$filesToParse) {
+				$classesFolder = \nn\t3::Environment()->extPath( $extkey ) . 'Classes/';
+				$files = \nn\rest::File()->getAllInFolder( $classesFolder );
+				$filesToParse = array_merge( $filesToParse, $files );
+			}
+			
+			foreach ($filesToParse as $file) {
+				// preflight: string-compare if `@Api\Endpoint` is somewhere in the script. Not pretty, but `ReflectionClass` throws an uncatchable Exception.
+				$className = \Nng\Nnhelpers\Helpers\DocumentationHelper::getClassNameFromFile($file);
+				$content = file_get_contents( $file );
+				if (!$content || !preg_match($regexPattern, $content)) {
+					continue;
+				}
+
+				// then make sure, the `@Api\Endpoint` string is in the DocComment
+				$reflection = new \ReflectionClass($className);
+				if (preg_match($regexPattern, $reflection->getDocComment())) {
+
+					$this->register([
+						'priority' 	=> 0,
+						'slug' 		=> $extkey,
+						'namespace'	=> $className,
+					]);
+					$registeredClasses[$file] = $className;
 				}
 			}
 		}

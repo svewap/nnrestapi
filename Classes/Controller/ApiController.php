@@ -28,7 +28,6 @@ class ApiController extends AbstractApiController
 	 */
 	public function indexAction() 
 	{
-				
 		$request = $this->request;
 		$response = $this->response;
 		$endpoint = $request->getEndpoint();
