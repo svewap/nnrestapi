@@ -2,12 +2,8 @@
 
 namespace Nng\Nnrestapi\Mvc;
 
-use Psr\Http\Message\ServerRequestInterface;
-use TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException;
 use TYPO3\CMS\Core\Http\PropagateResponseException;
 use Psr\Http\Message\ResponseFactoryInterface;
-use Psr\Http\Message\ResponseInterface;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Response
