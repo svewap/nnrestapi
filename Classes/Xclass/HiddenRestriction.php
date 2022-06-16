@@ -18,10 +18,10 @@ class HiddenRestriction extends BaseHiddenRestriction {
 	public function buildExpression(array $queriedTables, ExpressionBuilder $expressionBuilder): CompositeExpression
 	{
 		if (\nn\t3::Environment()->isFrontend()) {
-			if (!\nn\rest::Settings()->getQuerySettings('ignoreEnableFields')) {
-				return parent::buildExpression( $queriedTables, $expressionBuilder );
+			if (\nn\rest::Settings()->getQuerySettings('ignoreEnableFields')) {
+				return $expressionBuilder->andX([]);
 			}
 		}
-		return $expressionBuilder->andX([]);
+		return parent::buildExpression( $queriedTables, $expressionBuilder );
 	}
 }
