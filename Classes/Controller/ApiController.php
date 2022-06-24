@@ -62,6 +62,11 @@ class ApiController extends AbstractApiController
 			$languageAspect = LanguageAspectFactory::createFromSiteLanguage($language);
 			$context = GeneralUtility::makeInstance(Context::class);
 			$context->setAspect('language', $languageAspect);
+
+			// keep the TYPO3_REQUEST in sync with the new language in case other extensions are relying on it
+			if ($GLOBALS['TYPO3_REQUEST'] ?? false) {
+				$GLOBALS['TYPO3_REQUEST'] = $GLOBALS['TYPO3_REQUEST']->withAttribute('language', $language);
+			}
 		}
 
 		// check if access is granted to requested class->method
