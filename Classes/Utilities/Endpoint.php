@@ -154,7 +154,7 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 		// `/api/`
 		$apiPrefix = \nn\rest::Settings()->getApiUrlPrefix();
 
-		// `/en`
+		// `/en` or `/en/` --> normalize to `/en`
 		$languagePath = $request->getAttribute('language', null)->getBase()->getPath();
 
 		// `/api/test/123` oder `/en/api/test/123`
@@ -162,6 +162,7 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 
 		// `/en/api/test/123` ==> `/api/test/123`
 		if ($languagePath != '/' && strpos($uri, $languagePath) === 0) {
+			$languagePath = rtrim($languagePath, '/');
 			$uri = substr( $uri, strlen($languagePath) );
 		};
 

@@ -40,7 +40,7 @@ class PageResolver implements MiddlewareInterface {
 	 *	@return ResponseInterface
 	 */
 	public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
-		
+
 		// Initialize the Settings singleton. Must be done after `typo3/cms-frontend/site` MiddleWare 
 		// and before `\nn\rest::Settings()` is used anywhere
 		\nn\rest::Settings()->setRequest( $request );
