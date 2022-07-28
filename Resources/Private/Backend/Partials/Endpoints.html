@@ -101,4 +101,18 @@
 		</f:for>
 	</f:for>
 
+	<f:if condition="{extConf.disableDefaultEndpoints}">
+		<f:then>
+			<p class="py-3">
+				<i class="fas fa-exclamation-circle"></i>
+				The default endpoints from nnrestapi were disabled in the Extension Manager.
+			</p>
+		</f:then>
+		<f:else>
+			<p class="py-3">
+				You can disable the default endpoints from nnrestapi in the Extension Manager.
+			</p>
+		</f:else>
+	</f:if>
+
 </div>

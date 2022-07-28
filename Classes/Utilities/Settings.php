@@ -81,6 +81,25 @@ class Settings extends \Nng\Nnhelpers\Singleton {
 	}
 
 	/**
+	 * Get configuration from Extension Manager
+	 * ```
+	 * \nn\rest::Settings()->getExtConf();
+	 * \nn\rest::Settings()->getExtConf('ignoreDefaultEndpoints');
+	 * ```
+	 * @return array
+	 */
+	public function getExtConf( $param = '' ) 
+	{
+		$ext = 'nnrestapi';
+		if (\nn\t3::t3Version() < 10) {
+			$extConfig = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$ext] ?? '');
+		} else {
+			$extConfig = $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS'][$ext] ?? [];
+		}
+		return $param ? ($extConfig[$param] ?? '') : $extConfig;
+	}
+
+	/**
 	 * Sets the current Request.
 	 * 
 	 * This must be done BEFORE any other scripts try to access the Settings.

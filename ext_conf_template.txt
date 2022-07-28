@@ -3,3 +3,6 @@ apiKeys = examplefeUserName:exampleApiKey
 
 # cat=basic/tsfe; type=text; label=Session expires after seconds (0 = never)
 maxSessionLifetime = 3600
+
+# cat=basic/misc; type=boolean; label=Disable all default endpoints from nnrestapi
+disableDefaultEndpoints = 0

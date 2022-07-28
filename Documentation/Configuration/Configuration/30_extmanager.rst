@@ -50,3 +50,19 @@ basic.maxSessionLifetime
 
    Default
         3600
+
+basic.disableDefaultEndpoints
+""""""""""""""
+.. container:: table-row
+
+   Property
+        basic.disableDefaultEndpoints
+   Data type
+        boolean
+   Description
+        Disables (removes) all endpoints shipped by default with nnrestapi. 
+        If disabled, you will need to implement your own endpoints for authenticating 
+        users and checking their status.
+
+   Default
+        FALSE

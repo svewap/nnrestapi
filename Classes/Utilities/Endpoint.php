@@ -35,6 +35,12 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 	private $endpoints = [];
 	
 	/**
+	 * List of all extensions, which endpoints should be ignored
+	 * @var array
+	 */
+	private $ignoreEndpoints = [];
+
+	/**
 	 * List of all endpoints registered via `localconf.php` and using the `@Api\Endpoint` annotation
 	 * @var array
 	 */
@@ -89,6 +95,11 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 	 * @return self
 	 */
 	public function register( $options = [] ) {
+
+		$disableDefaultEndpoints = \nn\rest::Settings()->getExtConf('disableDefaultEndpoints');
+		if ($disableDefaultEndpoints && $options['slug'] == 'nnrestapi') {
+			return $this;
+		}
 
 		// No priority passed? then set to highest priority
 		$priority = $options['priority'] ?? max(array_keys($this->endpoints));
