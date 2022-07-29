@@ -8,6 +8,7 @@ use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\LanguageAspect;
 use TYPO3\CMS\Core\Context\LanguageAspectFactory;
 
+use \Nng\Nnrestapi\Exception\PropertyValidationException;
 
 /**
  * ApiController
@@ -76,130 +77,46 @@ class ApiController extends AbstractApiController
 			$result = $response->unauthorized("{$endpoint['class']}->{$endpoint['method']}() has no public access or you are not authenticated. Please check your `@Api\Access()` annotation at the method. Your IP was " . $this->request->getRemoteAddr() );
 			
 		} else {
+
+			// @Api\Cache enabled? Then return result from Cache if possible
+			if ($endpoint['cache'] ?? false) {
+				$result = \nn\t3::Cache()->get( $cacheIdentifer ) ?? [];
+			}
 			
-			// check, if fileuploads were included in multipart/form-data. Replace placeholders `UPLOAD://file-x` with real path after moving files
-			\nn\rest::File()->processFileUploadsInRequest( $request );
+			// Nothing returned from cache? Then continue parsing the request 
+			if (!$result) {
 
-			// prepare dependency injection			
-			$requestArguments = $request->getArguments();
+				// check, if fileuploads were included in multipart/form-data. Replace placeholders `UPLOAD://file-x` with real path after moving files
+				\nn\rest::File()->processFileUploadsInRequest( $request );
 
-			if ($arguments = $endpoint['methodArgs']) {
-
-				// method expects argument(s) like `->getSomethingAction( $data )` 
-				$model = $request->getBody();
-				$nothingToMerge = !$model;
-
-				// no JSON passed, but a `uid` was passed as path in in the GET-request? `api/endpoint/123`
-				if (!$model && $uid = $request->getArguments()['uid'] ?? false) {
-					$model = ['uid'=>$uid];
-				}
-
-				// prepare a list of arguments to apply to method when it is called (dependency injection)
-				$argumentsToApply = [];
-				foreach ($arguments as $varName=>$varDefinition) {
-
-					$valueToApply = '';
-
-					$modelName = $varDefinition['element'] ?? false;
-					$expectedType = $varDefinition['type'] ?? false;
-
-					if ($expectedType == 'object' && $modelName) {
-						
-						// @todo: parse ObjectStorages and Arrays in future versions
-
-						// was a uid passed? Then get existing model from database
-                        if ($uid = $model['uid'] ?? $request->getArguments()['uid'] ?? false) {
-
-							// uid was passed. Retrieve Model (without the need of instanciating the repository)
-							$existingModel = \nn\t3::Db()->get( $uid, $modelName );
-
-							if ($existingModel) {
-								
-								if ($nothingToMerge) {
-									$model = $existingModel;
-								} else {
-
-									// merge data from request with existing model
-									$model = \nn\t3::Obj( $existingModel )->merge( $model );
-
-									// validate (use `@TYPO3\CMS\Extbase\Annotation\Validate` on properties of the model)
-									$errors = \nn\rest::Validator()->validateModel( $model );
-									if ($errors) {
-										array_walk( $errors, function( &$errors, $field ) {
-											$errors = "`{$field}` [" . join(' - ', $errors) . "]";
-										});
-										return $response->invalid("Error validating properties: " . join('; ', $errors) );
-									}
-								}
-								
-							} else {
-								$model = null;
-							}
-							
-						} else {
-							
-							// no uid passed. Create a new model.
-							// always set tstamp and crdate for new models (if not already set)
-							$model = array_merge(['tstamp'=>time(), 'mktime'=>time()], $model);
-
-							// Default values defined for the new model defined in TypoScript?
-							if ($defaultValues = 
-									$this->settings['insertDefaultValues'][$modelName] 
-								??  $this->settings['insertDefaultValues']['\\' . $modelName]
-								??  false) {
-								$model = array_merge($defaultValues, $model);
-							}
-
-							$model = \nn\t3::Convert( $model )->toModel( $modelName );
-						}	
-						
-						$valueToApply = $model;
-						
-					} else {
-						
-						// Map `/path/{uid}` to `methodName( $uid )`
-						$valueToApply = $requestArguments[$varName] ?? null;
-
-						// @todo: Clean this
-						// Integer expected as argument
-						switch ($expectedType) {
-							case 'integer':
-								$valueToApply = intval($valueToApply);
-								break;
-							case 'string':
-								$valueToApply = "{$valueToApply}";
-								break;
-						}
+				// does the method expect argument(s), e.g. `->getSomethingAction( $data )`?
+				if ($endpoint['methodArgs']) {
+					
+					// get array of arguments to apply to method
+					try {
+						$argumentsToApply = $this->getArgumentsToApply( $endpoint, $request, $response );
+						$result = $classInstance->{$endpoint['method']}( ...$argumentsToApply ) ?: [];
+					} catch( PropertyValidationException $e ) {
+						$result = $response->invalid( $e->getMessage() );
 					}
-
-					$argumentsToApply[] = $valueToApply;
-				}
-
-				// @Api\Cache enabled? Then return result from Cache if possible
-				if ($endpoint['cache'] ?? false) {
-					$result = \nn\t3::Cache()->get( $cacheIdentifer ) ?? [];
+	
+				} else {
+	
+					// No arguments expected in method (`->getSomethingAction()`)
+					$result = $classInstance->{$endpoint['method']}() ?: [];
+	
 				}
 				
-				// No result or nothing in Cache? Then call method.
-				if (!$result) {
-					$result = $classInstance->{$endpoint['method']}( ...$argumentsToApply ) ?: [];
-				}
-
-			} else {
-
-				// No arguments expected in method (`->getSomethingAction()`)
-				$result = $classInstance->{$endpoint['method']}() ?: [];
-
-			}
-			
-			if ($response->getStatus() == 200) {
-				// Distiller defined?
-				if ($distiller = $endpoint['distiller'] ?? false) {
-					if ($distillerInstance = \nn\t3::injectClass( $distiller )) {
-						$distillerInstance->processData( $result );
+				if ($response->getStatus() == 200) {
+					// Distiller defined?
+					if ($distiller = $endpoint['distiller'] ?? false) {
+						if ($distillerInstance = \nn\t3::injectClass( $distiller )) {
+							$distillerInstance->processData( $result );
+						}
 					}
 				}
 			}
+
 		}
 		
 		// Result was already rendered (e.g. a 404 or 403 was returned)
@@ -216,6 +133,117 @@ class ApiController extends AbstractApiController
 		}
 
 		return $json;
+	}
+
+	/**
+	 * Determine the arguments to apply to the endpoints' method.
+	 * Creates an array with arguments in the order of the arguments
+	 * the method expects.
+	 * 
+	 * @param array $endpoint
+	 * @param \Nng\Nnrestapi\Mvc\Request $request
+	 * @param \Nng\Nnrestapi\Mvc\Response $response
+	 * @return array
+	 * @throws PropertyValidationException
+	 */
+	public function getArgumentsToApply( $endpoint, $request, $response ) 
+	{
+		$expectedArguments = $endpoint['methodArgs'];
+		
+		$modelData = $request->getBody();
+		$nothingToMerge = !$modelData;
+		$reqVars = $request->getArguments();
+		$argumentsToApply = [];
+
+		// no JSON passed, but a `uid` was passed as path in in the GET-request? `api/endpoint/123`
+		if (!$modelData && $uid = $reqVars['uid'] ?? false) {
+			$modelData = ['uid'=>$uid];
+		}
+
+		// prepare a list of arguments to apply to method when it is called (dependency injection)
+		foreach ($expectedArguments as $varName=>$varDefinition) {
+
+			$valueToApply = '';
+
+			$modelName = $varDefinition['element'] ?? false;
+			$expectedType = $varDefinition['type'] ?? false;
+
+			if ($expectedType == 'object' && $modelName) {
+				
+				// @todo: parse ObjectStorages and Arrays in future versions
+				
+				// was a uid passed? Then get existing model from database
+				if ($uid = $modelData['uid'] ?? $reqVars[$varName] ?? false) {
+
+					// uid was passed. Retrieve Model (without the need of instanciating the repository)
+					$existingModel = \nn\t3::Db()->get( $uid, $modelName );
+
+					if ($existingModel) {
+						
+						if ($nothingToMerge) {
+							$model = $existingModel;
+						} else {
+
+							// merge data from request with existing model
+							$model = \nn\t3::Obj( $existingModel )->merge( $modelData );
+
+							// validate (use `@TYPO3\CMS\Extbase\Annotation\Validate` on properties of the model)
+							$errors = \nn\rest::Validator()->validateModel( $model );
+							if ($errors) {
+								array_walk( $errors, function( &$errors, $field ) {
+									$errors = "`{$field}` [" . join(' - ', $errors) . "]";
+								});
+								throw new PropertyValidationException( "Error validating properties: " . join('; ', $errors) );
+							}
+						}
+						
+					} else {
+						$model = null;
+					}
+					
+				} else if ($modelData) {
+					
+					// no uid passed. Create a new model.
+					// always set tstamp and crdate for new models (if not already set)
+					$modelData = array_merge(['tstamp'=>time(), 'mktime'=>time()], $modelData);
+
+					// Default values defined for the new model defined in TypoScript?
+					if ($defaultValues = 
+							$this->settings['insertDefaultValues'][$modelName] 
+						??  $this->settings['insertDefaultValues']['\\' . $modelName]
+						??  false) {
+						$modelData = array_merge($defaultValues, $modelData);
+					}
+
+					$model = \nn\t3::Convert( $modelData )->toModel( $modelName );
+				}	
+				
+				$valueToApply = $model;
+				
+			} else {
+				
+				// Map `/path/{uid}` to `methodName( $uid )`
+				$valueToApply = $requestArguments[$varName] ?? null;
+
+				// @todo: Clean this
+				// Integer expected as argument
+				switch ($expectedType) {
+					case 'integer':
+						$valueToApply = intval($valueToApply);
+						break;
+					case 'string':
+						$valueToApply = "{$valueToApply}";
+						break;
+				}
+			}
+
+			$argumentsToApply[] = $valueToApply;
+
+			$modelData = [];
+			$model = null;
+		}
+
+		return $argumentsToApply;
 	}
 
 }
