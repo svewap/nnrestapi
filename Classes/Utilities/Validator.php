@@ -39,8 +39,10 @@ class Validator extends \Nng\Nnhelpers\Singleton
 		$modelName = get_class( $model );
 	
 		// create validator for given model
-		$validatorResolver = GeneralUtility::makeInstance( ValidatorResolver::class );
+		$validatorResolver = \nn\t3::injectClass( ValidatorResolver::class );
+		
 		$validator = $validatorResolver->getBaseValidatorConjunction( $modelName );
+
 		if (!$validator) return [];
 
 		// check if there were errors
