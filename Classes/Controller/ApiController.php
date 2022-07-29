@@ -221,9 +221,9 @@ class ApiController extends AbstractApiController
 				$valueToApply = $model;
 				
 			} else {
-				
+
 				// Map `/path/{uid}` to `methodName( $uid )`
-				$valueToApply = $requestArguments[$varName] ?? null;
+				$valueToApply = $reqVars[$varName] ?? null;
 
 				// @todo: Clean this
 				// Integer expected as argument
