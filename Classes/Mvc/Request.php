@@ -175,7 +175,7 @@ class Request {
 	public function getAcceptedLanguageUid() {
 		$languagesByName = \nn\rest::Environment()->getLanguages( 'iso-639-1' );
 		$acceptedLanguage = $this->getAcceptedLanguage();
-		return $languagesByName[$acceptedLanguage]['languageId'] ?? 0;
+		return intval($languagesByName[$acceptedLanguage]['languageId'] ?? 0);
 	}
 
 	/**

@@ -1,10 +1,9 @@
 <?php
 namespace Nng\Nnrestapi\Api;
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Nng\Nnrestapi\Mvc\Response;
 use Nng\Nnrestapi\Mvc\Request;
-use Nng\Nnrestapi\Annotations as Api;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Nnrestapi
@@ -71,7 +70,7 @@ abstract class AbstractApi {
 			return 0;
 		}
         // localization enabled, but locally disabled by `@Api\Localize(FALSE)` Annotation? Don't localize
-        if ($localizationSettings['enabled'] && ($endpoint['localize'] ?? false) === false) {
+        if ($localizationSettings['enabled'] && ($endpoint['localize'] ?? true === false)) {
             return 0;
         }
         // localization disabled, and not enabled locally by `@Api\Localize(TRUE)` Annotation? Don't localize

@@ -35,6 +35,12 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 	private $endpoints = [];
 	
 	/**
+	 * List of all extensions, which endpoints should be ignored
+	 * @var array
+	 */
+	private $ignoreEndpoints = [];
+
+	/**
 	 * List of all endpoints registered via `localconf.php` and using the `@Api\Endpoint` annotation
 	 * @var array
 	 */
@@ -89,6 +95,11 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 	 * @return self
 	 */
 	public function register( $options = [] ) {
+
+		$disableDefaultEndpoints = \nn\rest::Settings()->getExtConf('disableDefaultEndpoints');
+		if ($disableDefaultEndpoints && $options['slug'] == 'nnrestapi') {
+			return $this;
+		}
 
 		// No priority passed? then set to highest priority
 		$priority = $options['priority'] ?? max(array_keys($this->endpoints));
@@ -154,7 +165,7 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 		// `/api/`
 		$apiPrefix = \nn\rest::Settings()->getApiUrlPrefix();
 
-		// `/en`
+		// `/en` or `/en/` --> normalize to `/en`
 		$languagePath = $request->getAttribute('language', null)->getBase()->getPath();
 
 		// `/api/test/123` oder `/en/api/test/123`
@@ -162,6 +173,7 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 
 		// `/en/api/test/123` ==> `/api/test/123`
 		if ($languagePath != '/' && strpos($uri, $languagePath) === 0) {
+			$languagePath = rtrim($languagePath, '/');
 			$uri = substr( $uri, strlen($languagePath) );
 		};
 
@@ -476,32 +488,42 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 			}, (array) $package->getValueFromComposerManifest( 'autoload' )->$key);
 			
 			$extPath = $package->getPackagePath();
+			$filesToParse = [];
 
 			foreach ($psr4 as $classPaths) {
 				foreach ($classPaths as $classPath) {
 					$files = \nn\rest::File()->getAllInFolder( $extPath . $classPath , true, 'php' );
 					foreach ($files as $file) {
-
-						// preflight: string-compare if `@Api\Endpoint` is somewhere in the script. Not pretty, but `ReflectionClass` throws an uncatchable Exception.
-						$className = \Nng\Nnhelpers\Helpers\DocumentationHelper::getClassNameFromFile($file);
-						$content = file_get_contents( $file );
-						if (!$content || !preg_match($regexPattern, $content)) {
-							continue;
-						}
-
-						// then make sure, the `@Api\Endpoint` string is in the DocComment
-						$reflection = new \ReflectionClass($className);
-						if (preg_match($regexPattern, $reflection->getDocComment())) {
-
-							
-							$this->register([
-								'priority' 	=> 0,
-								'slug' 		=> $extkey,
-								'namespace'	=> $className,
-							]);
-							$registeredClasses[$file] = $className;
-						}
+						$filesToParse[] = $file;
 					}
+				}
+			}
+
+			// No composer psr-4 / autoload? Fallback...
+			if (!$filesToParse) {
+				$classesFolder = \nn\t3::Environment()->extPath( $extkey ) . 'Classes/';
+				$files = \nn\rest::File()->getAllInFolder( $classesFolder );
+				$filesToParse = array_merge( $filesToParse, $files );
+			}
+			
+			foreach ($filesToParse as $file) {
+				// preflight: string-compare if `@Api\Endpoint` is somewhere in the script. Not pretty, but `ReflectionClass` throws an uncatchable Exception.
+				$className = \Nng\Nnhelpers\Helpers\DocumentationHelper::getClassNameFromFile($file);
+				$content = file_get_contents( $file );
+				if (!$content || !preg_match($regexPattern, $content)) {
+					continue;
+				}
+
+				// then make sure, the `@Api\Endpoint` string is in the DocComment
+				$reflection = new \ReflectionClass($className);
+				if (preg_match($regexPattern, $reflection->getDocComment())) {
+
+					$this->register([
+						'priority' 	=> 0,
+						'slug' 		=> $extkey,
+						'namespace'	=> $className,
+					]);
+					$registeredClasses[$file] = $className;
 				}
 			}
 		}

@@ -24,8 +24,9 @@ class Environment extends \Nng\Nnhelpers\Singleton
 	 * ```
 	 * @return boolean
 	 */
-	public function databaseTableExists( $tableName = '') {		
-		if (\nn\t3::Db()->statement("SHOW TABLES like '{$tableName}'")) {
+	public function databaseTableExists( $tableName = '') {
+		$connection = \nn\t3::Db()->getConnection();
+		if ($connection->fetchAll("SHOW TABLES like '{$tableName}'")) {
 			return true;
 		}
 		return false;

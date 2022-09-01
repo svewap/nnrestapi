@@ -31,6 +31,7 @@ Step-by-step
    to create localized records in the backend:
 
    - You have **defined your languages** in your site-configuration, either using the backend module "Sites" or by editing the site's config.yaml
+   - **Important:** Add a page translation to the root-page of your site (the page that will be resolved when opening `https://www.yoursite.com/`) for every localization you have configured in the config.yaml 
    - You have **translated your content-elements** or records in the backend and all records are in "connected" mode
    - You have created an Endpoint that returns data or content elements like described :ref:`in this example <examples_contentelements>`
 
@@ -63,8 +64,8 @@ Step-by-step
    using one of the following options:
 
    -  Add a ``Accept-Language`` header to the request, e.g ``Accept-Language: en-US``
-   -  Use the language path in the URL when sending requests to the api, e.g. ``/en/api/endpoint/``
    -  Use the ``?L=`` parameter in the URL with the ``languageId``, e.g. ``?L=1``
+   -  Use the language path in the URL when sending requests to the api, e.g. ``/en/api/endpoint/``
 
 Frontend examples
 ---------

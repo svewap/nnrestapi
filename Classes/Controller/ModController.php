@@ -108,6 +108,7 @@ class ModController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 			'absApiUrlPrefix'	=> $urlBase . \nn\rest::Settings()->getApiUrlPrefix(),
 			'endpoints' 		=> $classMap,
 			'donate'			=> $donation,
+			'extConf'			=> \nn\t3::Environment()->getExtConf('nnrestapi')
 		]);
 
 		return $this->view->render();

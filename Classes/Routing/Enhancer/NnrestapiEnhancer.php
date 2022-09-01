@@ -3,7 +3,6 @@ namespace Nng\Nnrestapi\Routing\Enhancer;
 
 use TYPO3\CMS\Core\Routing\Enhancer\AbstractEnhancer;
 use TYPO3\CMS\Core\Routing\Enhancer\RoutingEnhancerInterface;
-use TYPO3\CMS\Core\Routing\Route;
 use TYPO3\CMS\Core\Routing\RouteCollection;
 
 /**
