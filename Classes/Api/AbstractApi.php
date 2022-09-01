@@ -70,7 +70,7 @@ abstract class AbstractApi {
 			return 0;
 		}
         // localization enabled, but locally disabled by `@Api\Localize(FALSE)` Annotation? Don't localize
-        if ($localizationSettings['enabled'] && ($endpoint['localize'] ?? true === false)) {
+        if ($localizationSettings['enabled'] && ($endpoint['localize'] ?? true) === false) {
             return 0;
         }
         // localization disabled, and not enabled locally by `@Api\Localize(TRUE)` Annotation? Don't localize
