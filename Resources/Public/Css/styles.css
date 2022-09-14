@@ -144,6 +144,11 @@ h3 {
     color: #69ad8d;
 }
 
+.access-list code {
+    padding: 0;
+    margin: 0;
+}
+
 #hide-nnrestapi {
     margin-left: -1.5em;
 }

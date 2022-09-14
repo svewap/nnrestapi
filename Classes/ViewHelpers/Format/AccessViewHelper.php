@@ -29,13 +29,13 @@ class AccessViewHelper extends AbstractViewHelper {
         $rights = [];
 
         $accessNames = [
-            'be_users' => 'Backend users',
+            'be_users'  => 'Backend users',
             'be_admins' => 'Backend administrators',
             'api_users' => 'API users',
-            'fe_users' => 'Frontend users',
+            'fe_users'  => 'Frontend users',
             'fe_groups' => 'Frontend user groups',
-            'ip' => 'IP address(es)',
-            'ip_users' => 'IP address(es) or users',
+            'ip'        => 'IP address(es)',
+            'ip_users'  => 'IP address(es) or users',
         ];
 
         foreach ($access as $k=>$v) {
@@ -48,11 +48,11 @@ class AccessViewHelper extends AbstractViewHelper {
                 case 'fe_groups':
                 case 'be_admins':
                 case 'api_users':
-                    $rights[] = sprintf('<i class="fas fa-user-lock"></i> %s <code style="margin:0;padding:0">[%s]</code>: %s', $accessNames[$k], $k, join(',', $v));
+                    $rights[] = sprintf('<i class="fas fa-user-lock"></i> %s <code>[%s]</code>: %s', $accessNames[$k], $k, join(',', $v));
                     break;
                 case 'ip':
                 case 'ip_users':
-                    $rights[] = sprintf('<i class="fas fa-lock"></i> %s <code style="margin:0;padding:0">[%s]</code>: %s', $accessNames[$k], $k, join(',', $v));
+                    $rights[] = sprintf('<i class="fas fa-lock"></i> %s <code>[%s]</code>: %s', $accessNames[$k], $k, join(',', $v));
                     break;
             }
         }
