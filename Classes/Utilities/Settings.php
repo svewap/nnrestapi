@@ -56,7 +56,7 @@ class Settings extends \Nng\Nnhelpers\Singleton {
 	 * @return void
 	 */
 	public function initialize() {
-		
+
 		$request = $this->request ?: $GLOBALS['TYPO3_REQUEST'] ?? false;
 		if (!$request) return;
 
@@ -103,7 +103,7 @@ class Settings extends \Nng\Nnhelpers\Singleton {
 	 * Sets the current Request.
 	 * 
 	 * This must be done BEFORE any other scripts try to access the Settings.
-	 * Done in the `Authenticator`-MiddleWare of the nnrest-extension
+	 * Done in the `RequestParser`-MiddleWare of the nnrest-extension
 	 * ```
 	 * \nn\rest::Settings()->setRequest( $request );
 	 * ```

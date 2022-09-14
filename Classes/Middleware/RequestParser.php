@@ -46,6 +46,7 @@ class RequestParser implements MiddlewareInterface {
 		if (in_array($request->getMethod(), $this->requestMethodsToParse)) {
 			$request->getBody()->close();
 		}
+		\nn\rest::Settings()->setRequest( $request );
 		return $handler->handle($request);
 	}
 
