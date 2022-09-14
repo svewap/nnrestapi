@@ -116,6 +116,18 @@ class Settings extends \Nng\Nnhelpers\Singleton {
 	}
 	
 	/**
+	 * Gets the current Request.
+	 * 
+	 * ```
+	 * \nn\rest::Settings()->getRequest();
+	 * ```
+	 * @return \TYPO3\CMS\Core\Http\ServerRequest
+	 */
+	public function getRequest() {
+		return $this->request;
+	}
+	
+	/**
 	 * Return the configuration for `nnrestapi` from the siteConfig-YAML
 	 * ```
 	 * \nn\rest::Settings()->getConfiguration();
