@@ -126,3 +126,55 @@ Creating your own kickstarter-templates is extremely simple:
             }
         }
 
+
+Installing an TYPO3 extension locally when in composer-mode
+--------------
+
+If you have installed TYPO3 in composer mode and try to activate an extension which you have installed locally you probably will
+get the following error message on the command line:
+
+..  warning::
+    Could not find a matching version of package vendorname/extname. Check the package spelling, your version constraint and that the package is available in a stability which matches your minimum-stability (stable).
+
+The reason for this error is that by default composer will always try to find extensions marked as ``stable``. Because your extension is only
+installed locally and has no git / version / tag, composer can not determine the state of the extension. 
+
+To solve this problem, you can modify your ``composer.json`` and also allow extensions that are in ``dev`` state. 
+Simply add this line to the root of the composer.json:
+``"minimum-stability": "dev"`` 
+
+Next, make sure that `IF` a stable version exists, the stable version will be prefered. Without this line, running
+``composer update`` the next time will load all TYPO3-extensions in ``dev``-state which can result in many other problems.
+Add this line to the composer.json:
+``"prefer-stable" : true``
+
+
+Step-by-step:
+================
+
+Here are the steps to install an extension locally without needing to create a repository and registering the extension on packagist:
+
+* Navigate to the root-level of your TYPO3 installation (the place where the ``composer.json`` and ``public``-folder are)
+* Create a new folder named ``extensions``
+* Copy your TYPO3-extension in to the folder ``extensions``
+* Open the ``composer.json`` and add these lines:
+  
+  .. code-block:: javascript
+
+     {
+        "repositories": [
+            {
+                "type": "path",
+                "url": "extensions/*",
+                "options": {
+                    "symlink": true
+                }
+            }
+        ],
+        "minimum-stability": "dev",
+        "prefer-stable" : true,
+        ...
+    }
+  
+
+* Install your extension using ``composer req vendorname/extname``
