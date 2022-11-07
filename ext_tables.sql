@@ -2,9 +2,9 @@
 #
 # Table structure for table 'fe_groups'
 #
-CREATE TABLE fe_groups (
-	nnrestapi_flexform text DEFAULT '' NOT NULL
-);
+#CREATE TABLE fe_groups (
+#	nnrestapi_flexform text DEFAULT '' NOT NULL
+#);
 
 #
 # Table structure for table 'fe_users'
