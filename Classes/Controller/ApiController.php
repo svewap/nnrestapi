@@ -9,6 +9,7 @@ use TYPO3\CMS\Core\Context\LanguageAspect;
 use TYPO3\CMS\Core\Context\LanguageAspectFactory;
 
 use \Nng\Nnrestapi\Exception\PropertyValidationException;
+use \Nng\Nnrestapi\Error\ApiError;
 
 /**
  * ApiController
@@ -103,13 +104,22 @@ class ApiController extends AbstractApiController
 						$result = $classInstance->{$endpoint['method']}( ...$argumentsToApply ) ?: [];
 					} catch( PropertyValidationException $e ) {
 						$result = $response->invalid( $e->getMessage() );
+					} catch ( ApiError $e ) {
+						$result = $response->error( $e );
+					} catch ( \Error $e ) {
+						\nn\t3::Error( $e->getMessage(), $e->getCode() );
 					}
 	
 				} else {
 	
 					// No arguments expected in method (`->getSomethingAction()`)
-					$result = $classInstance->{$endpoint['method']}() ?: [];
-	
+					try {
+						$result = $classInstance->{$endpoint['method']}() ?: [];
+					} catch( ApiError $e ) {
+						$result = $response->error( $e );
+					} catch ( \Error $e ) {
+						\nn\t3::Error( $e->getMessage(), $e->getCode() );
+					}
 				}
 				
 				if ($response->getStatus() == 200) {

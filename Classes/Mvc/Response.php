@@ -2,6 +2,8 @@
 
 namespace Nng\Nnrestapi\Mvc;
 
+use \Nng\Nnrestapi\Error\ApiError;
+
 use TYPO3\CMS\Core\Http\PropagateResponseException;
 use Psr\Http\Message\ResponseFactoryInterface;
 
@@ -18,6 +20,82 @@ use Psr\Http\Message\ResponseFactoryInterface;
  */
 class Response 
 {
+	/**
+     * The standardized and other important HTTP Status Codes
+     * @var array
+     */
+    public $availableStatusCodes = [
+        // INFORMATIONAL CODES
+        100 => 'Continue',
+        101 => 'Switching Protocols',
+        102 => 'Processing',
+        103 => 'Early Hints',
+        // SUCCESS CODES
+        200 => 'OK',
+        201 => 'Created',
+        202 => 'Accepted',
+        203 => 'Non-Authoritative Information',
+        204 => 'No Content',
+        205 => 'Reset Content',
+        206 => 'Partial Content',
+        207 => 'Multi-Status',
+        208 => 'Already Reported',
+        226 => 'IM Used',
+        // REDIRECTION CODES
+        300 => 'Multiple Choices',
+        301 => 'Moved Permanently',
+        302 => 'Found',
+        303 => 'See Other',
+        304 => 'Not Modified',
+        305 => 'Use Proxy',
+        306 => 'Switch Proxy', // Deprecated
+        307 => 'Temporary Redirect',
+        308 => 'Permanent Redirect',
+        // CLIENT ERROR
+        400 => 'Bad Request',
+        401 => 'Unauthorized',
+        402 => 'Payment Required',
+        403 => 'Forbidden',
+        404 => 'Not Found',
+        405 => 'Method Not Allowed',
+        406 => 'Not Acceptable',
+        407 => 'Proxy Authentication Required',
+        408 => 'Request Timeout',
+        409 => 'Conflict',
+        410 => 'Gone',
+        411 => 'Length Required',
+        412 => 'Precondition Failed',
+        413 => 'Payload Too Large',
+        414 => 'URI Too Long',
+        415 => 'Unsupported Media Type',
+        416 => 'Range Not Satisfiable',
+        417 => 'Expectation Failed',
+        418 => 'I\'m a teapot',
+        421 => 'Misdirected Request',
+        422 => 'Unprocessable Entity',
+        423 => 'Locked',
+        424 => 'Failed Dependency',
+        425 => 'Unordered Collection',
+        426 => 'Upgrade Required',
+        428 => 'Precondition Required',
+        429 => 'Too Many Requests',
+        431 => 'Request Header Fields Too Large',
+        451 => 'Unavailable For Legal Reasons',
+        // SERVER ERROR
+        500 => 'Internal Server Error',
+        501 => 'Not Implemented',
+        502 => 'Bad Gateway',
+        503 => 'Service Unavailable',
+        504 => 'Gateway Timeout',
+        505 => 'HTTP Version Not Supported',
+        506 => 'Variant Also Negotiates',
+        507 => 'Insufficient Storage',
+        508 => 'Loop Detected',
+        509 => 'Bandwidth Limit Exceeded',
+        510 => 'Not Extended',
+        511 => 'Network Authentication Required'
+    ];
+
 	/**
 	 * @var int
 	 */
@@ -107,17 +185,26 @@ class Response
 	/**
 	 * Normalize an \Error to [$message, $code]
 	 * 
+	 * @param string|int|ApiError $statusCode
 	 * @param string|Error $message
 	 * @param string $code
 	 * @return array
 	 */
-	public function normalizeResponseMessage( $message = null, $code = null ) 
+	public function normalizeResponseMessage( $statusCode = null, $message = null, $code = null ) 
 	{
+		if (is_a($statusCode, ApiError::class)) {
+			$code = $code ?: $statusCode->getCustomErrorCode();
+			$message = $message ?: $statusCode->getMessage();
+			$statusCode = $statusCode->getCode();
+		}
 		if (is_a($message, \Error::class)) {
 			$code = $code ?: $message->getCode();
 			$message = $message->getMessage();
 		}
-		return [$message, $code];
+		if (!isset($this->availableStatusCodes[$statusCode])) {
+			$statusCode = 400;
+		}
+		return [$statusCode, $message, $code];
 	}
 
 	/**
@@ -133,7 +220,7 @@ class Response
 	 */
 	public function error( $statusCode = 404, $message = '', $code = '' ) 
 	{
-		[$message, $code] = $this->normalizeResponseMessage($message, $code);
+		[$statusCode, $message, $code] = $this->normalizeResponseMessage($statusCode, $message, $code);
 		return $this->setStatus($statusCode)->setMessage($message)->render([
 			'status'	=>$statusCode, 
 			'error'		=>$message,
@@ -150,10 +237,10 @@ class Response
 	 */
 	public function unauthorized( $message = '', $code = '' ) 
 	{
-		[$message, $code] = $this->normalizeResponseMessage($message, $code);
+		[$statusCode, $message, $code] = $this->normalizeResponseMessage(403, $message, $code);
 		if (!$message) $message = 'Unauthorized. Please login.';
-		return $this->setStatus(403)->setMessage( $message )->render([
-			'status'	=> 403, 
+		return $this->setStatus($statusCode)->setMessage( $message )->render([
+			'status'	=> $statusCode, 
 			'error'		=> $message,
 			'code'		=> $code,
 		]);
@@ -169,7 +256,6 @@ class Response
 	 */
 	public function forbidden( $message = '', $code = '' ) 
 	{
-		[$message, $code] = $this->normalizeResponseMessage($message, $code);
 		return $this->unauthorized( $message, $code );
 	}
 
@@ -181,9 +267,9 @@ class Response
 	 */
 	public function notFound( $message = 'Not found.', $code = '' ) 
 	{
-		[$message, $code] = $this->normalizeResponseMessage($message, $code);
-		return $this->setStatus(404)->setMessage($message)->render([
-			'status'	=> 404, 
+		[$statusCode, $message, $code] = $this->normalizeResponseMessage(404, $message, $code);
+		return $this->setStatus($statusCode)->setMessage($message)->render([
+			'status'	=> $statusCode, 
 			'error'		=> $message,
 			'code'		=> $code,
 		]);
@@ -198,9 +284,9 @@ class Response
 	 */
 	public function invalid( $message = 'Invalid parameters.', $code = '' ) 
 	{
-		[$message, $code] = $this->normalizeResponseMessage($message, $code);
-		return $this->setStatus(422)->setMessage($message)->render([
-			'status'	=> 422, 
+		[$statusCode, $message, $code] = $this->normalizeResponseMessage(422, $message, $code);
+		return $this->setStatus($statusCode)->setMessage($message)->render([
+			'status'	=> $statusCode,
 			'error'		=> $message,
 			'code'		=> $code,
 		]);
