@@ -24,11 +24,31 @@ class Environment extends \Nng\Nnhelpers\Singleton
 	 * ```
 	 * @return boolean
 	 */
-	public function databaseTableExists( $tableName = '') {
+	public function databaseTableExists( $tableName = '') 
+	{
 		$connection = \nn\t3::Db()->getConnection();
+
+		$serverVersion = $connection->getServerVersion();
+		$isPostgres = stripos($serverVersion, 'PostgreSQL') !== false;
+		
+		if ($isPostgres) {
+			$result = $connection->fetchAll("
+				SELECT 
+					COUNT(table_name) 
+				FROM 
+					information_schema.tables 
+				WHERE 
+					table_schema LIKE 'public' 
+					AND table_type LIKE 'BASE TABLE' 
+					AND table_name = '{$tableName}'
+				");
+			return $result > 0;
+		}
+
 		if ($connection->fetchAll("SHOW TABLES like '{$tableName}'")) {
 			return true;
 		}
+
 		return false;
 	}
 

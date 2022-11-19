@@ -333,6 +333,39 @@ response.headers
         | Access-Control-Allow-Origin = *
 
 
+security.defaults
+""""""""""""""
+.. container:: table-row
+
+   Property
+        security.defaults
+   Data type
+        array
+   Description
+        Adds global hooks to perform security checks before accessing an endpoint.
+
+        You can add your custom hooks here. Your hook should return ``TRUE`` or 
+        ``FALSE`` depending on the result of the check. If it returns ``FALSE`` the Api 
+        will respond with a ``403`` status code.
+
+        ::
+
+            plugin.tx_nnrestapi {
+               settings {
+                  security {
+                     defaults {
+                        10 = \Nng\Nnrestapi\Utilities\Security->checkInjections
+                        20 = \Nng\Nnrestapi\Utilities\Security->checkLocked
+                     }
+                  }
+               }
+            }
+
+   Default
+        | enabled = 0
+        languageHeader = x-locale, accept-language
+
+
 timeZone
 """"""""""""""
 .. container:: table-row

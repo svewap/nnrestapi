@@ -23,6 +23,11 @@ Backend-Users or Backend-Admins are allowed to call your endpoint.
 - **IP-adresses** and -ranges
 - by using a :ref:`custom method <access_checkaccess>`
 
+**Did you know...**
+
+You can also restrict the **number of requests** per minute from a certain IP by using the
+:ref:`\Api\Security\MaxRequestsPerMinute() <annotations_security_maxrequests>`-annotation.
+
 **The basic syntax of the @Api\Access-Annotation is:**
 
 .. code-block:: php

@@ -222,9 +222,9 @@ class Response
 	{
 		[$statusCode, $message, $code] = $this->normalizeResponseMessage($statusCode, $message, $code);
 		return $this->setStatus($statusCode)->setMessage($message)->render([
-			'status'	=>$statusCode, 
-			'error'		=>$message,
-			'code'		=>$code,
+			'status'	=> $statusCode, 
+			'error'		=> $message,
+			'code'		=> $code,
 		]);		
 	}
 	

@@ -483,9 +483,11 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 
 			// Normalize path to `Classes`
 			$key = 'psr-4';
+			$valueFromManifest = $package->getValueFromComposerManifest( 'autoload' )->$key ?? [];
+
 			$psr4 = array_map(function ( $item ) {
 				return is_array($item) ? $item : [$item];
-			}, (array) $package->getValueFromComposerManifest( 'autoload' )->$key);
+			}, (array) $valueFromManifest);
 			
 			$extPath = $package->getPackagePath();
 			$filesToParse = [];
