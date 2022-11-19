@@ -147,6 +147,43 @@ class Response
 		\nn\rest::Header()->addControls( $this->response )->addContentType( $this->response );
 	}
 
+	/**
+	 * Add / modify the headers of the response.
+	 * 
+	 * @param array|string $headers
+	 * @param string $value
+	 * @return self
+	 */
+	public function addHeader( $headers = [], $value = '' ) 
+	{
+		if (!is_array($headers)) {
+			$headers = [$headers => $value];
+		}
+		foreach ($headers as $key=>$val) {
+			if ($val === '' || $val === null) {
+				\nn\rest::Header()->remove( $this->response, $key );
+			} else {
+				\nn\rest::Header()->add( $this->response, $key, $val );
+			}
+		}
+		return $this;
+	}
+
+	/**
+	 * Set max-age Cache-Control header for response.
+	 * 
+	 * @param integer $seconds
+	 * @return self
+	 */
+	public function setMaxAge( $seconds = 0 ) 
+	{
+		$headers = [
+			'Cache-Control' => $seconds ? "max-age={$seconds}" : 'no-store, no-cache, must-revalidate, max-age=0, post-check=0, pre-check=0, false',
+			'Pragma'		=> $seconds ? '' : 'no-cache',
+		];
+		return $this->addHeader( $headers );
+	}
+
     /**
      * @param $body
      *

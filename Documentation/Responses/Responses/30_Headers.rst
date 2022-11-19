@@ -130,3 +130,48 @@ Overview of default headers sent:
 |                                                      |                                                                  |
 |                                                      | Same intention here as described under ``Cache-Control``         |
 +------------------------------------------------------+------------------------------------------------------------------+
+
+
+Settings HTTP headers from within your Endpoint
+------------
+
+Inside of your endpoint you can add, modify or remove headers from the response.
+
+**Here are examples:**
+
+.. code-block:: php
+
+   public getExampleAction() 
+   {
+      // add a single header to the response
+      $this->response->addHeader( 'Some-Header', 'the-header-value' );
+
+      // add multiple headers to the response
+      $this->response->addHeader([
+         'Some-Header' => 'value 1',
+         'Another-Header' => 'value 2',
+      ]);
+
+      // remove a header by passing an empty string or null
+      $this->response->addHeader( 'Some-Header', '' );
+
+      return ['hello' => 'everybody'];
+   }
+
+Settings HTTP Cache-Control (max-age) headers
+------------
+
+The cache is disabled by sending the default ``Cache-Control`` and ``Paragma`` headers above.
+
+Here is how you can set your custom ``max-age`` Header:
+
+.. code-block:: php
+
+   public getExampleAction() 
+   {
+      $this->response->setMaxAge( 100 );
+      return ['message' => 'see you again in more than 100s'];
+   }
+
+| Note that you can also set the ``Cache-Control: max-age`` header by using an **Annotation**.
+| More information can be found in the chapter :ref:`@Api\MaxAge() <annotations_maxage>`.

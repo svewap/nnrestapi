@@ -8,8 +8,8 @@ use \TYPO3\CMS\Core\Http\Response;
  * Helper zum Senden von Headern
  * 
  */
-class Header extends \Nng\Nnhelpers\Singleton {
-
+class Header extends \Nng\Nnhelpers\Singleton 
+{
 	/**
 	 * Response mit Headern anreichern, die allgemein für jeden Response wichtig sind.
 	 * 
@@ -69,6 +69,37 @@ class Header extends \Nng\Nnhelpers\Singleton {
 	 */
 	public function addContentType( Response &$response, $type = 'application/json; charset=utf-8' ) {
 		$response = $response->withHeader('Content-Type', $type);
+		return $this;
+	}
+
+	/**
+	 * Add a custom header or override an existing one
+	 * ```
+	 * \nn\rest::Header()->add( $response, 'Cache-Control', 'max-age=10' );
+	 * ```
+	 * @param Response $response
+	 * @param string $key
+	 * @param string $value
+	 * @return self
+	 */
+	public function add( Response &$response, $key = '', $value = '' ) 
+	{
+		$response = $response->withHeader($key, $value);
+		return $this;
+	}
+	
+	/**
+	 * Remove a header
+	 * ```
+	 * \nn\rest::Header()->remove( $response, 'Pragma' );
+	 * ```
+	 * @param Response $response
+	 * @param string $key
+	 * @return self
+	 */
+	public function remove( Response &$response, $key = '' ) 
+	{
+		$response = $response->withoutHeader($key);
 		return $this;
 	}
 

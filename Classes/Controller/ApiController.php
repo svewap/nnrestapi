@@ -76,6 +76,9 @@ class ApiController extends AbstractApiController
 			$result = $response->unauthorized("{$endpoint['class']}->{$endpoint['method']}() has blocked the access during the security preflight." );
 		}
 
+		// Set headers (max-age etc.)
+		$classInstance->setDefaultHeaders( $endpoint );
+
 		// check if access is granted to requested class->method
 		if (!$classInstance->checkAccess( $endpoint )) {
 			

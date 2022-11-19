@@ -99,12 +99,28 @@ abstract class AbstractApi {
 	}
 
 	/**
+	 * Set default headers for response, e.g. `Cache-Control`
+	 * 
+	 * @param array $endpoint
+	 * @return void
+	 */
+	public function setDefaultHeaders( $endpoint = [] ) 
+	{
+		// set `Cache-Control: max-age={value}` header
+		$maxAge = $endpoint['maxAge'] ?? false;
+		if ($maxAge !== false) {
+			$this->response->setMaxAge( $maxAge );
+		}
+	}
+
+	/**
 	 * Checks, if the current frontend/backend user has privileges to call
 	 * the endpoint. This method can be overriden with custom methods in your
 	 * own endpoint if you wish to implement your own logic.
 	 * 
 	 * See `Annotations\Access` for more information.
 	 * 
+	 * @param array $endpoint
 	 * @return boolean
 	 */
 	public function checkAccess ( $endpoint = [] ) 
