@@ -105,6 +105,22 @@ class Response
 	}
 
 	/**
+	 * Normalize an \Error to [$message, $code]
+	 * 
+	 * @param string|Error $message
+	 * @param string $code
+	 * @return array
+	 */
+	public function normalizeResponseMessage( $message = null, $code = null ) 
+	{
+		if (is_a($message, \Error::class)) {
+			$code = $code ?: $message->getCode();
+			$message = $message->getMessage();
+		}
+		return [$message, $code];
+	}
+
+	/**
 	 * Output an error. Actually just a wrapper for setting the status,
 	 * message and rendering the Response – could be used for any type
 	 * of Response - but makes the intention clearer when used in an 
@@ -112,13 +128,16 @@ class Response
 	 * 
 	 * @param int $statusCode
 	 * @param string $message
+	 * @param string $code
 	 * @return \TYPO3\CMS\Core\Http\Response
 	 */
-	public function error( $statusCode = 404, $message = '' ) 
+	public function error( $statusCode = 404, $message = '', $code = '' ) 
 	{
+		[$message, $code] = $this->normalizeResponseMessage($message, $code);
 		return $this->setStatus($statusCode)->setMessage($message)->render([
 			'status'	=>$statusCode, 
-			'error'		=>$message
+			'error'		=>$message,
+			'code'		=>$code,
 		]);		
 	}
 	
@@ -126,14 +145,17 @@ class Response
 	 * Create an `Unauthorized` (403) Response
 	 * 
 	 * @param string $message
+	 * @param string $code
 	 * @return \TYPO3\CMS\Core\Http\Response
 	 */
-	public function unauthorized( $message = '' ) 
+	public function unauthorized( $message = '', $code = '' ) 
 	{
+		[$message, $code] = $this->normalizeResponseMessage($message, $code);
 		if (!$message) $message = 'Unauthorized. Please login.';
 		return $this->setStatus(403)->setMessage( $message )->render([
 			'status'	=> 403, 
-			'error'		=> $message
+			'error'		=> $message,
+			'code'		=> $code,
 		]);
 	}
 
@@ -142,11 +164,13 @@ class Response
 	 * Makes programmers think less.
 	 *
 	 * @param string $message
+	 * @param string $code
 	 * @return \TYPO3\CMS\Core\Http\Response
 	 */
-	public function forbidden( $message = '' ) 
+	public function forbidden( $message = '', $code = '' ) 
 	{
-		return $this->unauthorized( $message );
+		[$message, $code] = $this->normalizeResponseMessage($message, $code);
+		return $this->unauthorized( $message, $code );
 	}
 
 	/**
@@ -155,11 +179,13 @@ class Response
 	 * @param string $message
      * @return \TYPO3\CMS\Core\Http\Response
 	 */
-	public function notFound( $message = 'Not found.' ) 
+	public function notFound( $message = 'Not found.', $code = '' ) 
 	{
+		[$message, $code] = $this->normalizeResponseMessage($message, $code);
 		return $this->setStatus(404)->setMessage($message)->render([
 			'status'	=> 404, 
-			'error'		=> $message
+			'error'		=> $message,
+			'code'		=> $code,
 		]);
 	}
 	
@@ -167,13 +193,16 @@ class Response
 	 * Return an `invalid parameters` (422) Response
 	 * 
 	 * @param string $message
+	 * @param string $code
      * @return \TYPO3\CMS\Core\Http\Response
 	 */
-	public function invalid( $message = 'Invalid parameters.' ) 
+	public function invalid( $message = 'Invalid parameters.', $code = '' ) 
 	{
+		[$message, $code] = $this->normalizeResponseMessage($message, $code);
 		return $this->setStatus(422)->setMessage($message)->render([
 			'status'	=> 422, 
-			'error'		=> $message
+			'error'		=> $message,
+			'code'		=> $code,
 		]);
 	}
 

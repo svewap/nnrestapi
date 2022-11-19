@@ -111,6 +111,16 @@ plugin.tx_nnrestapi {
 				Access-Control-Allow-Origin = *
 			}
 		}
+
+		# Settings related to security
+		security {
+			defaults {
+				/*
+				10 = \Nng\Nnrestapi\Utilities\Security->checkInjections
+				20 = \Nng\Nnrestapi\Utilities\Security->checkLocked
+				*/
+			}
+		}
 	}
 }
 

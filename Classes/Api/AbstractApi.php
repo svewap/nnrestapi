@@ -173,4 +173,34 @@ abstract class AbstractApi {
 		return false;
 	}
 
+	/**
+	 * Checks for security issues, e.g. if the IP was blocked
+	 * or the user has exceeded the maximum number of requests
+	 * 
+	 * See `Annotations\Security\*` for more information.
+	 * 
+	 * @return boolean
+	 */
+	public function checkSecurity ( $endpoint = [] ) 
+	{
+		$checker = \nn\rest::Security( $this->request );
+
+		// execute security checks defined in the TypoScript-setup
+		if ($defaultSecuritySettings = $this->request->getSettings()['security']['defaults'] ?? []) {
+			foreach ($defaultSecuritySettings as $n=>$className ) {
+				if (!\nn\t3::call( $className )) {
+					return false;
+				}
+			}
+		}
+		// execute security checks defined by Annotations
+		$checkList = $endpoint['security'] ?? [];
+
+		foreach ($checkList as $method=>$params) {
+			if (!$checker->{$method}( $params )) {
+				return false;
+			}
+		}
+		return true;
+	}
 }

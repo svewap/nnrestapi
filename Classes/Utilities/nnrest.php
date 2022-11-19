@@ -14,6 +14,7 @@ use Nng\Nnrestapi\Utilities\Kickstart;
 use Nng\Nnrestapi\Utilities\Query;
 use Nng\Nnrestapi\Utilities\Settings;
 use Nng\Nnrestapi\Utilities\Session;
+use Nng\Nnrestapi\Utilities\Security;
 use Nng\Nnrestapi\Utilities\Validator;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -141,6 +142,16 @@ class rest {
 	 */
 	public static function Session( $request = null ) {
 		return Session::makeInstance( $request );
+	}
+	
+	/**
+	 * ```
+	 * \nn\rest::Security( $request )->methodName();
+	 * ```
+	 * @return Security
+	 */
+	public static function Security( $request = null ) {
+		return Security::makeInstance( $request );
 	}
 
 	/**
