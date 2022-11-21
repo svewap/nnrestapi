@@ -110,7 +110,8 @@ class Header extends \Nng\Nnhelpers\Singleton
 	 * ```
 	 * @return self 
 	 */
-	public function exception( $message = '', $code = 500 ) {
+	public function exception( $message = '', $code = 500 ) 
+	{
 		$protocoll = $_SERVER['SERVER_PROTOCOL'] ?? 'HTTP/1.1';
 		$phpSapiName = substr(php_sapi_name(), 0, 3);
 		
@@ -118,6 +119,8 @@ class Header extends \Nng\Nnhelpers\Singleton
 		header('Access-Control-Allow-Origin: ' . $origin);
 		header('Access-Control-Allow-Credentials: true');
 
+		$message = substr(trim(preg_replace('/\s\s+/', ' ', $message)), 0, 50);
+		
 		if ($phpSapiName == 'cgi' || $phpSapiName == 'fpm') {
 			header('Status: ' . $code . ' ' . $message);
 		} else {
