@@ -46,6 +46,8 @@ class HiddenRestriction extends BaseHiddenRestriction {
 				return ApplicationType::fromRequest($request)->isFrontend();
 			}
 		}
+// @todo v12
+return;
 		return TYPO3_MODE == 'FE' && isset($GLOBALS['TSFE']) && $GLOBALS['TSFE']->id;
 	}
 

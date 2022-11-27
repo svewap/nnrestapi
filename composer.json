@@ -5,7 +5,7 @@
   "description": "A RESTful Api Extension for TYPO3. Sets TYPO3 up with everything you need to get your own REST Api up and running without headaches.",
   "authors": [],
   "require": {
-    "typo3/cms-core": "^9.5 || ^10.0 || ^11.0 || ^12.0",
+    "typo3/cms-core": "^12.0",
     "nng/nnhelpers": "^1.7"
   },
     "autoload": {

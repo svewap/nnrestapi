@@ -4,19 +4,27 @@ namespace Nng\Nnrestapi\Controller;
 
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
+use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
+use TYPO3\CMS\Core\Page\PageRenderer;
 
 /**
  * Backend Module
  * 
  */
-class ModController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController 
+class ModController extends ActionController 
 {
-    /**
-	 * Backend Template Container
-	 * 
-	 * @var string
-	 */
-	protected $defaultViewObjectName = \TYPO3\CMS\Backend\View\BackendTemplateView::class;
+	protected ModuleTemplateFactory $moduleTemplateFactory;
+	protected PageRenderer $pageRenderer;
+	protected $moduleTemplate;
+
+	public function __construct(
+        ModuleTemplateFactory $moduleTemplateFactory,
+        PageRenderer $pageRenderer,
+    ) {
+        $this->moduleTemplateFactory = $moduleTemplateFactory;
+        $this->pageRenderer = $pageRenderer;
+    }
 
 	/**
 	 * Support this project!
@@ -34,19 +42,23 @@ class ModController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 	 * 	Initialize View
 	 * 
 	 */
-	public function initializeView ( ViewInterface $view ) 
+	public function initializeView () 
 	{
+		$this->pageRenderer->loadJavaScriptModule('@vendor/nnrestapi/Axios.js');
+		$this->pageRenderer->loadJavaScriptModule('@vendor/nnrestapi/Nnrestapi.js');
+		
+		$this->pageRenderer->addCssFile('EXT:nnhelpers/Resources/Public/Vendor/prism/prism.css');
+		$this->pageRenderer->addJsFile('EXT:nnhelpers/Resources/Public/Vendor/prism/prism.js');
+
+		$this->moduleTemplate = $this->moduleTemplateFactory->create($this->request);
+		$this->moduleTemplate->getDocHeaderComponent()->disable();
+
+		/*
 		parent::initializeView($view);
 
 		if (!$view->getModuleTemplate()) return;
 		
 		$pageRenderer = $view->getModuleTemplate()->getPageRenderer();
-
-		if (\nn\t3::t3Version() < 11) {
-			$pageRenderer->loadRequireJsModule('TYPO3/CMS/Nnrestapi/Bootstrap');
-		}
-		$pageRenderer->loadRequireJsModule('TYPO3/CMS/Nnrestapi/Axios');
-        $pageRenderer->loadRequireJsModule('TYPO3/CMS/Nnrestapi/Nnrestapi');
 		
 		$pageRenderer->addCssFile('/typo3conf/ext/nnhelpers/Resources/Public/Vendor/prism/prism.css');
 		$pageRenderer->addJsFile('/typo3conf/ext/nnhelpers/Resources/Public/Vendor/prism/prism.js');
@@ -54,6 +66,7 @@ class ModController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
         $template = $view->getModuleTemplate();
         $template->setFlashMessageQueue($this->controllerContext->getFlashMessageQueue());
         $template->getDocHeaderComponent()->disable();
+		*/
 	}
 
 	/**
@@ -90,7 +103,9 @@ class ModController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 		
 		// Any errors? Then abort here.
 		if ($errors) {
-			return \nn\t3::Template()->render('EXT:nnrestapi/Resources/Private/Backend/Templates/Mod/Error.html', ['errors'=>$errors]);
+			$html = \nn\t3::Template()->render('EXT:nnrestapi/Resources/Private/Backend/Templates/Mod/Error.html', ['errors'=>$errors]);
+			$this->moduleTemplate->setContent($html);
+			return $this->htmlResponse($this->moduleTemplate->renderContent());
 		}
 
 		// Everything fine. Render documentation.
@@ -111,7 +126,8 @@ class ModController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 			'extConf'			=> \nn\t3::Environment()->getExtConf('nnrestapi')
 		]);
 
-		return $this->view->render();
+		$this->moduleTemplate->setContent($this->view->render());
+		return $this->htmlResponse($this->moduleTemplate->renderContent());
 	}
 
 	/**

@@ -32,7 +32,7 @@ class Environment extends \Nng\Nnhelpers\Singleton
 		$isPostgres = stripos($serverVersion, 'PostgreSQL') !== false;
 		
 		if ($isPostgres) {
-			$result = $connection->fetchAll("
+			$result = $connection->fetchAllAssociative("
 				SELECT 
 					COUNT(table_name) 
 				FROM 
@@ -45,7 +45,7 @@ class Environment extends \Nng\Nnhelpers\Singleton
 			return $result > 0;
 		}
 
-		if ($connection->fetchAll("SHOW TABLES like '{$tableName}'")) {
+		if ($connection->fetchAllAssociative("SHOW TABLES like '{$tableName}'")) {
 			return true;
 		}
 

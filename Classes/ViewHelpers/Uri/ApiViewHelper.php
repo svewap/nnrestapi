@@ -2,6 +2,7 @@
 namespace Nng\Nnrestapi\ViewHelpers\Uri;
 
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
  * Erzeugt ein URL zur Api.
@@ -17,7 +18,7 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
  * /api/test/index/123/one/two
  * ```
  */
-class ApiViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\Uri\PageViewHelper {
+class ApiViewHelper extends AbstractViewHelper {
 	
 	public function initializeArguments() {
 		parent::initializeArguments();

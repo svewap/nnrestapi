@@ -32,6 +32,8 @@ class FrontendUserAuthenticationHook {
 		if (!$parent || $parent->loginType != 'FE') return;
 
 		// if we are not in a frontend context: Abort.
+// @todo v12
+return;
 		if (TYPO3_MODE != 'FE') return;
 
 		// get list of all registered Authenticators registered in `ext_localconf.php` via `\nn\rest::Auth()->register();`

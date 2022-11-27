@@ -84,7 +84,7 @@ class Api extends \Nng\Nnhelpers\Singleton {
 			if ($v == '') unset($mergedArgs[$k]);
 		}
 
-		if ($mergedArgs['action'] == 'index') {
+		if (($mergedArgs['action'] ?? '') == 'index') {
 			unset($mergedArgs['action']);
 		}
 

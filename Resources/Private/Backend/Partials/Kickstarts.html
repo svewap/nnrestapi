@@ -33,7 +33,7 @@
                     <div class="info w-100">
                         <div class="text">
                             <h3>{config.title}</h3>
-                            {config.description->f:format.html()}
+                            {config.description->f:format.raw()}
                         </div>
                         <div class="d-flex align-items-center actions justify-content-end pe-4">
                             <f:link.action action="kickstart" arguments="{identifier:identifier, extname:'extname', vendorname:'vendorname'}" class="d-flex align-items-center me-4 btn btn-primary">

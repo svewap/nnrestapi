@@ -9,3 +9,12 @@ services:
     autowire: true
     autoconfigure: true
     public: true
+
+  Nng\Nnrestapi\:
+    resource: '../Classes/*'
+    exclude: 
+      - '../Classes/Domain/Model/*'
+      - '../Classes/Utilities/nnrest.php'
+
+  Nng\Nnrestapi\Controller\ModController:
+    tags: ['backend.controller']
