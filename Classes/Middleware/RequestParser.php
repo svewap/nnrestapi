@@ -98,7 +98,7 @@ class RequestParser implements MiddlewareInterface {
 		}
 
 		// Multipart form-data? This needs special parsing to get the $_FILES in a PUT or PATCH request
-		require_once( \TYPO3\CMS\Core\Core\Environment::getPublicPath() . '/typo3conf/ext/nnrestapi/Resources/Libraries/vendor/autoload.php' );
+		\Nng\Nnrestapi\Service\AutoloadService::loadLibraries();
 
 		// Variablen aus dem `multipart/form-data`-payload parsen und `$_FILES`-Container füllen
 		$params = \Notihnio\RequestParser\RequestParser::parse();

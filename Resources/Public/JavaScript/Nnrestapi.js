@@ -1,4 +1,4 @@
-
+import $ from 'jquery';
 
 var $testbed = $('.testbed');
 var $endpoints = $('.endpoints');

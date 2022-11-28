@@ -144,7 +144,8 @@ class ModController extends ActionController
 			return 'Kickstart config not defined or no path to kickstarter template set!';
 		}
 
-		return \nn\rest::Kickstart()->getReadMe( $config ) ?: 'This package has no README.md';
+		$readme = \nn\rest::Kickstart()->getReadMe( $config ) ?: 'This package has no README.md';
+		return $this->htmlResponse( $readme );
 	}
 
 	/**
@@ -160,27 +161,32 @@ class ModController extends ActionController
 		$config = $this->settings['kickstarts'][$identifier] ?? false;
 		
 		if (!$config || !($config['path'] ?? false)) {
-			return 'Kickstart config not defined or no path to kickstarter template set!';
+			return $this->htmlResponse('Kickstart config not defined or no path to kickstarter template set!');
 		}
 
 		$absPath = \nn\t3::File()->exists($config['path']);
 
 		// basic check
 		if (!$absPath) {
-			return 'Path to kickstarter template invalid.';			
+			return $this->htmlResponse('Path to kickstarter template invalid.');			
 		}
 
 		// Make sure the path is somewhere inside the EXT: or fileadmin folder. Prevents misuse.
 		$pathSite = \nn\t3::Environment()->getPathSite();
+		
+		// In composer-mode and TYPO3 12 the EXTs can be located in `/vendor/` outside of the site-path
+		$pathVendor = \TYPO3\CMS\Core\Core\Environment::getProjectPath() . '/vendor/';
+
 		$allowedPaths = array_filter([
 			$pathSite . 'typo3conf/ext/',
 			$pathSite . 'fileadmin/',
+			$pathVendor,
 		], function ($path) use ($absPath) {
 			return strpos($absPath, $path) !== false;
 		});
 
 		if (!$allowedPaths) {
-			return 'Path to kickstarter template must be in EXT or fileadmin-folder!';
+			return $this->htmlResponse('Path to kickstarter template must be in EXT or fileadmin-folder!');
 		}
 
 		$extname = GeneralUtility::camelCaseToLowerCaseUnderscored($extname);
@@ -214,6 +220,6 @@ class ModController extends ActionController
 
 		\nn\rest::Kickstart()->createExtensionFromTemplate( $config, $marker );
 
-		return '';
+		return $this->htmlResponse('');
 	}
 }
