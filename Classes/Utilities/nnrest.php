@@ -179,5 +179,5 @@ class rest {
 	 */
 	public static function ApiError( $message = '', $statusCode = 0, $customErrorCode = '' ) {
 		throw new ApiError( $message, $statusCode, $customErrorCode );
-	 }
+	}
 }

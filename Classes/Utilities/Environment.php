@@ -5,6 +5,7 @@ namespace Nng\Nnrestapi\Utilities;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
+use TYPO3\CMS\Core\Http\ApplicationType;
 
 /**
  * Helper for getting information about the installation and environment
@@ -60,7 +61,8 @@ class Environment extends \Nng\Nnhelpers\Singleton
 	 * ```
 	 * @return boolean
 	 */
-	public function sessionTableExists() {
+	public function sessionTableExists() 
+	{
 		$tableName = \Nng\Nnrestapi\Utilities\Session::TABLENAME;
 		return $this->databaseTableExists( $tableName );
 	}
@@ -75,9 +77,25 @@ class Environment extends \Nng\Nnhelpers\Singleton
 	 * ```
 	 * @return boolean
 	 */
-	public function getLanguages( $key = 'languageId' ) {
+	public function getLanguages( $key = 'languageId' ) 
+	{
 		$languages = \nn\t3::Settings()->getSiteConfig()['languages'] ?? [];
 		return array_combine( array_column($languages, $key), array_values($languages) );
+	}
+
+	/**
+	 * Returns TRUE if we are in the frontend context
+	 * ```
+	 * \nn\rest::Environment()->isFrontend();
+	 * ```
+	 * @return Boolean
+	 */
+	public function isFrontend() 
+	{
+		if ($request = \nn\rest::Settings()->getRequest()) {
+			return ApplicationType::fromRequest($request)->isFrontend();
+		}
+		return false;
 	}
 	
 }

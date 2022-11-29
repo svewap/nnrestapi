@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2015-03-12T20:58:18Z" product-name="apitest">
+		<header/>
+		<body>
+								
+			<trans-unit id="tx_apitest_domain_model_entry">
+				<source>Example data</source>
+			</trans-unit>
+
+		</body>
+	</file>
+</xliff>

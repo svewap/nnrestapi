@@ -1,0 +1,27 @@
+
+plugin.tx_nnrestapi {
+	settings {
+		
+		# where to upload new files. Use @Api\Upload("config[apitest]")
+		fileUploads {
+			apitest {
+				defaultStoragePath = 1:/apitest/
+			}		
+		}
+		
+		# Default values for new entries
+		insertDefaultValues {
+			Nng\Apitest\Domain\Model\Entry {
+				pid = 4
+			}
+		}
+
+		# Reduce JSON in response to certain fields
+		globalDistillers {
+			Nng\Apitest\Domain\Model\Entry {
+				#include = uid, title, files
+				flattenFileReferences = 1
+			}
+		}
+	}
+}

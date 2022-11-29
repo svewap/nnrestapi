@@ -1,6 +1,7 @@
 <?php 
 
 namespace Nng\Nnrestapi\Utilities;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Helper zum Bearbeiten von Dateien und Uploads
@@ -234,9 +235,10 @@ class File extends \Nng\Nnhelpers\Singleton {
 	{
 		$files = [];
 		$path = \nn\t3::File()->absPath( $path );
-		if (!$path || !\nn\t3::File()->exists($path)) return [];
 		
-		$flags = \FilesystemIterator::KEY_AS_PATHNAME | \FilesystemIterator::CURRENT_AS_FILEINFO | \FilesystemIterator::SKIP_DOTS | \FilesystemIterator::UNIX_PATHS;
+		if (!$path || !\nn\t3::File()->exists($path)) return [];
+
+		$flags = \FilesystemIterator::FOLLOW_SYMLINKS | \FilesystemIterator::KEY_AS_PATHNAME | \FilesystemIterator::CURRENT_AS_FILEINFO | \FilesystemIterator::SKIP_DOTS | \FilesystemIterator::UNIX_PATHS;
 		$iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator( $path, $flags ));
 
 		foreach ($iterator as $fileObject) {

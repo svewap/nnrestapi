@@ -1,0 +1,5 @@
+.DS_Store
+.AppleDouble
+Resources/VueSrc/node_modules
+Resources/VueSrc/*.lock
+Resources/VueSrc/package-lock.json

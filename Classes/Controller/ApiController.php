@@ -40,13 +40,6 @@ class ApiController extends AbstractApiController
 		$result = [];
 		$cacheIdentifer = [$endpoint['class'], $endpoint['method']];
 
-		// create an instance of the endpoint `Nng\Nnrestapi\Api\Test`
-		$classInstance = \nn\t3::injectClass( $endpoint['class'] );
-
-		// set request and response wrappers in class instance
-		$classInstance->setRequest( $request );
-		$classInstance->setResponse( $response );
-
 		// check if user is allowed to access hidden records (simulates a backend user)
 		$showHiddenFromAnnotation 	= $endpoint['includeHidden'] ?? false;		// via `@Api\IncludeHidden` annotation?
 		$showHiddenFromFeUser 		= $request->isAdmin();						// via "admin"-checkbox set in fe-user?
@@ -54,6 +47,13 @@ class ApiController extends AbstractApiController
 		if ($showHiddenFromAnnotation || $showHiddenFromFeUser) {
 			\nn\rest::Settings()->setIgnoreEnableFields( true );
 		}
+		
+		// create an instance of the endpoint `Nng\Nnrestapi\Api\Test`
+		$classInstance = \nn\t3::injectClass( $endpoint['class'] );
+
+		// set request and response wrappers in class instance
+		$classInstance->setRequest( $request );
+		$classInstance->setResponse( $response );
 
 		// checks, if LanguageAspect needs to be set to different language. Will decide, if language-overlay is loaded for records.
 		$overlayLanguageUid = $classInstance->determineLanguage( $endpoint );

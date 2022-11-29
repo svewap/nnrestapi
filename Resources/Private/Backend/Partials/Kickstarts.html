@@ -36,7 +36,7 @@
                             {config.description->f:format.raw()}
                         </div>
                         <div class="d-flex align-items-center actions justify-content-end pe-4">
-                            <f:link.action action="kickstart" arguments="{identifier:identifier, extname:'extname', vendorname:'vendorname'}" class="d-flex align-items-center me-4 btn btn-primary">
+                            <f:link.action action="kickstart" arguments="{identifier:identifier, extname:'extname', vendorname:'vendorname'}" additionalParams="{bust:'{nnt3:uniqid()}'}" class="d-flex align-items-center me-4 btn btn-primary">
                                 <i class="fas fa-cloud-download-alt me-2"></i> Download
                             </f:link.action>
                             <f:link.action action="readme" arguments="{identifier:identifier}" class="d-flex align-items-center btn btn-primary readme">

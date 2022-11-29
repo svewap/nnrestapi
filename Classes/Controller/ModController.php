@@ -159,12 +159,13 @@ class ModController extends ActionController
 	public function kickstartAction( string $identifier = '', string $extname = '', string $vendorname = '' ) 
 	{
 		$config = $this->settings['kickstarts'][$identifier] ?? false;
-		
+
 		if (!$config || !($config['path'] ?? false)) {
 			return $this->htmlResponse('Kickstart config not defined or no path to kickstarter template set!');
 		}
 
-		$absPath = \nn\t3::File()->exists($config['path']);
+		$dirName = dirname($config['path']) . '/' . basename($config['path'], '.zip');
+		$absPath = \nn\t3::File()->exists($config['path']) ?: \nn\t3::File()->exists($dirName);
 
 		// basic check
 		if (!$absPath) {
@@ -218,6 +219,7 @@ class ModController extends ActionController
 			}
 		}
 
+		$config['path'] = $absPath;
 		\nn\rest::Kickstart()->createExtensionFromTemplate( $config, $marker );
 
 		return $this->htmlResponse('');

@@ -59,7 +59,7 @@ class Api extends \Nng\Nnhelpers\Singleton {
 			$arr = is_array($val) ? $val : [$key=>$val];
 			$mergedArgs = array_merge( $mergedArgs, $arr );
 		}
-
+		
 		$defaultEndpoint = \nn\rest::Endpoint()->find( true, $mergedArgs['controller'], $mergedArgs['action'] );
 
 		// `param2` wird zu `param3` verschoben, `controller` wird zu `action` etc.

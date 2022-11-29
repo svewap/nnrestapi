@@ -338,7 +338,6 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 
 		$endpoints = $this->getAll();
 		$classesToParse = $this->getClassesToParse();
-
 		$routingMap = [];
 
 		foreach ($classesToParse as $path=>$className) {
@@ -514,6 +513,11 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 				$content = file_get_contents( $file );
 				if (!$content || !preg_match($regexPattern, $content)) {
 					continue;
+				}
+
+				// ignore because this is the Annotation itself. It describes how to use the Annotation
+				if ($className == \Nng\Nnrestapi\Annotations\Endpoint::class) {
+					continue;					
 				}
 
 				// then make sure, the `@Api\Endpoint` string is in the DocComment
