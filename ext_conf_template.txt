@@ -6,3 +6,6 @@ maxSessionLifetime = 3600
 
 # cat=basic/misc; type=boolean; label=Disable all default endpoints from nnrestapi
 disableDefaultEndpoints = 0
+
+# cat=basic/misc; type=boolean; label=Disable all warnings and checks during installation
+disablePreCheck = 0

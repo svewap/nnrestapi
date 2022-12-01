@@ -52,21 +52,6 @@ class ModController extends ActionController
 
 		$this->moduleTemplate = $this->moduleTemplateFactory->create($this->request);
 		$this->moduleTemplate->getDocHeaderComponent()->disable();
-
-		/*
-		parent::initializeView($view);
-
-		if (!$view->getModuleTemplate()) return;
-		
-		$pageRenderer = $view->getModuleTemplate()->getPageRenderer();
-		
-		$pageRenderer->addCssFile('/typo3conf/ext/nnhelpers/Resources/Public/Vendor/prism/prism.css');
-		$pageRenderer->addJsFile('/typo3conf/ext/nnhelpers/Resources/Public/Vendor/prism/prism.js');
-
-        $template = $view->getModuleTemplate();
-        $template->setFlashMessageQueue($this->controllerContext->getFlashMessageQueue());
-        $template->getDocHeaderComponent()->disable();
-		*/
 	}
 
 	/**
@@ -82,30 +67,35 @@ class ModController extends ActionController
 
 		// Collect errors...
 		$errors = [];
-
-		// Check, if database-tables were installed
-		$tablesExist = \nn\rest::Environment()->sessionTableExists();
-        if (!$tablesExist) {
-			$errors['missingTables'] = true;
-		}
-
-		// Check, if TypoScript template was included
-        $settings = \nn\t3::Settings()->getPlugin('nnrestapi');
-        if (!$settings) {
-			$errors['missingTypoScript'] = true;
-		}
-
-		// Check, if RouteEnhancer was included
-		$config = \nn\rest::Settings()->getConfiguration();
-		if (!$config) {
-			$errors['missingYaml'] = true;
-		}
 		
-		// Any errors? Then abort here.
-		if ($errors) {
-			$html = \nn\t3::Template()->render('EXT:nnrestapi/Resources/Private/Backend/Templates/Mod/Error.html', ['errors'=>$errors]);
-			$this->moduleTemplate->setContent($html);
-			return $this->htmlResponse($this->moduleTemplate->renderContent());
+		// PreCheck can be disabled in the Extension Manager
+		$checkErrors = !\nn\rest::Settings()->getExtConf('disablePreCheck');
+
+		if ($checkErrors) {
+			// Check, if database-tables were installed
+			$tablesExist = \nn\rest::Environment()->sessionTableExists();
+			if (!$tablesExist) {
+				$errors['missingTables'] = true;
+			}
+
+			// Check, if TypoScript template was included
+			$settings = \nn\t3::Settings()->getPlugin('nnrestapi');
+			if (!$settings) {
+				$errors['missingTypoScript'] = true;
+			}
+
+			// Check, if RouteEnhancer was included
+			$config = \nn\rest::Settings()->getConfiguration();
+			if (!$config) {
+				$errors['missingYaml'] = true;
+			}
+
+			// Any errors? Then abort here.
+			if ($errors) {
+				$html = \nn\t3::Template()->render('EXT:nnrestapi/Resources/Private/Backend/Templates/Mod/Error.html', ['errors'=>$errors]);
+				$this->moduleTemplate->setContent($html);
+				return $this->htmlResponse($this->moduleTemplate->renderContent());
+			}
 		}
 
 		// Everything fine. Render documentation.
@@ -116,8 +106,8 @@ class ModController extends ActionController
 		$donation = $this->donations[ rand(0, count($this->donations)-1) ];
 
 		$this->view->assignMultiple([
-			'enhancerExists'	=> \Nng\Nnrestapi\Service\EnvironmentService::enhancerExists(),
-			'rewriteCondExists'	=> \Nng\Nnrestapi\Service\EnvironmentService::rewriteCondExists(),
+			'enhancerExists'	=> $checkErrors ? \Nng\Nnrestapi\Service\EnvironmentService::enhancerExists() : true,
+			'rewriteCondExists'	=> $checkErrors ? \Nng\Nnrestapi\Service\EnvironmentService::rewriteCondExists() : true,
 			'feUser'			=> \nn\t3::FrontendUser()->get(),
 			'urlBase'			=> $urlBase,
 			'absApiUrlPrefix'	=> $urlBase . \nn\rest::Settings()->getApiUrlPrefix(),
