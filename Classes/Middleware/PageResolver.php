@@ -28,13 +28,6 @@ class PageResolver implements MiddlewareInterface {
     private $response;
 
 	/**
-	 * @return void
-	 */
-    public function __construct() {
-        $this->response = \nn\t3::injectClass( Response::class );
-    }
-
-	/**
 	 *	@param ServerRequestInterface $request
 	 *	@param RequestHandlerInterface $handler
 	 *	@return ResponseInterface
@@ -52,10 +45,12 @@ class PageResolver implements MiddlewareInterface {
 		if ($endpoint === null) {
 			return $handler->handle($request);
 		}
-
+		
 		// `OPTIONS` prerequest? Then abort with "am there, everything ok!"
 		if ($method == 'options') {
-			return $this->response->noContent();
+			$response = \nn\t3::injectClass(\TYPO3\CMS\Core\Http\Response::class );
+			$response->withStatus( 204, 'No Content' );
+			return $response;
 		}
 
 		// Should go to API, but URL could be mapped to controller? Output 404
@@ -67,7 +62,15 @@ class PageResolver implements MiddlewareInterface {
 			$className = $firstEndpoint['class'] ?? ucfirst($args['controller']);
 
 			$classMethodInfo = $className . '::' . $method . ucfirst($args['action']) . 'Action()';
-			return $this->response->notFound('RestApi-endpoint not found. Based on your request the endpoint would be `' . $classMethodInfo . '`' );
+
+			$response = \nn\t3::injectClass(\TYPO3\CMS\Core\Http\Response::class );
+			$response->withStatus( 404, 'Not found' );
+			$response->getBody()->write(json_encode([
+				'status'	=> 404, 
+				'error'		=> 'RestApi-endpoint not found. Based on your request the endpoint would be `' . $classMethodInfo . '`',
+				'code'		=> 404,
+			]));
+			return $response;
 		}
 
 		$settings = \nn\t3::Settings()->get('tx_nnrestapi');
@@ -77,6 +80,7 @@ class PageResolver implements MiddlewareInterface {
 			date_default_timezone_set( $timeZone );
 		}
 
+		$this->response = \nn\t3::injectClass( Response::class );
 		$this->response->setEndpoint( $endpoint );
 		$this->response->setSettings( $settings );
 
