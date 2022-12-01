@@ -97,3 +97,23 @@ The above endpoint can be reached over the URL:
 .. code-block:: php
 
    https://www.mywebsite.com/api/apples/...
+
+.. attention::
+
+   **Getting an 404 - Endpoint not found?**
+
+   If you are not able to connect to your Endpoint, here is a checklist of things you should try:
+
+   -  **Check your Endpoint registration.** Make sure you are using one of the methods described
+      :ref:`in this chapter <routing_prerequisites>`
+   -  **Clear the cache.** Not only by clicking on the "red thunderbolt", but also by using the function
+      "Flush TYPO3 and PHP Cache" in the backend-module "Admin -> Maintainance"
+   -  **Rebuild the PHP Autoload Information.** In a non-composer-installation, this can in the 
+      backend-module "Admin -> Maintainance". In a composer based installation this is done
+      on the command line with ``composer dumpautoload``.
+   -  **Check, if your extension has a composer.json in the root folder**. Since TYPO3 v11 it is 
+      mandatory to register the path to your classes with a ``composer.json``. Grab one from an
+      other extension or the :ref:`nnrestapi Kickstarter<kickstarter>`.
+   -  **Check, if your extension has a Service.yaml**. Since TYPO3 v12 you will probably also need
+      a ``Configuration/Service.yaml`` that registers the Classes. Again, steal it from an other
+      extension or the :ref:`nnrestapi Kickstarter<kickstarter>`.
