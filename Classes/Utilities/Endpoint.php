@@ -552,19 +552,8 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 		$endpoints = $this->getAll();
 		$namespaces = array_column( $endpoints, 'namespace' );
 
-		if (\nn\t3::t3Version() >= 11) {
-			$composerClassLoader = ClassLoadingInformation::getClassLoader();
-			$psr4prefixes = $composerClassLoader->getPrefixesPsr4();
-		} else {
-			if (Environment::isComposerMode()){
-				$psr4path = Environment::getProjectPath() . '/vendor/composer/' . ClassLoadingInformation::AUTOLOAD_PSR4_FILENAME;
-			} else {
-				$psr4path = Environment::getLegacyConfigPath() . '/' .
-							ClassLoadingInformation::AUTOLOAD_INFO_DIR .
-							ClassLoadingInformation::AUTOLOAD_PSR4_FILENAME;
-			}
-			$psr4prefixes = require( $psr4path );
-		}
+		$composerClassLoader = ClassLoadingInformation::getClassLoader();
+		$psr4prefixes = $composerClassLoader->getPrefixesPsr4();
 
 		// Filter namespaces that were registered with `\nn\rest::Endpoint()->register(...)` 
 		$pathsToParse = [];

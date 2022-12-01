@@ -29,6 +29,9 @@ class ApiViewHelper extends AbstractViewHelper {
         $this->registerArgument('param1', null, 'Parameter 1', false, '');
         $this->registerArgument('param2', null, 'Parameter 2', false, '');
         $this->registerArgument('param3', null, 'Parameter 3', false, '');
+        $this->registerArgument('additionalParams', null, 'additionalParams', false, []);
+        $this->registerArgument('type', 'string', 'PageType', false, '');
+        $this->registerArgument('absolute', 'boolean', 'Return absolute URL', false, false);
    }
 
 	public static function renderStatic( array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext ) {
