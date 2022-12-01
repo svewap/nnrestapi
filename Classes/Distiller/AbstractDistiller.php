@@ -2,8 +2,8 @@
 
 namespace Nng\Nnrestapi\Distiller;
 
-class AbstractDistiller {
-
+class AbstractDistiller 
+{
 	/**
 	 * Definiert, welche Felder/Keys im Array behalten werden sollen.
 	 * Wenn leer, wird das komplette Array zurückgegeben.
@@ -24,7 +24,11 @@ class AbstractDistiller {
 	 * ```
 	 * @return void
 	 */
-	public function processData( &$data = [] ) {
+	public function processData( &$data = [] ) 
+	{
+		if (is_object($data)) {
+			$data = (array) $data;
+		}
 		if ($this->isAssoc( $data )) {
 			$this->process( $data );
 			$this->pluck( $data, $this->keysToKeep );
@@ -44,7 +48,8 @@ class AbstractDistiller {
 	 * ```
 	 * @return boolean
 	 */
-	public function isAssoc( $arr = [] ) {
+	public function isAssoc( $arr = [] ) 
+	{
 		if (array() === $arr) return false;
 		return array_keys($arr) !== range(0, count($arr) - 1);
 	}
