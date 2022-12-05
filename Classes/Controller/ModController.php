@@ -70,29 +70,34 @@ class ModController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 		// Collect errors...
 		$errors = [];
 
-		// Check, if database-tables were installed
-		$tablesExist = \nn\rest::Environment()->sessionTableExists();
-        if (!$tablesExist) {
-			$errors['missingTables'] = true;
-		}
+		// PreCheck can be disabled in the Extension Manager
+		$checkErrors = !\nn\rest::Settings()->getExtConf('disablePreCheck');
 
-		// Check, if TypoScript template was included
-        $settings = \nn\t3::Settings()->getPlugin('nnrestapi');
-        if (!$settings) {
-			$errors['missingTypoScript'] = true;
-		}
+		if ($checkErrors) {
+			// Check, if database-tables were installed
+			$tablesExist = \nn\rest::Environment()->sessionTableExists();
+			if (!$tablesExist) {
+				$errors['missingTables'] = true;
+			}
 
-		// Check, if RouteEnhancer was included
-		$config = \nn\rest::Settings()->getConfiguration();
-		if (!$config) {
-			$errors['missingYaml'] = true;
+			// Check, if TypoScript template was included
+			$settings = \nn\t3::Settings()->getPlugin('nnrestapi');
+			if (!$settings) {
+				$errors['missingTypoScript'] = true;
+			}
+
+			// Check, if RouteEnhancer was included
+			$config = \nn\rest::Settings()->getConfiguration();
+			if (!$config) {
+				$errors['missingYaml'] = true;
+			}
+		
+			// Any errors? Then abort here.
+			if ($errors) {
+				return \nn\t3::Template()->render('EXT:nnrestapi/Resources/Private/Backend/Templates/Mod/Error.html', ['errors'=>$errors]);
+			}
 		}
 		
-		// Any errors? Then abort here.
-		if ($errors) {
-			return \nn\t3::Template()->render('EXT:nnrestapi/Resources/Private/Backend/Templates/Mod/Error.html', ['errors'=>$errors]);
-		}
-
 		// Everything fine. Render documentation.
 		$classMap = \nn\rest::Annotations()->getClassMapWithDocumentation();
 		$urlBase = \nn\t3::Environment()->getBaseUrl();
@@ -101,8 +106,8 @@ class ModController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 		$donation = $this->donations[ rand(0, count($this->donations)-1) ];
 
 		$this->view->assignMultiple([
-			'enhancerExists'	=> \Nng\Nnrestapi\Service\EnvironmentService::enhancerExists(),
-			'rewriteCondExists'	=> \Nng\Nnrestapi\Service\EnvironmentService::rewriteCondExists(),
+			'enhancerExists'	=> $checkErrors ? \Nng\Nnrestapi\Service\EnvironmentService::enhancerExists() : true,
+			'rewriteCondExists'	=> $checkErrors ? \Nng\Nnrestapi\Service\EnvironmentService::rewriteCondExists() : true,
 			'feUser'			=> \nn\t3::FrontendUser()->get(),
 			'urlBase'			=> $urlBase,
 			'absApiUrlPrefix'	=> $urlBase . \nn\rest::Settings()->getApiUrlPrefix(),
@@ -147,7 +152,8 @@ class ModController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 			return 'Kickstart config not defined or no path to kickstarter template set!';
 		}
 
-		$absPath = \nn\t3::File()->exists($config['path']);
+		$dirName = dirname($config['path']) . '/' . basename($config['path'], '.zip');
+		$absPath = \nn\t3::File()->exists($config['path']) ?: \nn\t3::File()->exists($dirName);
 
 		// basic check
 		if (!$absPath) {
@@ -196,6 +202,7 @@ class ModController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 			}
 		}
 
+		$config['path'] = $absPath;
 		\nn\rest::Kickstart()->createExtensionFromTemplate( $config, $marker );
 
 		return '';

@@ -2,9 +2,9 @@
 #
 # Table structure for table 'fe_groups'
 #
-CREATE TABLE fe_groups (
-	nnrestapi_flexform text DEFAULT '' NOT NULL
-);
+#CREATE TABLE fe_groups (
+#	nnrestapi_flexform text DEFAULT '' NOT NULL
+#);
 
 #
 # Table structure for table 'fe_users'
@@ -24,4 +24,20 @@ CREATE TABLE nnrestapi_sessions (
 	data mediumblob,
 
 	PRIMARY KEY (uid)
+);
+
+#
+# Table structure for table 'nnrestapi_security'
+#
+CREATE TABLE nnrestapi_security (
+	uid int(11) unsigned DEFAULT 0 NOT NULL auto_increment,
+	identifier varchar(32) DEFAULT '' NOT NULL,
+	iphash varchar(32) DEFAULT '' NOT NULL,
+	tstamp int(11) unsigned DEFAULT '0' NOT NULL,
+	expires int(11) unsigned DEFAULT '0' NOT NULL,
+	data mediumblob,
+
+	PRIMARY KEY (uid),
+	KEY idtype (identifier),
+	KEY ip (iphash)
 );

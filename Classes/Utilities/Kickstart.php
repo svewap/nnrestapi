@@ -88,6 +88,11 @@ class Kickstart extends \Nng\Nnhelpers\Singleton
 			$files = \nn\rest::File()->getZipContent( $config['path'] );
 		}
 
+		$files = array_filter( $files, function ($file) {
+			return basename( $file ) != '.DS_Store';
+		}, ARRAY_FILTER_USE_KEY);
+
+
 		if (!$files) return false;
 
 		// nnhelpers autoload: We need the ZIP-library

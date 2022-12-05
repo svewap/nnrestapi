@@ -59,7 +59,7 @@ class Route
 		// `path/to/{uid}/{test}` => `path/to/([^\/]*)/([^\/]*)`
 		$pattern = preg_replace('/\{[^\}]*\}/i', '([^/]*)', $pattern);
 
-		$this->regex = '/(.*)' . str_replace('/', '\/', $pattern) . '$/i';
+		$this->regex = '/(.*)\/' . str_replace('/', '\/', $pattern) . '$/i';
 
 		// Argumente ermitteln
 		preg_match_all( '/\{([^\?\}]*)[\?]*\}/i', $route, $matches );

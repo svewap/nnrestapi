@@ -99,12 +99,28 @@ abstract class AbstractApi {
 	}
 
 	/**
+	 * Set default headers for response, e.g. `Cache-Control`
+	 * 
+	 * @param array $endpoint
+	 * @return void
+	 */
+	public function setDefaultHeaders( $endpoint = [] ) 
+	{
+		// set `Cache-Control: max-age={value}` header
+		$maxAge = $endpoint['maxAge'] ?? false;
+		if ($maxAge !== false) {
+			$this->response->setMaxAge( $maxAge );
+		}
+	}
+
+	/**
 	 * Checks, if the current frontend/backend user has privileges to call
 	 * the endpoint. This method can be overriden with custom methods in your
 	 * own endpoint if you wish to implement your own logic.
 	 * 
 	 * See `Annotations\Access` for more information.
 	 * 
+	 * @param array $endpoint
 	 * @return boolean
 	 */
 	public function checkAccess ( $endpoint = [] ) 
@@ -173,4 +189,34 @@ abstract class AbstractApi {
 		return false;
 	}
 
+	/**
+	 * Checks for security issues, e.g. if the IP was blocked
+	 * or the user has exceeded the maximum number of requests
+	 * 
+	 * See `Annotations\Security\*` for more information.
+	 * 
+	 * @return boolean
+	 */
+	public function checkSecurity ( $endpoint = [] ) 
+	{
+		$checker = \nn\rest::Security( $this->request );
+
+		// execute security checks defined in the TypoScript-setup
+		if ($defaultSecuritySettings = $this->request->getSettings()['security']['defaults'] ?? []) {
+			foreach ($defaultSecuritySettings as $n=>$className ) {
+				if (!\nn\t3::call( $className )) {
+					return false;
+				}
+			}
+		}
+		// execute security checks defined by Annotations
+		$checkList = $endpoint['security'] ?? [];
+
+		foreach ($checkList as $method=>$params) {
+			if (!$checker->{$method}( $params )) {
+				return false;
+			}
+		}
+		return true;
+	}
 }

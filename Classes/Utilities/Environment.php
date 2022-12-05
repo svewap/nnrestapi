@@ -5,6 +5,7 @@ namespace Nng\Nnrestapi\Utilities;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
+use TYPO3\CMS\Core\Http\ApplicationType;
 
 /**
  * Helper for getting information about the installation and environment
@@ -24,9 +25,28 @@ class Environment extends \Nng\Nnhelpers\Singleton
 	 * ```
 	 * @return boolean
 	 */
-	public function databaseTableExists( $tableName = '') {
+	public function databaseTableExists( $tableName = '') 
+	{
 		$connection = \nn\t3::Db()->getConnection();
-		if ($connection->fetchAll("SHOW TABLES like '{$tableName}'")) {
+
+		$serverVersion = $connection->getServerVersion();
+		$isPostgres = stripos($serverVersion, 'PostgreSQL') !== false;
+		
+		if ($isPostgres) {
+			$result = $connection->fetchAllAssociative("
+				SELECT 
+					COUNT(table_name) 
+				FROM 
+					information_schema.tables 
+				WHERE 
+					table_schema LIKE 'public' 
+					AND table_type LIKE 'BASE TABLE' 
+					AND table_name = '{$tableName}'
+				");
+			return $result > 0;
+		}
+
+		if ($connection->fetchAllAssociative("SHOW TABLES like '{$tableName}'")) {
 			return true;
 		}
 		return false;
@@ -40,7 +60,8 @@ class Environment extends \Nng\Nnhelpers\Singleton
 	 * ```
 	 * @return boolean
 	 */
-	public function sessionTableExists() {
+	public function sessionTableExists() 
+	{
 		$tableName = \Nng\Nnrestapi\Utilities\Session::TABLENAME;
 		return $this->databaseTableExists( $tableName );
 	}
@@ -55,9 +76,25 @@ class Environment extends \Nng\Nnhelpers\Singleton
 	 * ```
 	 * @return boolean
 	 */
-	public function getLanguages( $key = 'languageId' ) {
+	public function getLanguages( $key = 'languageId' ) 
+	{
 		$languages = \nn\t3::Settings()->getSiteConfig()['languages'] ?? [];
 		return array_combine( array_column($languages, $key), array_values($languages) );
+	}
+	
+	/**
+	 * Returns TRUE if we are in the frontend context
+	 * ```
+	 * \nn\rest::Environment()->isFrontend();
+	 * ```
+	 * @return Boolean
+	 */
+	public function isFrontend() 
+	{
+		if ($request = \nn\rest::Settings()->getRequest()) {
+			return ApplicationType::fromRequest($request)->isFrontend();
+		}
+		return false;
 	}
 	
 }

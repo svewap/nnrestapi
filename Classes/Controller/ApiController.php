@@ -9,6 +9,7 @@ use TYPO3\CMS\Core\Context\LanguageAspect;
 use TYPO3\CMS\Core\Context\LanguageAspectFactory;
 
 use \Nng\Nnrestapi\Exception\PropertyValidationException;
+use \Nng\Nnrestapi\Error\ApiError;
 
 /**
  * ApiController
@@ -39,13 +40,6 @@ class ApiController extends AbstractApiController
 		$result = [];
 		$cacheIdentifer = [$endpoint['class'], $endpoint['method']];
 
-		// create an instance of the endpoint `Nng\Nnrestapi\Api\Test`
-		$classInstance = \nn\t3::injectClass( $endpoint['class'] );
-
-		// set request and response wrappers in class instance
-		$classInstance->setRequest( $request );
-		$classInstance->setResponse( $response );
-
 		// check if user is allowed to access hidden records (simulates a backend user)
 		$showHiddenFromAnnotation 	= $endpoint['includeHidden'] ?? false;		// via `@Api\IncludeHidden` annotation?
 		$showHiddenFromFeUser 		= $request->isAdmin();						// via "admin"-checkbox set in fe-user?
@@ -53,6 +47,13 @@ class ApiController extends AbstractApiController
 		if ($showHiddenFromAnnotation || $showHiddenFromFeUser) {
 			\nn\rest::Settings()->setIgnoreEnableFields( true );
 		}
+
+		// create an instance of the endpoint `Nng\Nnrestapi\Api\Test`
+		$classInstance = \nn\t3::injectClass( $endpoint['class'] );
+
+		// set request and response wrappers in class instance
+		$classInstance->setRequest( $request );
+		$classInstance->setResponse( $response );
 
 		// checks, if LanguageAspect needs to be set to different language. Will decide, if language-overlay is loaded for records.
 		$overlayLanguageUid = $classInstance->determineLanguage( $endpoint );
@@ -69,6 +70,14 @@ class ApiController extends AbstractApiController
 				$GLOBALS['TYPO3_REQUEST'] = $GLOBALS['TYPO3_REQUEST']->withAttribute('language', $language);
 			}
 		}
+
+		// check if there are `@Api\Security\*` issues, e.g. if IP was flagged or too many requests were made
+		if (!$classInstance->checkSecurity( $endpoint )) {			
+			$result = $response->unauthorized("{$endpoint['class']}->{$endpoint['method']}() has blocked the access during the security preflight." );
+		}
+
+		// Set headers (max-age etc.)
+		$classInstance->setDefaultHeaders( $endpoint );
 
 		// check if access is granted to requested class->method
 		if (!$classInstance->checkAccess( $endpoint )) {
@@ -98,13 +107,22 @@ class ApiController extends AbstractApiController
 						$result = $classInstance->{$endpoint['method']}( ...$argumentsToApply ) ?: [];
 					} catch( PropertyValidationException $e ) {
 						$result = $response->invalid( $e->getMessage() );
+					} catch ( ApiError $e ) {
+						$result = $response->error( $e );
+					} catch ( \Error $e ) {
+						\nn\t3::Error( $e->getMessage(), $e->getCode() );
 					}
 	
 				} else {
 	
 					// No arguments expected in method (`->getSomethingAction()`)
-					$result = $classInstance->{$endpoint['method']}() ?: [];
-	
+					try {
+						$result = $classInstance->{$endpoint['method']}() ?: [];
+					} catch( ApiError $e ) {
+						$result = $response->error( $e );
+					} catch ( \Error $e ) {
+						\nn\t3::Error( $e->getMessage(), $e->getCode() );
+					}
 				}
 				
 				if ($response->getStatus() == 200) {

@@ -2,6 +2,7 @@
 namespace Nng\Nnrestapi\Service;
 
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Nnrestapi
@@ -16,8 +17,10 @@ class AutoloadService
 	 * 
 	 * 	@return void
 	 */
-	public static function loadLibraries () {
-		require_once( \nn\t3::Environment()->extPath('nnrestapi') . 'Resources/Libraries/vendor/autoload.php');
+	public static function loadLibraries () 
+	{
+		$path = GeneralUtility::getFileAbsFileName( 'EXT:nnrestapi/Resources/Libraries/vendor/autoload.php' );
+		require_once( $path );
 	}
 	
 }

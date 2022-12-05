@@ -483,9 +483,11 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 
 			// Normalize path to `Classes`
 			$key = 'psr-4';
+			$valueFromManifest = $package->getValueFromComposerManifest( 'autoload' )->$key ?? [];
+
 			$psr4 = array_map(function ( $item ) {
 				return is_array($item) ? $item : [$item];
-			}, (array) $package->getValueFromComposerManifest( 'autoload' )->$key);
+			}, (array) $valueFromManifest);
 			
 			$extPath = $package->getPackagePath();
 			$filesToParse = [];
@@ -512,6 +514,11 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 				$content = file_get_contents( $file );
 				if (!$content || !preg_match($regexPattern, $content)) {
 					continue;
+				}
+
+				// ignore because this is the Annotation itself. It describes how to use the Annotation
+				if ($className == \Nng\Nnrestapi\Annotations\Endpoint::class) {
+					continue;					
 				}
 
 				// then make sure, the `@Api\Endpoint` string is in the DocComment

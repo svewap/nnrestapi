@@ -8,8 +8,8 @@ use \TYPO3\CMS\Core\Http\Response;
  * Helper zum Senden von Headern
  * 
  */
-class Header extends \Nng\Nnhelpers\Singleton {
-
+class Header extends \Nng\Nnhelpers\Singleton 
+{
 	/**
 	 * Response mit Headern anreichern, die allgemein für jeden Response wichtig sind.
 	 * 
@@ -73,13 +73,45 @@ class Header extends \Nng\Nnhelpers\Singleton {
 	}
 
 	/**
+	 * Add a custom header or override an existing one
+	 * ```
+	 * \nn\rest::Header()->add( $response, 'Cache-Control', 'max-age=10' );
+	 * ```
+	 * @param Response $response
+	 * @param string $key
+	 * @param string $value
+	 * @return self
+	 */
+	public function add( Response &$response, $key = '', $value = '' ) 
+	{
+		$response = $response->withHeader($key, $value);
+		return $this;
+	}
+	
+	/**
+	 * Remove a header
+	 * ```
+	 * \nn\rest::Header()->remove( $response, 'Pragma' );
+	 * ```
+	 * @param Response $response
+	 * @param string $key
+	 * @return self
+	 */
+	public function remove( Response &$response, $key = '' ) 
+	{
+		$response = $response->withoutHeader($key);
+		return $this;
+	}
+
+	/**
 	 * Echo header for 500 errors.
 	 * ```
 	 * \nn\rest::Header()->exception( 'message' );
 	 * ```
 	 * @return self 
 	 */
-	public function exception( $message = '', $code = 500 ) {
+	public function exception( $message = '', $code = 500 ) 
+	{
 		$protocoll = $_SERVER['SERVER_PROTOCOL'] ?? 'HTTP/1.1';
 		$phpSapiName = substr(php_sapi_name(), 0, 3);
 		
@@ -87,6 +119,8 @@ class Header extends \Nng\Nnhelpers\Singleton {
 		header('Access-Control-Allow-Origin: ' . $origin);
 		header('Access-Control-Allow-Credentials: true');
 
+		$message = substr(trim(preg_replace('/\s\s+/', ' ', $message)), 0, 50);
+		
 		if ($phpSapiName == 'cgi' || $phpSapiName == 'fpm') {
 			header('Status: ' . $code . ' ' . $message);
 		} else {

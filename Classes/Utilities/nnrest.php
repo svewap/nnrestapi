@@ -14,7 +14,10 @@ use Nng\Nnrestapi\Utilities\Kickstart;
 use Nng\Nnrestapi\Utilities\Query;
 use Nng\Nnrestapi\Utilities\Settings;
 use Nng\Nnrestapi\Utilities\Session;
+use Nng\Nnrestapi\Utilities\Security;
 use Nng\Nnrestapi\Utilities\Validator;
+
+use Nng\Nnrestapi\Error\ApiError;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -145,11 +148,36 @@ class rest {
 
 	/**
 	 * ```
+	 * \nn\rest::Security( $request )->methodName();
+	 * ```
+	 * @return Security
+	 */
+	public static function Security( $request = null ) {
+		return Security::makeInstance( $request );
+	}
+
+	/**
+	 * ```
 	 * \nn\rest::Validator()->methodName();
 	 * ```
 	 * @return Validator
 	 */
 	public static function Validator() {
 		return Validator::makeInstance();
+	}
+
+	/**
+	 * Throws an error that will be returned as JSON
+	 * ```
+	 * \nn\rest::Error( 'Damn.' );
+	 * \nn\rest::Error( 'Damn.', 403, 403123 );
+	 * ```
+	 * @param string $text     		Error message
+	 * @param string $statusCode    http status code
+	 * @param string $errorCode     custom code for JSON response
+	 * @return void
+	 */
+	public static function ApiError( $message = '', $statusCode = 0, $customErrorCode = '' ) {
+		throw new ApiError( $message, $statusCode, $customErrorCode );
 	}
 }

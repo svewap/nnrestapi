@@ -6,7 +6,7 @@
 Error Responses
 ============
 
-Returning an 404 NOT FOUND
+Responding with an Error 
 ~~~~~~~~~~
 
 The ``nnrestapi`` has a few shortcuts built in to respond with error codes, if the request parameters were
@@ -52,6 +52,64 @@ a ``404 NOT FOUND`` header:
 .. code-block:: json
 
    {"status":404, "error":"Model with uid [1] was not found."}
+
+
+Responding by throwing an Error
+~~~~~~~~~~
+
+An alternative way to respond with an Error is by throwing an ``Nng\Nnrestapi\Error\ApiError``.
+This allows adding a custom error code, e.g. for better evaluating and displaying / localizing 
+the error in your frontend application.
+
+To immediatly throw the ApiError and abort further processing, you can use the ``\nn\rest::Error()``-Helper:
+
+.. code-block:: php
+
+   // basic syntax
+   \nn\rest::Error( $message, $httpErrorCode, $myCustomErrorCode );
+
+   // examples
+   \nn\rest::Error( 'Nothing here, bro.', 404, 'ERROR.NOTHING' );
+   \nn\rest::Error( 'Not your district, bro.', 403, 1234567 );
+
+The last example above will send a ``403 Unauthorized`` header and a JSON with the message and 
+custom error code:
+
+.. code-block:: json
+
+   {"status":403, "error":"Not your district, bro.", "code":123567}
+
+
+**Full example**
+
+.. code-block:: php
+
+   <?php   
+   namespace My\Extension\Api;
+
+   use Nng\Nnrestapi\Annotations as Api;
+   use Nng\Nnrestapi\Api\AbstractApi;
+
+   /**
+    * @Api\Endpoint()
+    */
+   class Test extends AbstractApi 
+   {
+      /**
+       * Call via GET-request with an uid: https://www.mywebsite.com/api/test 
+       *
+       * @Api\Access("public")
+       * @return array
+       */
+      public function getIndexAction()
+      {
+         if ($this->someCheckFailed()) {
+            \nn\rest::Error( 'the check failed', 403, 612523 );
+         }
+
+         return ['everything'=>'fine'];
+      }
+   }
 
 
 Overview of error codes
