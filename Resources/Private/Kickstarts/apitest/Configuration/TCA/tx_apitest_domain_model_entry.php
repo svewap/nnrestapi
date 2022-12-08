@@ -25,7 +25,6 @@
 			'searchFields' => '',
             'tstamp' => 'tstamp',
             'crdate' => 'crdate',
-            'cruser_id' => 'cruser_id',
             'dividers2tabs' => TRUE,    
             'iconfile' => 'EXT:apitest/Resources/Public/Icons/Extension.svg',
             'languageField' => 'sys_language_uid',

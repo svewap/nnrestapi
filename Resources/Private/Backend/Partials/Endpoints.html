@@ -115,4 +115,18 @@
 		</f:else>
 	</f:if>
 
+	<f:if condition="!{extConf.disableDonationWarning}">
+		<div class="alert alert-warning">
+			<i class="fas fa-coffee me-2 text-danger"></i>
+			<b>The coffee cups of our developers are almost empty.</b>
+			<p class="m-0">
+				The nnrest-extension has been installed in &gt; 4.000 TYPO3 projects. We've had a total of <b>3 (three) donations</b> so far.<br>
+				If you like this extension and it saved you time, please help us keep it alive by 
+				<a target="_blank" href="https://docs.typo3.org/p/nng/nnrestapi/1.0/en-us/About/About/50_support.html">
+					refilling a cup.
+				</a>
+			</p>
+		</div>
+	</f:if>
+	
 </div>

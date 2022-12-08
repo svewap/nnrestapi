@@ -7,7 +7,7 @@ var urlBase = $testbed.data().urlBase;
 var requestTypesWithBody = ['post', 'put', 'patch'];
 
 var filters = {};
-	
+
 /**
  * Filterform
  * 

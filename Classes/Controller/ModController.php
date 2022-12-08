@@ -7,6 +7,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Core\Page\PageRenderer;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * Backend Module
@@ -47,6 +48,10 @@ class ModController extends ActionController
 		$this->pageRenderer->loadJavaScriptModule('@vendor/nnrestapi/Axios.js');
 		$this->pageRenderer->loadJavaScriptModule('@vendor/nnrestapi/Nnrestapi.js');
 		
+		$this->pageRenderer->addCssFile('EXT:nnhelpers/Resources/Public/Vendor/fontawesome/css/all.css');
+		$this->pageRenderer->addCssFile('EXT:nnrestapi/Resources/Public/Vendor/bootstrap.min.css');
+		$this->pageRenderer->addCssFile('EXT:nnhelpers/Resources/Public/Css/styles.css');
+		$this->pageRenderer->addCssFile('EXT:nnrestapi/Resources/Public/Css/styles.css');
 		$this->pageRenderer->addCssFile('EXT:nnhelpers/Resources/Public/Vendor/prism/prism.css');
 		$this->pageRenderer->addJsFile('EXT:nnhelpers/Resources/Public/Vendor/prism/prism.js');
 
@@ -60,7 +65,7 @@ class ModController extends ActionController
 	 * 
 	 * @return void
 	 */
-	public function indexAction () 
+	public function indexAction (): ResponseInterface
 	{
 		// Make sure site config.yaml is loaded and parsed in Settings
 		\nn\rest::Settings()->initialize();
@@ -93,8 +98,8 @@ class ModController extends ActionController
 			// Any errors? Then abort here.
 			if ($errors) {
 				$html = \nn\t3::Template()->render('EXT:nnrestapi/Resources/Private/Backend/Templates/Mod/Error.html', ['errors'=>$errors]);
-				$this->moduleTemplate->setContent($html);
-				return $this->htmlResponse($this->moduleTemplate->renderContent());
+				$this->moduleTemplate->assignMultiple(['content'=>$html]);
+				return $this->moduleTemplate->renderResponse( 'Index' );
 			}
 		}
 
@@ -116,8 +121,8 @@ class ModController extends ActionController
 			'extConf'			=> \nn\t3::Environment()->getExtConf('nnrestapi')
 		]);
 
-		$this->moduleTemplate->setContent($this->view->render());
-		return $this->htmlResponse($this->moduleTemplate->renderContent());
+		$this->moduleTemplate->assignMultiple(['content'=>$this->view->render()]);
+		return $this->moduleTemplate->renderResponse( 'Index' );
 	}
 
 	/**

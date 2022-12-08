@@ -275,7 +275,7 @@ class Security extends \Nng\Nnhelpers\Singleton
 
 		// If required tables for nnrestapi have not been installed yet, stay silent.
 		try {
-			$queryBuilder->execute();
+			$queryBuilder->executeStatement();
 		} catch( \Throwable $e ) {
 		} catch ( \Exception $e ) {}
 	}

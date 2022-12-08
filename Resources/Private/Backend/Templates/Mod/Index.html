@@ -1,55 +1,50 @@
-<f:layout name="Module" />
 
-<f:section name="content">
+{f:render(partial:'Testbed', arguments:_all)}
 
-	{f:render(partial:'Testbed', arguments:_all)}
+<main class="p-4">
+	{nnt3:flashMessages()}
 
-	<main class="p-4">
-		{nnt3:flashMessages()}
+	<ul class="nav nav-pills mb-4">
+		<li class="nav-item">
+			<a class="nav-link active" data-bs-toggle="tab" data-bs-target=".tab-endpoint">
+				<i class="fas fa-share-alt me-2"></i>
+				Endpoints
+			</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link" data-bs-toggle="tab" data-bs-target=".tab-kickstarts">
+				<i class="fas fa-box me-2"></i>
+				Kickstarter
+			</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link donate-tab" data-bs-toggle="tab" data-bs-target=".tab-donate">
+				<i class="{donate.icon} me-2"></i>
+				{donate.title}
+			</a>
+		</li>
+	</ul>
 
-		<ul class="nav nav-pills mb-4">
-			<li class="nav-item">
-				<a class="nav-link active" data-bs-toggle="tab" data-bs-target=".tab-endpoint">
-					<i class="fas fa-share-alt me-2"></i>
-					Endpoints
-				</a>
-			</li>
-			<li class="nav-item">
-				<a class="nav-link" data-bs-toggle="tab" data-bs-target=".tab-kickstarts">
-					<i class="fas fa-box me-2"></i>
-					Kickstarter
-				</a>
-			</li>
-			<li class="nav-item">
-				<a class="nav-link donate-tab" data-bs-toggle="tab" data-bs-target=".tab-donate">
-					<i class="{donate.icon} me-2"></i>
-					{donate.title}
-				</a>
-			</li>
-		</ul>
-
-		<div class="tab-content">
-			<div class="tab-pane tab-endpoint active">
-				<div class="body">
-					{f:render(partial:'Messages', arguments:_all)}	
-					{f:render(partial:'Endpoints', arguments:_all)}
-				</div>			
-			</div>
-			<div class="tab-pane tab-kickstarts">
-				<div class="body">
-					{f:render(partial:'Kickstarts', arguments:_all)}
-				</div>			
-			</div>
-			<div class="tab-pane tab-donate">
-				<div class="body pt-4">
-					{f:render(partial:'Donate/{donate.content}', arguments:_all, default:'Oups...', optional:1, arguments:_all)}
-				</div>			
-			</div>
+	<div class="tab-content">
+		<div class="tab-pane tab-endpoint active">
+			<div class="body">
+				{f:render(partial:'Messages', arguments:_all)}	
+				{f:render(partial:'Endpoints', arguments:_all)}
+			</div>			
 		</div>
+		<div class="tab-pane tab-kickstarts">
+			<div class="body">
+				{f:render(partial:'Kickstarts', arguments:_all)}
+			</div>			
+		</div>
+		<div class="tab-pane tab-donate">
+			<div class="body pt-4">
+				{f:render(partial:'Donate/{donate.content}', arguments:_all, default:'Oups...', optional:1, arguments:_all)}
+			</div>			
+		</div>
+	</div>
 
-			
-	</main>
+		
+</main>
 
-	{f:render(partial:'Modal', arguments:_all)}
-
-</f:section>
+{f:render(partial:'Modal', arguments:_all)}

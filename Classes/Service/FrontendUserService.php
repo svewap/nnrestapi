@@ -57,7 +57,7 @@ class FrontendUserService
 			$queryBuilder = \nn\t3::Db()->getQueryBuilder( 'fe_users' );
 			$queryBuilder->select('uid', 'username', 'first_name AS firstname', 'last_name AS lastname')->from( 'fe_users' );
 			\nn\t3::Db()->ignoreEnableFields( $queryBuilder, true, true );
-			$feUsers = $queryBuilder->andWhere( $queryBuilder->expr()->in('uid', $feUserList))->execute()->fetchAll();
+			$feUsers = $queryBuilder->andWhere( $queryBuilder->expr()->in('uid', $feUserList))->executeQuery()->fetchAllAssociative();
 			$feUsersByUid = \nn\t3::Arrays($feUsers)->key('uid')->toArray();
 		}
 

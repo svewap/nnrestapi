@@ -1,138 +1,143 @@
-.nnhelpers-be-module {
+.nnrestapi-be-module .form-control {
+	font-size: 0.9rem;
+}
+
+.nnrestapi-be-module {
     font-family: "Source Sans Pro", sans-serif;
     font-size: 0.9rem;
 }
 
-.nnhelpers-be-module.scrollable {
+.nnrestapi-be-module.scrollable {
     max-height: 100vh;
     overflow-y: auto;
 }
 
-.nnhelpers-be-module a {
+.nnrestapi-be-module a {
     text-decoration: none;
 }
 
-.nav-pills {
+.nnrestapi-be-module .nav-pills {
     background: linear-gradient(45deg, #e8e8e8, #f4f4f4);
     font-size: 0.9rem;
 }
 
-.nav-pills .nav-link {
+.nnrestapi-be-module .nav-pills .nav-link {
     border-radius: 0;
     padding: 0.5rem 1rem 0.3rem 1rem;
     cursor: pointer;
     color: inherit;
 }
 
-.nav-pills .nav-link.active {
+.nnrestapi-be-module .nav-pills .nav-link.active {
     color: #000;
     background: #ddd;
     border-bottom: 0.2rem solid #7090af;
 }
 
-.nav-pills .nav-item a:hover {
+.nnrestapi-be-module .nav-pills .nav-item a:hover {
     background: #ddd;
 } 
 
-.nav-pills .nav-link.active i {
+.nnrestapi-be-module .nav-pills .nav-link.active i {
     color: #708faf;
 } 
 
-.form-control, .nav-link, .btn {
+.nnrestapi-be-module .form-control, .nav-link, .btn {
     border-radius: 0;
 }
 
-.testbed .form-control {
-    height: 2.25rem;
+.nnrestapi-be-module .request-form .form-control {
+    height: 100%;
 }
 
-.form-control:focus {
+.nnrestapi-be-module .form-control:focus {
     box-shadow: none;
     border-color: #ced4da;
 }
 
-h1 {
+.nnrestapi-be-module h1 {
     font-size: 2rem;
 }
 
-h2 {
+.nnrestapi-be-module h2 {
     font-size: 1.2rem;
     font-weight: 400;
 }
 
-h3 {
+.nnrestapi-be-module h3 {
     font-size: 1rem;
+     margin: 0 0 0 0;
 }
 
-.donate h1 {
+.nnrestapi-be-module .donate h1 {
     font-size: 1.4rem;
     font-weight: 600;
 }
 
-.donate hr {
+.nnrestapi-be-module .donate hr {
     margin: 30px 0;
 }
 
-.donate p a {
+.nnrestapi-be-module .donate p a {
     color: #ff6600;
     font-weight: 600;
 }
 
-.donate p b {
+.nnrestapi-be-module .donate p b {
     font-weight: 600;
 }
 
-.donate .btn {
+.nnrestapi-be-module .donate .btn {
     font-size: 1rem;
     border-radius: 20px;
     padding: 5px 20px;
 }
 
-.donate .btn i {
+.nnrestapi-be-module .donate .btn i {
     color: #fff;
 }
 
-.donate-tab i {
+.nnrestapi-be-module .donate-tab i {
     animation: 10s pulse 5s infinite; 
 }
 
-.nnrestapi-errors {
+.nnrestapi-be-module .nnrestapi-errors {
     max-width: 900px;
 }
 
-.nnrestapi-errors p {
+.nnrestapi-be-module .nnrestapi-errors p {
     margin: 0;
 }
 
-.nnrestapi-errors i {
+.nnrestapi-be-module .nnrestapi-errors i {
     color: #842029;
 }
 
-.nnrestapi-errors pre {
+.nnrestapi-be-module .nnrestapi-errors pre {
     margin-top: 0.5rem;
     background: #000;
 }
-.nnrestapi-errors code {
+.nnrestapi-be-module .nnrestapi-errors code {
     margin-top: 0.5rem;
     background: transparent;
     color: #fff;
 }
 
-.card-body h1 {
+.nnrestapi-be-module .card-body h1 {
     font-size: 1.1rem;
     font-weight: 600;
 }
 
-.card-body h2 {
+.nnrestapi-be-module .card-body h2 {
     font-size: 1rem;
     font-weight: 600;
 }
 
-.card-header i {
+.nnrestapi-be-module .card-header i {
     color: #aaa;
 }
 
-.card .access-icon {
+.nnrestapi-be-module .card .access-icon {
     min-width: 45px;
     display: inline-block;
     text-align: center;
@@ -140,24 +145,24 @@ h3 {
     font-size: 0.8rem;
 }
 
-.access-icon.public {
+.nnrestapi-be-module .access-icon.public {
     color: #69ad8d;
 }
 
-.access-list code {
+.nnrestapi-be-module.access-list code {
     padding: 0;
     margin: 0;
 }
 
-#hide-nnrestapi {
+.nnrestapi-be-module #hide-nnrestapi {
     margin-left: -1.5em;
 }
 
-.hide-nnrestapi .ext-nnrestapi {
+.nnrestapi-be-module .hide-nnrestapi .ext-nnrestapi {
     display: none;
 }
 
-.form-control.search {
+.nnrestapi-be-module .form-control.search {
     border-radius: 15px 0 0 15px;
     border-right: none;
     padding-left: 15px;
@@ -165,21 +170,21 @@ h3 {
     font-size: 0.9rem;
 }
 
-.search ~ .input-group-append {
+.nnrestapi-be-module .search ~ .input-group-append {
     border-left: none;
 }
 
-.search ~ .input-group-append .input-group-text {
+.nnrestapi-be-module .search ~ .input-group-append .input-group-text {
     border-radius: 0 15px 15px 0;
     background: transparent;
 }
 
-.clear-icon {
+.nnrestapi-be-module .clear-icon {
     display: none;
     cursor: pointer;
 }
 
-.testbed {
+.nnrestapi-be-module .testbed {
     position: fixed;
     top: 0;
     right: 0;
@@ -191,7 +196,7 @@ h3 {
     font-size: 0.9rem;
 }
 
-.reqtype {
+.nnrestapi-be-module .reqtype {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
@@ -204,22 +209,22 @@ h3 {
     z-index: 1;
 }
 
-.testbed .btn {
+.nnrestapi-be-module .testbed .btn {
     font-size: 1rem;
 }
 
-.testbed label {
+.nnrestapi-be-module .testbed label {
     padding: 0.5rem 0;
     min-width: 150px;
     margin: 0;
     color: #000;
 }
 
-.testbed .tab-pane {
+.nnrestapi-be-module .testbed .tab-pane {
     background: #ededed;
 }
 
-.testbed .nav-link {
+.nnrestapi-be-module .testbed .nav-link {
     margin: 0;
     color: #000 !important;
     cursor: pointer;
@@ -230,32 +235,32 @@ h3 {
     padding: 10px 15px 6px 15px;
 }
 
-.testbed .nav-tabs > li {
+.nnrestapi-be-module .testbed .nav-tabs > li {
     margin-left: 0;
 }
 
 
-.files {
+.nnrestapi-be-module .files {
     color: #000;
 }
 
-input[type=file] {
+.nnrestapi-be-module input[type=file] {
     display: block;
     border: 1px solid #ced4da;
     margin: 0;
     min-height: 100%;
 }
 
-main {
+.nnrestapi-be-module main {
     width: calc(100vw - 650px);
 }
 
-.compose-body textarea {
+.nnrestapi-be-module .compose-body textarea {
     min-height: 200px;
     padding: 1rem;
 }
 
-.details span {
+.nnrestapi-be-module .details span {
     text-transform: uppercase;
     font-size: 0.8rem;
     letter-spacing: 0.05em;
@@ -263,51 +268,51 @@ main {
     transition: 0.1s all;
 }
 
-.path:hover {
+.nnrestapi-be-module .path:hover {
     opacity: 0.7;
 }
 
-.details:hover span {
+.nnrestapi-be-module .details:hover span {
     opacity: 1;
 } 
 
-.rescode {
+.nnrestapi-be-module .rescode {
     background: #444;
     border-bottom: 1px solid #555;
     padding: .5rem 1rem;
 }
 
-.exception {
+.nnrestapi-be-module .exception {
     display: none;
 }
 
-.show-exception .exception {
+.nnrestapi-be-module .show-exception .exception {
     display: block;
 }
 
-.show-exception .result {
+.nnrestapi-be-module .show-exception .result {
     display: none;
 }
 
-.result-panel,
-.result-panel pre {
+.nnrestapi-be-module .result-panel,
+.nnrestapi-be-module .result-panel pre {
     background: #000;
 }
 
-.result-panel .toolbar {
+.nnrestapi-be-module .result-panel .toolbar {
     display: none;
 }
 
-.result-panel .code-toolbar {
+.nnrestapi-be-module .result-panel .code-toolbar {
     height: 100%;
 }
 
-.reqbody {
+.nnrestapi-be-module .reqbody {
     font-family: Consolas,Monaco,'Andale Mono','Ubuntu Mono',monospace;
     font-size: 0.9rem;
 }
 
-.resbody {
+.nnrestapi-be-module .resbody {
     min-height: 250px;
     overflow-y: auto;
     background: #000;
@@ -317,22 +322,22 @@ main {
     margin: 0;
 }
 
-.card-header {
+.nnrestapi-be-module .card-header {
     background: linear-gradient(45deg, #e8e8e8, #f4f4f4);
 }
-.card-header h2 {
+.nnrestapi-be-module .card-header h2 {
     font-size: 0.9rem;
 }
-.card-header a {
+.nnrestapi-be-module .card-header a {
     display: flex !important;
     align-items: center;
 }
 
-.example .code-toolbar {
+.nnrestapi-be-module .example .code-toolbar {
     margin-top: 0.5rem;
 }
 
-.req-type:before {
+.nnrestapi-be-module .req-type:before {
     content: '';
     min-width: 50px;
     text-transform: uppercase;
@@ -348,72 +353,75 @@ main {
     margin: 0 10px 0 0;
 }
 
-.endpoints {
+.nnrestapi-be-module .endpoints {
     font-size: 0.9rem;
 }
 
-.endpoints .req-type-get:before {
+.nnrestapi-be-module .endpoints .req-type-get:before {
     content: 'get';
     background: #60aefe;
 }
-.endpoints .req-type-post:before {
+
+.nnrestapi-be-module .endpoints .req-type-post:before {
     content: 'post';
     background: #4acb91;
 }
-.endpoints .req-type-put:before {
+
+.nnrestapi-be-module .endpoints .req-type-put:before {
     content: 'put';
     background: #fba12f;
 }
-.endpoints .req-type-patch:before {
+
+.nnrestapi-be-module .endpoints .req-type-patch:before {
     content: 'patch';
     background: #4fe2c2;
 }
-.endpoints .req-type-delete:before {
+.nnrestapi-be-module .endpoints .req-type-delete:before {
     content: 'del';
     background: #f93f3e;
 }
-.req-type-get .reqtype {
+.nnrestapi-be-module .req-type-get .reqtype {
     background: #60aefe;
 }
-.req-type-post .reqtype {
+.nnrestapi-be-module .req-type-post .reqtype {
     background: #4acb91;
 }
-.req-type-put .reqtype {
+.nnrestapi-be-module .req-type-put .reqtype {
     background: #fba12f;
 }
-.req-type-patch .reqtype {
+.nnrestapi-be-module .req-type-patch .reqtype {
     background: #4fe2c2;
 }
-.req-type-delete .reqtype {
+.nnrestapi-be-module .req-type-delete .reqtype {
     background: #f93f3e;
 }
-.req-type-delete [data-target=".compose-body"], 
-.req-type-delete [data-target=".compose-files"],
-.req-type-get [data-target=".compose-body"], 
-.req-type-get [data-target=".compose-files"] {
+.nnrestapi-be-module .req-type-delete [data-target=".compose-body"], 
+.nnrestapi-be-module .req-type-delete [data-target=".compose-files"],
+.nnrestapi-be-module .req-type-get [data-target=".compose-body"], 
+.nnrestapi-be-module .req-type-get [data-target=".compose-files"] {
     text-decoration: line-through !important;  
     opacity: 0.6;  
 }
-.req-type-delete .compose-body, 
-.req-type-delete .compose-files,
-.req-type-get .compose-body, 
-.req-type-get .compose-files {
+.nnrestapi-be-module .req-type-delete .compose-body, 
+.nnrestapi-be-module .req-type-delete .compose-files,
+.nnrestapi-be-module .req-type-get .compose-body, 
+.nnrestapi-be-module .req-type-get .compose-files {
     opacity: 0.8;
     pointer-events: none;
 }
 
-.compose.pump .req-type {
+.nnrestapi-be-module .compose.pump .req-type {
     animation: pump-down 0.3s;
 }
-.request-form.pump .reqtype {
+.nnrestapi-be-module .request-form.pump .reqtype {
     animation: 0.3s pump-up 0.3s;
 }
 
-.url {
+.nnrestapi-be-module .url {
     position: relative;
 }
 
-.progress-bar {
+.nnrestapi-be-module .progress-bar {
     position: absolute;
     z-index: 10;
     pointer-events: none;
@@ -424,29 +432,29 @@ main {
     background: #cabf39;
 }
 
-.loading .progress-bar {
+.nnrestapi-be-module .loading .progress-bar {
     display: block;
 }
 
 
-.testbed .spinner {
+.nnrestapi-be-module .testbed .spinner {
     display: none;
     color: #fff;
 }
 
-.loading .spinner {
+.nnrestapi-be-module .loading .spinner {
    display: block;
 }
 
-.loading .result-panel {
+.nnrestapi-be-module .loading .result-panel {
     opacity: 0.2;
 }
 
-b, strong {
+.nnrestapi-be-module b, .nnrestapi-be-module strong {
     font-weight: 600;
 }
 
-.access-list {
+.nnrestapi-be-module .access-list {
     list-style: none;
     margin: 0;
     padding: 2px 0 0 0;
@@ -455,61 +463,62 @@ b, strong {
     font-size: 0.9rem;
 }
 
-.access-list li {
+.nnrestapi-be-module .access-list li {
     padding: 0 15px 0 0;
 }
-.access-list i {
+.nnrestapi-be-module .access-list i {
     margin-right: 5px;
 }
 
-.table-sm td, .table-sm th {
+.nnrestapi-be-module .table-sm td, 
+.nnrestapi-be-module .table-sm th {
    padding: 0.3rem 0.7rem;
 }
 
-.auth-form {
+.nnrestapi-be-module .auth-form {
     opacity: 0;
     transition: 0.2s all;
 }
 
-.logout .form-control {
+.nnrestapi-be-module .logout .form-control {
     background: #000;
     border: 1px solid #000;
     color: #fff;
 }
 
-.feuser-loaded .auth-form {
+.nnrestapi-be-module .feuser-loaded .auth-form {
     opacity: 1;
 }
-.auth-form .logout {
+.nnrestapi-be-module .auth-form .logout {
     display: none;
 }
-.feuser-exists .auth-form .logout {
+.nnrestapi-be-module .feuser-exists .auth-form .logout {
     display: block;
 }
-.feuser-exists .auth-form .login {
+.nnrestapi-be-module .feuser-exists .auth-form .login {
     display: none;
 }
 
-.kickstarts h3 {
+.nnrestapi-be-module .kickstarts h3 {
     font-weight: 600;
     font-size: 0.9rem;
     margin: 0 0 0.25rem 0;
 }
 
-.kickstart-packages .item {
+.nnrestapi-be-module .kickstart-packages .item {
     border: 1px dotted #cee7e4;
     box-shadow: 0 1px 2px rgba(0,0,0,0.05);
 }
 
-.kickstart-packages .item .text {
+.nnrestapi-be-module .kickstart-packages .item .text {
     transition: ease-in 0.2s all;
 }
 
-.kickstart-packages .item .info {
+.nnrestapi-be-module .kickstart-packages .item .info {
     position: relative;
 }
 
-.kickstart-packages .actions {
+.nnrestapi-be-module .kickstart-packages .actions {
     opacity: 0;
     transition: ease-out 0.2s all;
     transform: translateX(40px);
@@ -520,32 +529,32 @@ b, strong {
     bottom: 0;
 }
 
-.kickstart-packages .item:hover .actions {
+.nnrestapi-be-module .kickstart-packages .item:hover .actions {
     transform: translateX(0);
     opacity: 1;
 }
-.kickstart-packages .item:hover .text {
+.nnrestapi-be-module .kickstart-packages .item:hover .text {
     transform: translateX(-20px);
     opacity: 0;
 }
 
-.kickstart-packages .actions a,
-.kickstart-packages .actions a:hover {
+.nnrestapi-be-module .kickstart-packages .actions a,
+.nnrestapi-be-module .kickstart-packages .actions a:hover {
     border-radius: 3px;
     color: #fff;
     background: #15b5a2;
     transition: 0.2s all;
 }
 
-.kickstart-packages .actions a:hover {
+.nnrestapi-be-module .kickstart-packages .actions a:hover {
     transform: scale(1.05);
 }
 
-.kickstart-packages p {
+.nnrestapi-be-module .kickstart-packages p {
     margin: 0;
 }
 
-.kickstart-packages .icon {
+.nnrestapi-be-module .kickstart-packages .icon {
     font-size: 1.6rem;
     width: 70px;
     height: 70px;
@@ -553,39 +562,39 @@ b, strong {
     border: 1px solid #c3dfdc;
     transition: 0.2s all;
 }
-.kickstart-packages .icon,
-.kickstart-packages .icon i {
+.nnrestapi-be-module .kickstart-packages .icon,
+.nnrestapi-be-module .kickstart-packages .icon i {
     color: #15b5a2;
 }
 
-.kickstart-packages .icon i {
+.nnrestapi-be-module .kickstart-packages .icon i {
     font-size: 1.5rem;
 }
 
-.kickstart-packages a:hover .icon {
+.nnrestapi-be-module .kickstart-packages a:hover .icon {
     transform: scale(1.1);
 }
 
-.kickstart-packages a:hover {
+.nnrestapi-be-module .kickstart-packages a:hover {
     text-decoration: none;
     color: inherit;
 }
 
-.kickstart-packages .add-info {
+.nnrestapi-be-module .kickstart-packages .add-info {
     pointer-events: none;
 }
 
-.kickstart-packages .add-info .icon {
+.nnrestapi-be-module .kickstart-packages .add-info .icon {
     background: #eee;
     border: none;
     box-shadow: none;
 }
 
-.kickstart-packages .add-info .icon i {
+.nnrestapi-be-module .kickstart-packages .add-info .icon i {
     color: #bbb;
 }
 
-.modal.fade.show {
+.nnrestapi-be-module .modal.fade.show {
     opacity: 1;
 }
 

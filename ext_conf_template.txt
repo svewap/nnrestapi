@@ -9,3 +9,6 @@ disableDefaultEndpoints = 0
 
 # cat=basic/misc; type=boolean; label=Disable all warnings and checks during installation
 disablePreCheck = 0
+
+# cat=basic/misc; type=boolean; label=Disable donation information
+disableDonationWarning = 0

@@ -136,8 +136,7 @@ module.tx_nnrestapi {
 			10 = EXT:nnrestapi/Resources/Private/Backend/Templates/
 		}
 		layoutRootPaths {
-			0 = EXT:nnhelpers/Resources/Private/Backend/Layouts/
-			20 = EXT:nnrestapi/Resources/Private/Backend/Layouts/
+			0 = EXT:backend/Resources/Private/Layouts/
 		}
 		partialRootPaths {
 			10 = EXT:nnrestapi/Resources/Private/Backend/Partials/
