@@ -48,8 +48,9 @@ class PageResolver implements MiddlewareInterface {
 		
 		// `OPTIONS` prerequest? Then abort with "am there, everything ok!"
 		if ($method == 'options') {
-			$response = \nn\t3::injectClass(\TYPO3\CMS\Core\Http\Response::class );
-			$response->withStatus( 204, 'No Content' );
+			$response = \nn\t3::injectClass( \TYPO3\CMS\Core\Http\Response::class );
+			\nn\rest::Header()->addControls( $response );
+			$response = $response->withStatus( 204, 'No Content' );
 			return $response;
 		}
 
@@ -64,7 +65,8 @@ class PageResolver implements MiddlewareInterface {
 			$classMethodInfo = $className . '::' . $method . ucfirst($args['action']) . 'Action()';
 
 			$response = \nn\t3::injectClass(\TYPO3\CMS\Core\Http\Response::class );
-			$response->withStatus( 404, 'Not found' );
+			\nn\rest::Header()->addControls( $response );
+			$response = $response->withStatus( 404, 'Not found' );
 			$response->getBody()->write(json_encode([
 				'status'	=> 404, 
 				'error'		=> 'RestApi-endpoint not found. Based on your request the endpoint would be `' . $classMethodInfo . '`',
