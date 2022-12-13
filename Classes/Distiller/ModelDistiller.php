@@ -35,8 +35,8 @@ class ModelDistiller
 	 * @param	array	$config	the configuration for destilling the array
 	 * @return void
 	 */
-	public static function process( $model, &$data = [], $config = [], $flattenFileReferences = null ) {
-		
+	public static function process( $model, &$data = [], $config = [], $flattenFileReferences = null ) 
+	{	
 		if (!$model || (!is_object($model) && !is_array($model))) return;
 		
 		$distillers = $config ?: \nn\t3::Settings()->get('tx_nnrestapi')['globalDistillers'] ?: [];
@@ -63,7 +63,7 @@ class ModelDistiller
 		if (is_a($model, QueryResult::class, true) || \nn\t3::Obj()->isStorage($model)) {
 			$model = $model->toArray();
 		}
-		
+
 		if (is_array($model)) {
 			foreach ($model as $n=>$item) {
 				self::process( $item, $data[$n], $distillers, $flattenFileReferences );
@@ -73,8 +73,10 @@ class ModelDistiller
 
 		// exclude certain fields?
         if ($exclude = \nn\t3::Arrays($distillerConfigForClass['exclude'] ?? '')->trimExplode()) {
-			foreach ($exclude as $key) {
-				unset( $data[$key] );
+			if (is_array($data)) {
+				foreach ($exclude as $key) {
+					unset( $data[$key] );
+				}
 			}
 		}
 
@@ -83,15 +85,16 @@ class ModelDistiller
 		
 		$props = \nn\t3::Obj()->getKeys( $model );
 
-		foreach ($props as $key) {
-			$val = \nn\t3::Obj()->get( $model, $key );
-			if ($include && !in_array($key, $include)) {
-				unset($data[$key]);
+		if (is_array($data)) {
+			foreach ($props as $key) {
+				$val = \nn\t3::Obj()->get( $model, $key );
+				if ($include && !in_array($key, $include)) {
+					unset($data[$key]);
+				}
+				if (!isset($data[$key]) || $data[$key] == null) continue;
+				self::process( $val, $data[$key], $distillers, $flattenFileReferences );
 			}
-			if (!isset($data[$key]) || $data[$key] == null) continue;
-			self::process( $val, $data[$key], $distillers, $flattenFileReferences );
 		}
-
 	}
 
 }
