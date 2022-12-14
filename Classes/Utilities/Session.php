@@ -9,8 +9,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Helper for managing api-Sessions and Tokens.
  * 
  */
-class Session extends \Nng\Nnhelpers\Singleton {
-
+class Session extends \Nng\Nnhelpers\Singleton 
+{
 	/**
 	 * Tablename that stores the session-data
 	 * 
@@ -68,8 +68,29 @@ class Session extends \Nng\Nnhelpers\Singleton {
 	 * ```
 	 * @return array
 	 */
-	public function create( $token = null, $data = [] ) {
+	public function create( $token = null, $data = [] ) 
+	{
 		return $this->update( $token, $data );
+	}
+	
+	/**
+	 * Destroys a session
+	 * ```
+	 * \nn\rest::Session()->destroy();
+	 * \nn\rest::Session()->destroy( $identifier );
+	 * ```
+	 * @return array
+	 */
+	public function destroy( $token = null ) 
+	{
+		if (!$token) {
+			$jwt = \nn\t3::Request()->getJwt() ?: [];
+			$token = $jwt['token'] ?? false;
+		}
+		if ($token) {
+			$hashedToken = \nn\t3::Encrypt()->hash( $token );
+			\nn\t3::Db()->delete( self::TABLENAME, ['token'=>$hashedToken] );
+		}
 	}
 
 	/**
