@@ -5,6 +5,7 @@ namespace Nng\Nnrestapi\Utilities;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
+use TYPO3\CMS\Core\Context\Context;
 
 /**
  * Helper for performing basic security checks
@@ -41,6 +42,13 @@ class Security extends \Nng\Nnhelpers\Singleton
 	 * @var string
 	 */
 	var $hashedIp = null;
+	
+	/**
+	 * Fe-User UID of current user.
+	 * 
+	 * @var string
+	 */
+	var $feUserUid = null;
 
 	/**
 	 * Injection patterns
@@ -71,6 +79,10 @@ class Security extends \Nng\Nnhelpers\Singleton
 		$this->request = $request;
 		$remoteAddr = $request ? $request->getRemoteAddr() : $_SERVER['REMOTE_ADDR']; 
 		$this->hashedIp = crc32(md5($remoteAddr));
+
+		$context = GeneralUtility::makeInstance(Context::class);
+		$userAspect = $context->getAspect('frontend.user');
+		$this->feUserUid = $userAspect ? $userAspect->get('id') : 0;
 	}
 
 	/**
@@ -83,8 +95,13 @@ class Security extends \Nng\Nnhelpers\Singleton
 		if ($this->logs === null) {
 
 			$this->removeExpiredEntries();
-			
-			$logs = \nn\t3::Db()->findByValues( self::TABLENAME, ['iphash'=>$this->hashedIp] );
+
+			$constraints = ['iphash'=>$this->hashedIp];
+			if ($feUserUid = $this->feUserUid) {
+				$constraints['feuser'] = $feUserUid;
+			}
+
+			$logs = \nn\t3::Db()->findByValues( self::TABLENAME, $constraints, false );
 			$this->logs['all'] = $logs;
 
 			// group logfiles by the type
@@ -139,7 +156,9 @@ class Security extends \Nng\Nnhelpers\Singleton
 	public function checkLocked( $params = null ) 
 	{
 		$this->init();
-		return count($this->logs['lock'] ?? []) == 0;
+		return 
+			count($this->logs['lock'] ?? []) == 0 &&
+			count($this->logs['feuser'] ?? []) == 0;
 	}
 	
 	
@@ -205,6 +224,7 @@ class Security extends \Nng\Nnhelpers\Singleton
 		$row = [
 			'identifier' => $identifier,
 			'iphash' 	=> $this->hashedIp,
+			'feuser' 	=> $this->feUserUid,
 			'tstamp' 	=> time(),
 			'expires' 	=> time() + $expires,
 			'data' 		=> $data,
@@ -247,6 +267,43 @@ class Security extends \Nng\Nnhelpers\Singleton
 	public function unlockIp() 
 	{
 		\nn\t3::Db()->delete( self::TABLENAME, ['iphash' => $this->hashedIp], true );
+	}
+	
+	/**
+	 * Blacklist an User.
+	 * Locks all requests from current feUser.
+	 * 
+	 * ```
+	 * \nn\rest::Security()->lockFeUser();
+	 * \nn\rest::Security()->lockFeUser( 1, 86400 );
+	 * ```
+	 * 
+	 * @param array $data
+	 * @return array
+	 */
+	public function lockFeUser( $userUid = null, $expires = 86400 ) 
+	{
+		$this->init();
+		if ($userUid !== null) {
+			$this->feUserUid = $userUid;
+		}
+		$this->log( 'feuser', $expires, $data );
+	}
+	
+	/**
+	 * Unlock an IP after it has been locked.
+	 * 
+	 * ```
+	 * \nn\rest::Security()->unlockFeUser( $userUid );
+	 * ```
+	 * 
+	 * @param array $data
+	 * @return array
+	 */
+	public function unlockFeUser( $userUid = null ) 
+	{
+		\nn\t3::Db()->delete( self::TABLENAME, ['feuser' => $userUid ?: $this->feUserUid], true );
+		$this->unlockIp();
 	}
 
 	/**

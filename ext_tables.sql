@@ -33,6 +33,7 @@ CREATE TABLE nnrestapi_security (
 	uid int(11) unsigned DEFAULT 0 NOT NULL auto_increment,
 	identifier varchar(32) DEFAULT '' NOT NULL,
 	iphash varchar(32) DEFAULT '' NOT NULL,
+	feuser int(11) unsigned DEFAULT '0' NOT NULL,
 	tstamp int(11) unsigned DEFAULT '0' NOT NULL,
 	expires int(11) unsigned DEFAULT '0' NOT NULL,
 	data mediumblob,
