@@ -74,7 +74,7 @@ class ApiController extends AbstractApiController
 
 		// check if there are `@Api\Security\*` issues, e.g. if IP was flagged or too many requests were made
 		if (!$classInstance->checkSecurity( $endpoint )) {			
-			$result = $response->unauthorized("{$endpoint['class']}->{$endpoint['method']}() has blocked the access during the security preflight." );
+			$result = $response->unauthorized("{$endpoint['class']}->{$endpoint['method']}() has blocked the access during the security preflight.", 403001 );
 		}
 
 		// Set headers (max-age etc.)
