@@ -32,7 +32,11 @@ class PageResolver implements MiddlewareInterface {
 	 *	@param RequestHandlerInterface $handler
 	 *	@return ResponseInterface
 	 */
-	public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
+	public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface 
+	{
+		// ugly workaround until https://forge.typo3.org/issues/99417 is resolved:
+		// Force rerendering of TypoScript, even if page was cached by creating a "fake" uncachable `INT`-Object
+		$request->getAttribute('frontend.controller')->config['INTincScript'][] = [];
 
 		// Initialize the Settings singleton. Must be done after `typo3/cms-frontend/site` MiddleWare 
 		// and before `\nn\rest::Settings()` is used anywhere
