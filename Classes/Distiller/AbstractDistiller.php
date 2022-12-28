@@ -27,8 +27,9 @@ class AbstractDistiller
 	public function processData( &$data = [] ) 
 	{
 		if (is_object($data)) {
-			$data = (array) $data;
+			$data = \nn\t3::Obj()->toArray($data, 6);
 		}
+
 		if ($this->isAssoc( $data )) {
 			$this->process( $data );
 			$this->pluck( $data, $this->keysToKeep );
@@ -67,19 +68,34 @@ class AbstractDistiller
 	
 	
 	/**
-	 * Array auf einzelne Felder reduzieren.
-	 * ```
-	 * $this->pluck( $assArr, ['uid', 'title'] );
-	 * ```
-	 * @return void
-	 */
-	public function pluck( &$data = [], $keysToKeep = [] ) {
-		if (!$keysToKeep) return;
-		foreach ($data as $k=>$v) {
-			if (!in_array($k, $keysToKeep)) {
-				unset($data[$k]);
-			}
-		}
-	}
+     * Reduce array to single fields.
+     * ```
+     * // Simple array: Properties of given keys are returned
+     * $this->pluck( $arr, ['uid', 'images', 'title'] );
+	 * 
+     * // Deep array: Properties of nested array are returned. Key is returned in dot-syntax
+     * $this->pluck( $arr, ['uid', 'images', 'title', 'images.0.publicUrl'] );
+     *
+     * // Associative array: Get deep nested property and map it to a new key
+     * $this->pluck( $arr, ['uid'=>'uid', 'publicUrl'=>'images.0.publicUrl'] );
+     *
+     * // Mixture is also possible
+     * $this->pluck( $arr, ['uid', 'title', publicUrl'=>'images.0.publicUrl'] );
+     * ```
+     * @return void
+     */
+    public function pluck( &$data = [], $keysToKeep = [] ) 
+	{
+        if (!$keysToKeep) return;
+        $helper = \nn\t3::Settings();
+        $flatResult = [];
+        foreach ($keysToKeep as $key=>$path) {
+            if (is_numeric($key)) {
+				$key = $path;
+            }
+			$flatResult[$key] = $helper->getFromPath($path, $data);
+        }
+        $data = $flatResult;
+    }
 
 }
