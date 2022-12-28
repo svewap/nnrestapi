@@ -26,8 +26,10 @@ class AbstractDistiller
 	 */
 	public function processData( &$data = [] ) 
 	{
-		if (is_object($data)) {
-			$data = \nn\t3::Obj()->toArray($data, 6);
+		if (is_a($data, \TYPO3\CMS\Extbase\Persistence\Generic\QueryResult::class)) {
+			$data = $data->toArray();
+		} else if (is_a($data, \stdClass::class)) {
+			$data = (array) $data;
 		}
 
 		if ($this->isAssoc( $data )) {
@@ -87,13 +89,21 @@ class AbstractDistiller
     public function pluck( &$data = [], $keysToKeep = [] ) 
 	{
         if (!$keysToKeep) return;
+
         $helper = \nn\t3::Settings();
+		$objHelper = \nn\t3::Obj();
         $flatResult = [];
+
+		$arr = $objHelper->toArray($data, 6);
+		if (is_object($data)) {
+			\Nng\Nnrestapi\Distiller\ModelDistiller::process( $data, $arr );
+		}
+
         foreach ($keysToKeep as $key=>$path) {
             if (is_numeric($key)) {
 				$key = $path;
             }
-			$flatResult[$key] = $helper->getFromPath($path, $data);
+			$flatResult[$key] = $helper->getFromPath($path, $arr);
         }
         $data = $flatResult;
     }

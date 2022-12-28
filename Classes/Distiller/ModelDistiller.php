@@ -36,7 +36,7 @@ class ModelDistiller
 	 * @return void
 	 */
 	public static function process( $model, &$data = [], $config = [], $flattenFileReferences = null ) {
-		
+
 		if (!$model || (!is_object($model) && !is_array($model))) return;
 		
 		$distillers = $config ?: \nn\t3::Settings()->get('tx_nnrestapi')['globalDistillers'] ?: [];
