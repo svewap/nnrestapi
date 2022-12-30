@@ -5,9 +5,9 @@ namespace Nng\Nnrestapi\Distiller;
 class AbstractDistiller 
 {
 	/**
-	 * Definiert, welche Felder/Keys im Array behalten werden sollen.
-	 * Wenn leer, wird das komplette Array zurückgegeben.
-	 * Wird von den einzelnen Distillern überschrieben.
+	 * Defines which fields/keys should be kept in the array.
+	 * If empty, the complete array is returned.
+	 * Will be overwritten by the individual distillers.
 	 * 
 	 * @var array
 	 */
@@ -15,8 +15,8 @@ class AbstractDistiller
 
 
 	/**
-	 * Wird von ApiController aufgerufen bevor die Daten zurückgegeben werden.
-	 * Zentrale Methode zum Bearbeiten / Distillen der Daten.
+	 * Called by ApiController before the data is returned.
+	 * Central method for editing / distilling the data.
 	 * 
 	 * ```
 	 * $this->processData( $assArr );
@@ -31,8 +31,7 @@ class AbstractDistiller
 		} else if (is_a($data, \stdClass::class)) {
 			$data = (array) $data;
 		}
-
-		if ($this->isAssoc( $data )) {
+		if (is_object($data) || $this->isAssoc( $data )) {
 			$this->process( $data );
 			$this->pluck( $data, $this->keysToKeep );
 		} else {
@@ -45,7 +44,7 @@ class AbstractDistiller
 
 	
 	/**
-	 * Prüft, ob es sich um ein assoziatives Array handelt.
+	 * Checks whether the array is associative.
 	 * ```
 	 * $this->isAssoc( $arr );
 	 * ```
@@ -53,14 +52,14 @@ class AbstractDistiller
 	 */
 	public function isAssoc( $arr = [] ) 
 	{
-		if (array() === $arr) return false;
+		if (is_object($arr)) return false;
 		return array_keys($arr) !== range(0, count($arr) - 1);
 	}
 	
 	
 	/**
-	 * Einzelnes Element bearbeiten.
-	 * Diese Methode wird von den einzelnen Distillern überschrieben.
+	 * Edit single element.
+	 * This method is overridden by the individual distillers.
 	 * ```
 	 * $this->process( $assArr );
 	 * ```
