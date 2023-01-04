@@ -220,7 +220,12 @@ class ApiController extends AbstractApiController
 					}
 					
 				} else if ($modelData) {
-					
+
+					// this happens, if the POST-body was not a JSON!
+					if (!is_array($modelData)) {
+						\nn\t3::Exception('JSON could not be mapped to an array. Please check if you are passing a valid JSON with {"keys":"values"} and not just a string! Received: ' . $modelData);
+					}
+
 					// no uid passed. Create a new model.
 					// always set tstamp and crdate for new models (if not already set)
 					$modelData = array_merge(['tstamp'=>time(), 'mktime'=>time()], $modelData);
