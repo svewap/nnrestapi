@@ -26,6 +26,8 @@ class AbstractDistiller
 	 */
 	public function processData( &$data = [] ) 
 	{
+		if (!$data) return;
+
 		if (is_a($data, \TYPO3\CMS\Extbase\Persistence\Generic\QueryResult::class)) {
 			$data = $data->toArray();
 		} else if (is_a($data, \stdClass::class)) {
@@ -89,7 +91,6 @@ class AbstractDistiller
 	{
         if (!$keysToKeep) return;
 
-        $helper = \nn\t3::Settings();
 		$objHelper = \nn\t3::Obj();
         $flatResult = [];
 
@@ -102,9 +103,48 @@ class AbstractDistiller
             if (is_numeric($key)) {
 				$key = $path;
             }
-			$flatResult[$key] = $helper->getFromPath($path, $arr);
+			$val = $this->getFromPath($path, $arr);
+			if ($val !== null) {
+				$flatResult[$key] = $val;
+			}
         }
         $data = $flatResult;
     }
+
+
+	/**
+	 * Get value from nested array by dot-syntax, e.g. 'deep.nested.array'
+	 * ```
+	 * $this->getFromPath('a.b', ['a'=>['b'=>1]]);
+	 * ```
+	 * @return mixed
+	 */
+	public function getFromPath( $path = '', $setup = null ) {
+		
+		if (is_object($setup)) {
+			$setup = (array) $setup;
+		}
+
+		$parts = explode('.', $path);
+
+		$root = array_shift($parts);
+		$plugin = array_shift($parts);
+
+		$setup = $setup[$root] ?? null;
+		if (!$plugin) return $setup;
+
+		$setup = $setup[$plugin] ?? null;
+		if (!count($parts)) return $setup;
+
+		while (count($parts) > 0) {
+			$part = array_shift($parts);
+			if (count($parts) == 0) {
+				return isset($setup[$part]) && is_array($setup[$part]) ? $setup[$part] : ($setup[$part] ?? null); 
+			}
+			$setup = $setup[$part];
+		}
+
+		return $setup;
+	}
 
 }
