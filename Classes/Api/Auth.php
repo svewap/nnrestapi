@@ -64,7 +64,8 @@ class Auth extends AbstractApi {
 		if (!$feUser) return ['message'=>'User already logged out.'];
 		
 		\nn\t3::FrontendUser()->logout();
-		return ['message'=>'User successfully logged out.'];
+		\nn\rest::Session()->destroy();
+		return ['message'=>'User ' . $feUser['uid'] . ' successfully logged out.'];
 	}
 
 }

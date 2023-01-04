@@ -71,6 +71,26 @@ class Session extends \Nng\Nnhelpers\Singleton {
 	public function create( $token = null, $data = [] ) {
 		return $this->update( $token, $data );
 	}
+	
+	/**
+	 * Destroys a session
+	 * ```
+	 * \nn\rest::Session()->destroy();
+	 * \nn\rest::Session()->destroy( $identifier );
+	 * ```
+	 * @return array
+	 */
+	public function destroy( $token = null ) 
+	{
+		if (!$token) {
+			$jwt = \nn\t3::Request()->getJwt() ?: [];
+			$token = $jwt['token'] ?? false;
+		}
+		if ($token) {
+			$hashedToken = \nn\t3::Encrypt()->hash( $token );
+			\nn\t3::Db()->delete( self::TABLENAME, ['token'=>$hashedToken] );
+		}
+	}
 
 	/**
 	 * Update the current tstamp of a session.
