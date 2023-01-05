@@ -169,8 +169,8 @@ class rest {
 	/**
 	 * Throws an error that will be returned as JSON
 	 * ```
-	 * \nn\rest::Error( 'Damn.' );
-	 * \nn\rest::Error( 'Damn.', 403, 403123 );
+	 * \nn\rest::ApiError( 'Damn.' );
+	 * \nn\rest::ApiError( 'Damn.', 403, 403123 );
 	 * ```
 	 * @param string $text     		Error message
 	 * @param string $statusCode    http status code
@@ -178,6 +178,15 @@ class rest {
 	 * @return void
 	 */
 	public static function ApiError( $message = '', $statusCode = 0, $customErrorCode = '' ) {
+		throw new ApiError( $message, $statusCode, $customErrorCode );
+	}
+	
+	/**
+	 * Alias to `\nn\rest::ApiError()`
+	 * 
+	 * @see ApiError
+	 */
+	public static function Error( $message = '', $statusCode = 0, $customErrorCode = '' ) {
 		throw new ApiError( $message, $statusCode, $customErrorCode );
 	}
 }
