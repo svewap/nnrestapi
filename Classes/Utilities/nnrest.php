@@ -180,4 +180,13 @@ class rest {
 	public static function ApiError( $message = '', $statusCode = 0, $customErrorCode = '' ) {
 		throw new ApiError( $message, $statusCode, $customErrorCode );
 	}
+
+	/**
+	 * Alias to `\nn\rest::ApiError()`
+	 * 
+	 * @see ApiError
+	 */
+	public static function Error( $message = '', $statusCode = 0, $customErrorCode = '' ) {
+		throw new ApiError( $message, $statusCode, $customErrorCode );
+	}
 }
