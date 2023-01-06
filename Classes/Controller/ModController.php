@@ -115,7 +115,7 @@ class ModController extends ActionController
 			'rewriteCondExists'	=> $checkErrors ? \Nng\Nnrestapi\Service\EnvironmentService::rewriteCondExists() : true,
 			'feUser'			=> \nn\t3::FrontendUser()->get(),
 			'urlBase'			=> $urlBase,
-			'absApiUrlPrefix'	=> $urlBase . \nn\rest::Settings()->getApiUrlPrefix(),
+			'absApiUrlPrefix'	=> rtrim($urlBase, '/') . \nn\rest::Settings()->getApiUrlPrefix(),
 			'endpoints' 		=> $classMap,
 			'donate'			=> $donation,
 			'extConf'			=> \nn\t3::Environment()->getExtConf('nnrestapi')
