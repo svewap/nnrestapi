@@ -103,6 +103,11 @@ plugin.tx_nnrestapi {
 			languageHeader = x-locale, accept-language
 		}
 
+		# Automatically merge JSON request-body with Model? Can also be disabled per method with `@Api\AutoMerge(FALSE)`
+		autoMerge {
+			enabled = 1
+		}
+
 		# Settings for the response
 		response {
 			# headers to send with response. Merged with default headers (see \Nng\Nnrestapi\Utilities\Header::addControls)
