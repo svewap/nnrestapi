@@ -271,6 +271,37 @@ localization
         languageHeader = x-locale, accept-language
 
 
+autoMerge
+""""""""""""""
+.. container:: table-row
+
+   Property
+        autoMerge
+   Data type
+        array
+   Description
+        Controls if the JSON-data should automatically be merged with the Model.
+        By default, autoMerge is enabled. This can be changed by setting 
+        ``enabled = 0``.
+
+        It is also possible to enable / disable autoMerge for every endpoint
+        individually by using the ``@Api\AutoMerge()`` annotation.
+
+        Read :ref:`more here <annotations_automerge>`.
+
+        ::
+
+            plugin.tx_nnrestapi.settings.autoMerge {
+                
+                // disable autoMerge globally (default is 1 / enabled)
+                enabled = 0
+
+            }
+
+   Default
+        enabled = 1
+
+
 response.headers
 """"""""""""""
 .. container:: table-row

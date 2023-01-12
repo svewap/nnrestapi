@@ -121,6 +121,19 @@ array.
 
    }
 
+A nice feature: It is also possible to flatten the JSON-response by using an associative array and deep paths:
+
+.. code-block:: php
+
+   // Deep array: Properties of nested array are returned. Key is returned in dot-syntax 
+   public $keysToKeep = ['uid', 'images', 'title', 'images.0.publicUrl'];
+
+   // Associative array: Get deep nested property and map it to a new key
+   public $keysToKeep = ['uid'=>'uid', 'publicUrl'=>'images.0.publicUrl'];
+
+   // Mixture is also possible
+   public $keysToKeep = ['uid', 'title', 'publicUrl'=>'images.0.publicUrl'];
+
 
 .. _annotations_distiller_global:
 

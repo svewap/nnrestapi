@@ -67,7 +67,15 @@ like ``SysFileReferences`` or other models and objects get converted.
    You can see in the example above, that FileReferences are automatically converted to an object containing 
    ``title``, ``publicUrl`` and several more properties from the original ``sys_file_reference`` and ``sys_file``.
    If you only need the path to the image or file, you can set ``flattenFileReferences = 1`` in the TypoScript
-   settings for ``globalDistillers``.
+   settings, e.g.
+
+   .. code-block:: typoscript
+
+      plugin.tx_nnrestapi.settings.globalDistillers {
+         My\Extension\Extbase\Domain\Model\Example {
+            flattenFileReferences = 1
+         }
+      }
    
    The above example would then be flattened to this:
 
