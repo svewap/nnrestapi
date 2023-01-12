@@ -31,9 +31,10 @@ class Environment extends \Nng\Nnhelpers\Singleton
 
 		$serverVersion = $connection->getServerVersion();
 		$isPostgres = stripos($serverVersion, 'PostgreSQL') !== false;
-		
+		$method = \nn\t3::t3Version() < 11 ? 'fetchAll' : 'fetchAllAssociative';
+
 		if ($isPostgres) {
-			$result = $connection->fetchAllAssociative("
+			$result = $connection->{$method}("
 				SELECT 
 					COUNT(table_name) 
 				FROM 
@@ -46,7 +47,7 @@ class Environment extends \Nng\Nnhelpers\Singleton
 			return $result > 0;
 		}
 
-		if ($connection->fetchAllAssociative("SHOW TABLES like '{$tableName}'")) {
+		if ($connection->{$method}("SHOW TABLES like '{$tableName}'")) {
 			return true;
 		}
 		return false;
