@@ -167,7 +167,8 @@ class ApiController extends AbstractApiController
 	public function getArgumentsToApply( $endpoint, $request, $response ) 
 	{
 		$expectedArguments = $endpoint['methodArgs'];
-		
+		$autoMerge = $endpoint['autoMerge'] ?? $this->settings['autoMerge']['enabled'] == 1;
+
 		$modelData = $request->getBody();
 		$nothingToMerge = !$modelData;
 		$reqVars = $request->getArguments();
@@ -202,8 +203,12 @@ class ApiController extends AbstractApiController
 							$model = $existingModel;
 						} else {
 
-							// merge data from request with existing model
-							$model = \nn\t3::Obj( $existingModel )->merge( $modelData );
+							// merge data from request with existing model?
+							if ($autoMerge) {
+								$model = \nn\t3::Obj( $existingModel )->merge( $modelData );
+							} else {
+								$model = $existingModel;
+							}
 
 							// validate (use `@TYPO3\CMS\Extbase\Annotation\Validate` on properties of the model)
 							$errors = \nn\rest::Validator()->validateModel( $model );
