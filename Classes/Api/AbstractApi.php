@@ -12,6 +12,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 abstract class AbstractApi {
 
 	/**
+	 * @var int
+	 */
+	public $languageUid;
+	
+	/**
 	 * @var Request
 	 */
 	protected $request;
@@ -53,6 +58,15 @@ abstract class AbstractApi {
 		return $this;
 	}
 	
+	/**
+	 * Called AFTER all other properties have been set
+	 * (e.g. the `reponse`, `request`, `languageUid` etc.)
+	 * Can be overriden by classes extending this class
+	 * 
+	 * @return void
+	 */
+	public function initializeObject() {}
+
 	/**
 	 * Determines the current language requested by the frontend.
 	 * 

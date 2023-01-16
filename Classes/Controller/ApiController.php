@@ -57,7 +57,7 @@ class ApiController extends AbstractApiController
 
 		// checks, if LanguageAspect needs to be set to different language. Will decide, if language-overlay is loaded for records.
 		$overlayLanguageUid = $classInstance->determineLanguage( $endpoint );
-
+				
 		if ($overlayLanguageUid > 0) {
 			$site = \nn\rest::Settings()->getSite();
 			$language = $site->getLanguageById( $overlayLanguageUid );
@@ -72,6 +72,15 @@ class ApiController extends AbstractApiController
 			}
 		}
 
+		// add public accessible properties for convenience
+		$classInstance->languageUid = $overlayLanguageUid;
+		$classInstance->feUser = $request->getFeUser();
+
+		// now that all important things are set, we can call `initializeObject()`
+		if (method_exists($classInstance, 'initializeObject')) {
+			$classInstance->initializeObject();
+		}
+		
 		// check if there are `@Api\Security\*` issues, e.g. if IP was flagged or too many requests were made
 		if (!$classInstance->checkSecurity( $endpoint )) {			
 			$result = $response->unauthorized("{$endpoint['class']}->{$endpoint['method']}() has blocked the access during the security preflight.", 403001 );
