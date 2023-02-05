@@ -54,6 +54,12 @@ class PageResolver implements MiddlewareInterface {
 		if ($method == 'options') {
 			$response = \nn\t3::injectClass( \TYPO3\CMS\Core\Http\Response::class );
 			\nn\rest::Header()->addControls( $response );
+
+			// allow caching of preflight for future OPTIONS requests
+			\nn\rest::Header()->add( $response, 'Access-Control-Max-Age', '86400' );
+			\nn\rest::Header()->add( $response, 'Cache-Control', 'public, max-age=86400' );
+			\nn\rest::Header()->add( $response, 'Vary', 'origin' );
+			
 			$response = $response->withStatus( 204, 'No Content' );
 			return $response;
 		}
