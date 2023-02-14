@@ -18,6 +18,18 @@ class Session extends \Nng\Nnhelpers\Singleton
 	const TABLENAME = 'nnrestapi_sessions';
 
 	/**
+	 * Stores the current session vars after session was initialized
+	 * @var array
+	 */
+	private $sessionVars = [];
+	
+	/**
+	 * Stores the current (unhashed) JWT
+	 * @var string
+	 */
+	private $token = '';
+
+	/**
 	 * Get the session-data for a given JWT from the `nnrestapi_sessions` table.
 	 * We are __not__ using the standard Model/Repository methods here to increase performance.
      * ```
@@ -31,8 +43,12 @@ class Session extends \Nng\Nnhelpers\Singleton
 
 		$data = \nn\t3::Db()->findOneByValues( self::TABLENAME, ['token'=>$hashedToken] );
 		if (!$data) return [];
-		
+
 		$data['data'] = \nn\t3::Encrypt()->decode( $data['data'] );
+		$data['vars'] = \nn\t3::Encrypt()->decode( $data['vars'] );
+
+		$this->sessionVars = $data['vars'] ?: [];
+		$this->token = $token;
 		return $data;
 	}
 	
@@ -42,19 +58,28 @@ class Session extends \Nng\Nnhelpers\Singleton
 	 * We are __not__ using the standard Model/Repository methods here to increase performance.
      * ```
 	 * \nn\rest::Session()->update( $identifier, ['sid'=>'...'] );
+	 * \nn\rest::Session()->update( $identifier, ['sid'=>'...'], ['my'=>'vars'] );
 	 * ```
 	 * @return array
 	 */
-	public function update( $token = null, $data = [] ) 
+	public function update( $token = null, $data = [], $vars = false ) 
 	{
 		// create a hashed identifer. For security reasons no plaintext tokens are stored in DB.
 		$hashedToken = \nn\t3::Encrypt()->hash( $token );
 
+		if ($vars === false) {
+			$vars = $this->sessionVars ?: [];
+		}
+
+		$this->sessionVars = $vars;
+		
 		$data = [
 			'data' 		=> \nn\t3::Encrypt()->encode( $data ),
+			'vars' 		=> \nn\t3::Encrypt()->encode( $vars ),
 			'tstamp' 	=> time(),
 			'token'		=> $hashedToken,
 		];
+
 		if ($entry = $this->get($token)) {
 			return \nn\t3::Db()->update( self::TABLENAME, $data, $entry['uid'] );
 		}
@@ -65,12 +90,13 @@ class Session extends \Nng\Nnhelpers\Singleton
 	 * Alias to `update()`
 	 * ```
 	 * \nn\rest::Session()->create( $identifier, ['sid'=>'...'] );
+	 * \nn\rest::Session()->create( $identifier, ['sid'=>'...'], ['my'=>'vars'] );
 	 * ```
 	 * @return array
 	 */
-	public function create( $token = null, $data = [] ) 
+	public function create( $token = null, $data = [], $vars = false ) 
 	{
-		return $this->update( $token, $data );
+		return $this->update( $token, $data, $vars );
 	}
 	
 	/**
@@ -201,4 +227,46 @@ class Session extends \Nng\Nnhelpers\Singleton
 	}
 
 
+
+	/**
+	 * Get the current session vars.
+	 * ```
+	 * $vars = \nn\rest::Session()->getVars();
+	 * ```
+	 * @return  array
+	 */
+	public function getVars() 
+	{
+		return $this->sessionVars;
+	}
+
+	/**
+	 * Update the current session vars.
+	 * ```
+	 * // update and keep existing vars
+	 * \nn\rest::Session()->setVars( ['test'=>'OK'] );
+	 * 
+	 * // override all existing vars
+	 * \nn\rest::Session()->setVars( ['test'=>'OK'], false );
+	 * ```
+	 * @param   array  $vars
+	 * @param   boolean  $merge
+	 * @return  self
+	 */
+	public function setVars( $vars = [], $merge = true ) 
+	{
+		if ($merge) {
+			$vars = \nn\t3::Arrays( $this->sessionVars ?: [] )->merge( $vars );
+		}
+
+		$this->sessionVars = $vars;
+		if (!$this->token) return $this;
+
+		$hashedToken = \nn\t3::Encrypt()->hash( $this->token );
+		\nn\t3::Db()->update( self::TABLENAME, [
+			'vars' => \nn\t3::Encrypt()->encode( $this->sessionVars ),
+		], ['token'=>$hashedToken] );
+
+		return $this;
+	}
 }

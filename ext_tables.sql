@@ -22,6 +22,7 @@ CREATE TABLE nnrestapi_sessions (
 	token varchar(4096) DEFAULT '' NOT NULL,
 	tstamp int(11) unsigned DEFAULT '0' NOT NULL,
 	data mediumblob,
+	vars mediumblob,
 
 	PRIMARY KEY (uid)
 );
