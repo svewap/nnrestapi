@@ -26,9 +26,10 @@ $('.search').keyup(function () {
 	$('.search-icon').toggle( sword.length == 0 );
 	$('.clear-icon').toggle( sword.length > 0 );
 
+	var lowerSword = sword.toLowerCase();
 	$('.card').each(function () {
 		var $el = $(this);
-		$el.toggle( $el.text().indexOf(sword) > -1 );
+		$el.toggle( $el.text().toLowerCase().indexOf(lowerSword) > -1 );
 	});
 });
 
