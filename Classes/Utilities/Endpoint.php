@@ -180,6 +180,9 @@ class Endpoint extends \Nng\Nnhelpers\Singleton {
 		// `api/`-prefix not in URL? Then abort.
 		if (strpos($uri, $apiPrefix) !== 0) return null;
 
+		// `api/my/path/` ==> `api/my/path`
+		$uri = rtrim($uri, '/');
+
 		// `/api/test/something/1/2/3/4` => ['controller'=>'test', 'action'=>'something', 'uid'=>1, 'param1'=>'2', ...]
 		$numParamsToParse = count($this->uriToParameterMapping);
 		
