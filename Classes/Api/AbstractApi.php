@@ -59,13 +59,19 @@ abstract class AbstractApi {
 	}
 	
 	/**
+	 * 
+	 * @return void
+	 */
+	public function initializeObject() {}
+	
+	/**
 	 * Called AFTER all other properties have been set
 	 * (e.g. the `reponse`, `request`, `languageUid` etc.)
 	 * Can be overriden by classes extending this class
 	 * 
 	 * @return void
 	 */
-	public function initializeObject() {}
+	public function afterInitialization() {}
 
 	/**
 	 * Determines the current language requested by the frontend.

@@ -76,9 +76,9 @@ class ApiController extends AbstractApiController
 		$classInstance->languageUid = $overlayLanguageUid;
 		$classInstance->feUser = $request->getFeUser();
 
-		// now that all important things are set, we can call `initializeObject()`
-		if (method_exists($classInstance, 'initializeObject')) {
-			$classInstance->initializeObject();
+		// now that all important things are set, we can call `afterInitialization()`
+		if (method_exists($classInstance, 'afterInitialization')) {
+			$classInstance->afterInitialization();
 		}
 		
 		// check if there are `@Api\Security\*` issues, e.g. if IP was flagged or too many requests were made
