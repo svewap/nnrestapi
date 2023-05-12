@@ -75,6 +75,7 @@ class Request {
 			$this->body = is_array($this->rawBody) ? $this->rawBody : json_decode( $this->rawBody, true );
 		} else {
 			$this->body = json_decode( $this->rawBody, true ) ?: $this->rawBody ?: [];
+			if ($this->body == '{}') $this->body = [];
 		}
 
 		$this->uploadedFiles = $request->getUploadedFiles() ?: [];
