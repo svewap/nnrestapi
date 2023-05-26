@@ -192,7 +192,7 @@ class Access extends \Nng\Nnhelpers\Singleton {
 			// get port (`...:8090` -> `8090`), if defined in pattern
 			preg_match( '/(.*):([0-9\.\*]*)/', $pattern, $matches );
 
-			if ($port = $matches[2]) {
+			if ($port = $matches[2] ?? false) {
 				// remove port restriction, if ANY port was defined (`www.domain.de:*`) 
 				if ($port == '*') {
 					$pattern = preg_replace('/(.*):([0-9\.\*]*)/', '\1', $pattern);
