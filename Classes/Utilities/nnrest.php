@@ -171,13 +171,18 @@ class rest {
 	 * ```
 	 * \nn\rest::ApiError( 'Damn.' );
 	 * \nn\rest::ApiError( 'Damn.', 403, 403123 );
+	 * \nn\rest::ApiError( 'Damn.', 403, 403123, true );
 	 * ```
 	 * @param string $text     		Error message
 	 * @param string $statusCode    http status code
 	 * @param string $errorCode     custom code for JSON response
+	 * @param string $log     		TRUE if the error should be logged in the TYPO3 log
 	 * @return void
 	 */
-	public static function ApiError( $message = '', $statusCode = 0, $customErrorCode = '' ) {
+	public static function ApiError( $message = '', $statusCode = 0, $customErrorCode = '', $log = false ) {
+		if ($log) {
+			\nn\t3::Log()->error( 'nnrestapi', "[{$statusCode}/{$customErrorCode}] - {$message}" );
+		}
 		throw new ApiError( $message, $statusCode, $customErrorCode );
 	}
 	
