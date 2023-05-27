@@ -35,4 +35,18 @@ class ApiError extends \Error
 		$this->customErrorCode = $customErrorCode;
 		return $this;
 	}
+
+	/**
+	 * @return array
+	 */
+	public function toArray() 
+	{
+		return [
+			'code' 				=> $this->getCode(),
+			'message' 			=> $this->getMessage(),
+			'customErrorCode' 	=> $this->getCustomErrorCode(),
+			'file' 				=> $this->getFile(),
+			'line' 				=> $this->getLine(),
+		];
+	}
 }
