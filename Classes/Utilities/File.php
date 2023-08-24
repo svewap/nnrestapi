@@ -95,12 +95,12 @@ class File extends \Nng\Nnhelpers\Singleton {
 		if ($pathHelper = $this->uploadConfig['pathFinderClass'] ?? false) {
 			$this->uploadConfig = call_user_func( explode('::', $pathHelper), $request, $settings );
 			if (!$this->uploadConfig) {
-				\nn\t3::Exception("The method ${$pathHelper} for determining the fileUploadPath must return a valid configuration array.");
+				\nn\rest::ApiError("The method ${$pathHelper} for determining the fileUploadPath must return a valid configuration array.");
 			}
 		}
 
 		if (!$this->uploadConfig) {
-			\nn\t3::Exception(
+			\nn\rest::ApiError(
 				"Oups, no file-upload configuration found. 
 				Either the default TypoScript-setup of EXT:nnrestapi was 
 				not included – or you are missing a configuration at 
@@ -115,13 +115,13 @@ class File extends \Nng\Nnhelpers\Singleton {
 			$configKey = $matches[1];
 		}
 
-		// get configuration and class to encrypt / decrypt the data from TypoScript
-		$this->uploadEncryptConfig = $settings['fileUploadEncrypt'][$configKey ?: 'default'] ?? [];
+		// (!!!) EXPERIMENTAL. get configuration and class to encrypt / decrypt the data from TypoScript
+		$this->uploadEncryptConfig = $settings['fileUploadEncrypt'][$configKey] ?? [];
 
 		if ($class = $this->uploadEncryptConfig['encryptionClass'] ?? false) {
 			$this->uploadEncryptionClass = new $class($this->uploadEncryptConfig);
 			if (!$this->uploadEncryptionClass) {
-				\nn\t3::Exception("Oups, class for Encryption not found! Looked for: {$class}");
+				\nn\rest::ApiError("Oups, class for Encryption not found! Looked for: {$class}");
 			}
 		}
 
@@ -231,13 +231,13 @@ class File extends \Nng\Nnhelpers\Singleton {
 
 			// Zielordner erstellen – falls nicht vorhanden
 			if (!\nn\t3::File()->mkdir($targetPath)) {
-				\nn\t3::Exception("target-folder `{$targetPath}` doesn't exist and could not be created.");
+				\nn\rest::ApiError("target-folder `{$targetPath}` doesn't exist and could not be created.");
 			}
 
 			// Kritische Datei-Typen?
 			$srcFileName = pathinfo( $fileObj->getClientFilename(), PATHINFO_BASENAME);
 			if (\nn\t3::File()->isForbidden($srcFileName)) {
-				\nn\t3::Exception("Upload of filetype for `{$srcFileName}` not allowed!");
+				\nn\rest::ApiError("Upload of filetype for `{$srcFileName}` not allowed!", 403, true);
 			}
 
 			// Datei bereits verschoben? Dann vorhandene Datei nehmen.
@@ -252,9 +252,24 @@ class File extends \Nng\Nnhelpers\Singleton {
 
 				$targetFileName = \nn\t3::File()->moveUploadedFile( $fileObj, $targetPath . $srcFileName );
 				$targetFileName = \nn\t3::File()->stripPathSite( $targetFileName );
+
+				// was post-processing defined?
+				$postProcessing = $this->uploadConfig['postProcess'] ?? [];
+				if ($postProcessing) {
+					foreach ($postProcessing as $k=>$processingConfig) {
+						$methodToCall = $processingConfig['userFunc'] ?? false;
+						if (!$methodToCall) continue;
+						call_user_func_array(
+							explode('::', $methodToCall), 
+							[&$targetFileName, $targetPath, $processingConfig, $fileObj] 
+						);
+					}
+				}
+
 				$this->movedFileUploads[$fileKey] = $targetFileName;
 			}
 
+			// Encrypt files?
 			if ($this->uploadEncryptionClass) {
 				$this->uploadEncryptionClass->encrypt( $targetFileName, $targetPath, $fileObj );
 			}

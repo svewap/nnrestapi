@@ -5,6 +5,8 @@ namespace Nng\Nnrestapi\Annotations\Upload;
 /**
  * ## Api\Upload\Encrypt
  * 
+ * (!!!) EXPERIMENTAL. NOT IN USE YET.
+ * 
  * Allow encrypting uploaded files on-the-fly.
  * 
  * Examples for `@Api\Upload\Encrypt(...)`:

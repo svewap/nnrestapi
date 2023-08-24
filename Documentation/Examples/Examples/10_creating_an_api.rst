@@ -112,7 +112,6 @@ etc. is called.
    {
       /**
        * @Api\Access("public")
-       * 
        * @return array
        */
       public function getIndexAction()
@@ -334,6 +333,7 @@ Full example
        * INSERT a new article via: /api/article
        *
        * @Api\Access("public")
+       * @Api\Upload("default")
        * @param My\Extension\Domain\Model\Article $article
        */
       public function postIndexAction( $article = null )

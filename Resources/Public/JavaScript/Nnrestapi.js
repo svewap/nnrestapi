@@ -343,6 +343,7 @@ function restoreLastFormData() {
 	for (var i in data) {
 		var obj = data[i];
 		var $el = $(obj.selector);
+		if ($el.attr('type') == 'file') continue;
 		if ($el.length == 1) {
 			$el.val( obj.value );
 			$el.change();

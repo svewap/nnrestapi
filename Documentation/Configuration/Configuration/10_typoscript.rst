@@ -90,7 +90,7 @@ fileUploads
 
             plugin.tx_nnrestapi.settings.fileUploads {
 
-                // use @Api\Access("config[myUploadConfig]") at your method
+                // use @Api\Upload("config[myUploadConfig]") at your method
                 myUploadConfig {
 
                     // the path to use, if no other criteria below meet

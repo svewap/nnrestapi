@@ -127,6 +127,7 @@ Here is s step-by-step example:
         {
             /**
              * @Api\Access("*")
+             * @Api\Upload("default")
              * @return array
              */
             public function postIndexAction()
@@ -350,6 +351,7 @@ Let's use the above example and modify the scripts to automatically create a Mod
         {
             /**
              * @Api\Access("*")
+             * @Api\Upload("default")
              * @param MyModel $model
              * @return array
              */

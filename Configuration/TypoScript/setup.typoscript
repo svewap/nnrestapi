@@ -55,14 +55,29 @@ plugin.tx_nnrestapi {
 				defaultStoragePath = 1:/api/
 
 				// Optional: Use a custom class to return configuration
-				//pathFinderClass = Nng\Nnrestapi\Helper\UploadPathHelper::getUserUidPath
+				// pathFinderClass = Nng\Nnrestapi\Helper\UploadPathHelper::getUserUidPath
 
 				// target-path for file, file-0, file-1, ...
 				file = 1:/api/files/
+
+				// Optional: Post-Process files after upload
+				/*
+				postProcess {
+					10 {
+						userFunc = Nng\Nnrestapi\Helper\UploadPostProcessHelper::randomizeFilename
+					}
+					20 {
+						userFunc = Nng\Nnrestapi\Helper\UploadPostProcessHelper::imageMaxWidth
+						maxWidth = 3000
+						filetype = jpg
+						quality = 70
+					}
+				}
+				*/
 			}		
 		}
 
-		# Default settings for encrypting file-uploads
+		# (!!!) EXPERIMENTAL, NOT IN USE. Default settings for encrypting file-uploads
 		fileUploadEncrypt {
 
 			// Use this key in your endpoint annotation `@Api\Upload\Encrypt("config[keyname]")`

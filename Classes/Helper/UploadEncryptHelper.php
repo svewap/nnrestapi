@@ -7,9 +7,11 @@ use TYPO3\CMS\Core\Http\UploadedFile;
 /**
  * ## UploadEncryptHelper.
  * 
+ * (!!!) EXPERIMENTAL. NOT IN USE YET.
+ * 
  * Default (and example) helpers for encrypting files after upload.
  * 
- * You can use the Helpers by setting `pathFinderClass` in the TypoScript Setup:
+ * You can use the Helpers by setting `fileUploadEncrypt` in the TypoScript Setup:
  * ```
  * plugin.tx_nnrestapi.settings.fileUploadEncrypt.default {
  * 	encryptionClass = Nng\Nnrestapi\Helper\UploadEncryptHelper

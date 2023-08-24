@@ -113,8 +113,8 @@ class PageResolver implements MiddlewareInterface {
 			\nn\rest::Header()->exception( $e->getMessage(), 500 );
 			\nn\t3::Exception( $e->getMessage() );
 		} catch( \Error $e ) {
-			\nn\rest::Header()->exception( $e->getMessage(), 500 );
-			\nn\t3::Error( $e->getMessage() );
+			\nn\rest::Header()->exception( $e->getMessage(), $e->getCode() );
+			\nn\t3::Error( $e->getMessage(), $e->getCode() );
 		}
 
 		return $response;
