@@ -38,11 +38,10 @@ $('.clear-icon').click(() => {
 });
 
 // Restore last filter values from localStorage
-getFromStorage( 'filters' ).then(( prevFilters ) => {
-	filters = prevFilters;
-	$('#hide-nnrestapi').prop('checked', filters.hideNnrestapi).change();
-	$('.search').val(filters.sword || '').keyup();
-});
+let prevFilters = getFromStorage( 'filters' )
+filters = prevFilters;
+$('#hide-nnrestapi').prop('checked', filters.hideNnrestapi).change();
+$('.search').val(filters.sword || '').keyup();
 
 // Restore last form values from localStorage
 restoreLastFormData();
@@ -87,16 +86,15 @@ $('.kickstart-packages .readme').click(function () {
 	return false;
 });
 
-getFromStorage( 'kickstarts' ).then(( prevConfig ) => {
-	if (!prevConfig) {
-		prevConfig = {};
-	}
-	$('.kickstarts-config [data-field]').each(function () {
-		var $me = $(this);
-		$me.val( prevConfig[$me.data().field] || '' );
-	});
-	$('.kickstarts-config input').first().change();
+let prevConfig = getFromStorage( 'kickstarts' )
+if (!prevConfig) {
+	prevConfig = {};
+}
+$('.kickstarts-config [data-field]').each(function () {
+	var $me = $(this);
+	$me.val( prevConfig[$me.data().field] || '' );
 });
+$('.kickstarts-config input').first().change();
 
 /**
  * Authenticate
@@ -110,9 +108,10 @@ $('.login-btn').click(() => {
 	$('.reqtoken, .reqcookie').val('');
 
 	sendRequest( 'post', url, {username, password} ).then(( data ) => {
-		saveInStorage('fe_typo_user_jwt', data.token || '').then(() => {
-			updateCredentialsFromStorage().then( updateFeUserStatus );
-		});
+		saveInStorage('fe_typo_user_jwt', data.token || '')
+		saveInStorage('fe_typo_user_cookie', data.cookie || '')
+		updateCredentialsFromStorage()
+		updateFeUserStatus()
 	});
 });
 
@@ -123,9 +122,10 @@ $('.login-btn').click(() => {
 $('.logout-btn').click(() => {
 	var url = $('[data-logout-url]').data().logoutUrl;
 	sendRequest( 'get', url ).then(( data ) => {
-		saveInStorage('fe_typo_user_jwt', '').then(() => {
-			updateCredentialsFromStorage().then( updateFeUserStatus );
-		});
+		saveInStorage('fe_typo_user_jwt', '')
+		saveInStorage('fe_typo_user_cookie', '')
+		updateCredentialsFromStorage()
+		updateFeUserStatus()
 	});	
 });
 
@@ -178,12 +178,11 @@ $testbed.find('.reqtype').change(function () {
 function updateCredentialsFromStorage() {
 	return new Promise((resolve, reject) => {
 		var cookieName = 'fe_typo_user';
-		var cookie = document.cookie.match('(^|;)\\s*' + cookieName + '\\s*=\\s*([^;]+)')?.pop() || '';
-		getFromStorage('fe_typo_user_jwt').then((token) => {
-			$('.reqtoken').val( token );
-			$('.reqcookie').val( cookie );	
-			resolve();
-		});	
+		var token = getFromStorage('fe_typo_user_jwt')
+		var cookie = getFromStorage('fe_typo_user_cookie')
+		$('.reqtoken').val( token );
+		$('.reqcookie').val( cookie );	
+		resolve();
 	});
 }
 
@@ -293,13 +292,12 @@ function sendRequest( reqType, url, body, silent = false ) {
 $endpoints.find('.compose').click(function (e) {
 	var reqData = $(this).closest('[data-reqtype]').data();
 	var uid = reqData.uid;
-	getFromStorage( uid ).then(( prevReq ) => {
-		$('.requid').val( reqData.uid );
-		$('.reqtype').val( prevReq.type || reqData.reqtype ).change();
-		$('.requrl').val( prevReq.url || reqData.requrl );	
-		var body = prevReq.body || (reqData.example ? JSON.stringify(reqData.example) : '');
-		$('.reqbody').val( body );	
-	});
+	var prevReq = getFromStorage( uid )
+	$('.requid').val( reqData.uid );
+	$('.reqtype').val( prevReq.type || reqData.reqtype ).change();
+	$('.requrl').val( prevReq.url || reqData.requrl );	
+	var body = prevReq.body || (reqData.example ? JSON.stringify(reqData.example) : '');
+	$('.reqbody').val( body );	
 	
 	$('.request-form, .compose').removeClass('pump');
 	setTimeout(() => {
@@ -341,16 +339,15 @@ function saveCurrentFormData() {
  * @returns Promise
  */
 function restoreLastFormData() {
-	getFromStorage( 'lastRequest' ).then(( data ) => {
-		for (var i in data) {
-			var obj = data[i];
-			var $el = $(obj.selector);
-			if ($el.length == 1) {
-				$el.val( obj.value );
-				$el.change();
-			}
+	var data = getFromStorage( 'lastRequest' )
+	for (var i in data) {
+		var obj = data[i];
+		var $el = $(obj.selector);
+		if ($el.length == 1) {
+			$el.val( obj.value );
+			$el.change();
 		}
-	});
+	}
 }
 
 /**
@@ -359,10 +356,8 @@ function restoreLastFormData() {
  * @returns Promise 
  */
 function getFromStorage( key = '' ) {
-	return new Promise(( resolve, reject ) => {
-		var result = (JSON.parse(localStorage.getItem( key )) || {_:{}})._;
-		resolve( result );
-	});
+	var result = (JSON.parse(localStorage.getItem( key )) || {_:{}})._;
+	return result
 }
 
 /**
@@ -371,19 +366,15 @@ function getFromStorage( key = '' ) {
  * @returns Promise 
  */
 function saveInStorage( key = '', val = '' ) {
-	return new Promise(( resolve, reject ) => {
-		localStorage.setItem( key, JSON.stringify({_:val}) );
-		resolve();
-	});
+	localStorage.setItem( key, JSON.stringify({_:val}) );
 }
 
 /**
  * Init
  * 
  */
-updateCredentialsFromStorage().then(() => {
-	updateFeUserStatus();
-});
+updateCredentialsFromStorage()
+updateFeUserStatus()
 
 if ($.fn.tooltip) {
 	$('[data-toggle="tooltip"]').tooltip();

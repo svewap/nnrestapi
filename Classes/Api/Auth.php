@@ -45,6 +45,7 @@ class Auth extends AbstractApi {
 		]);
 		
 		$feUser['token'] = $token;
+		$feUser['cookie'] = \nn\t3::FrontendUser()->getCookie();
 		return $feUser;
 	}
 
