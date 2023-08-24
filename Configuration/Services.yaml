@@ -16,5 +16,13 @@ services:
       - '../Classes/Domain/Model/*'
       - '../Classes/Utilities/nnrest.php'
 
+  Nng\Nnrestapi\Resource\EventListener\ModifyFileDumpEventListener:
+    tags:
+      - name: event.listener
+        identifier: 'nng/nnrestapi/modify-file-dump'
+
+  Nng\Nnrestapi\Controller\FileDumpController:
+    public: true
+
   Nng\Nnrestapi\Controller\ModController:
     tags: ['backend.controller']

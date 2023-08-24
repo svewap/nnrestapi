@@ -1,6 +1,8 @@
 <?php 
 
 namespace Nng\Nnrestapi\Utilities;
+
+use Nng\Nnrestapi\Helper\AbstractUploadEncryptHelper;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -32,6 +34,18 @@ class File extends \Nng\Nnhelpers\Singleton {
 	 * @var array
 	 */
 	protected $uploadConfig = [];
+	
+	/**
+	 * Settings for file-encryption
+	 * @var array
+	 */
+	protected $uploadEncryptConfig = [];
+
+	/**
+	 * Instance of the encryption class
+	 * @var AbstractUploadEncryptHelper
+	 */
+	protected $uploadEncryptionClass;
 
 	/**
 	 * Prüft das Request-JSON rekursiv nach `UPLOAD:/file-x` Einträgen.
@@ -94,6 +108,24 @@ class File extends \Nng\Nnhelpers\Singleton {
 			");
 		}
 
+		// get settings for encryption (can be set in `@Api\Upload\Encrypt("config[name]")`)
+		$configKey = $request->getEndpoint()['uploadEncryptConfig'] ?? false;
+
+		if (preg_match('/config\[(.*)\]/', $configKey, $matches)) {
+			$configKey = $matches[1];
+		}
+
+		// get configuration and class to encrypt / decrypt the data from TypoScript
+		$this->uploadEncryptConfig = $settings['fileUploadEncrypt'][$configKey ?: 'default'] ?? [];
+
+		if ($class = $this->uploadEncryptConfig['encryptionClass'] ?? false) {
+			$this->uploadEncryptionClass = new $class($this->uploadEncryptConfig);
+			if (!$this->uploadEncryptionClass) {
+				\nn\t3::Exception("Oups, class for Encryption not found! Looked for: {$class}");
+			}
+		}
+
+		// start processing the file uploads
 		$this->processFileUploadsInRequestRecursive( $body );
 
 		$request->setBody( $body );
@@ -212,9 +244,19 @@ class File extends \Nng\Nnhelpers\Singleton {
 			if ($existingFile = $this->movedFileUploads[$fileKey] ?? false) {
 				$targetFileName = $existingFile;
 			} else {
+
+				// if a encryptionClass was defined: ask it to rename the file
+				if ($this->uploadEncryptionClass) {
+					$srcFileName = $this->uploadEncryptionClass->getFilename( $srcFileName, $targetPath, $fileObj );
+				}
+
 				$targetFileName = \nn\t3::File()->moveUploadedFile( $fileObj, $targetPath . $srcFileName );
 				$targetFileName = \nn\t3::File()->stripPathSite( $targetFileName );
 				$this->movedFileUploads[$fileKey] = $targetFileName;
+			}
+
+			if ($this->uploadEncryptionClass) {
+				$this->uploadEncryptionClass->encrypt( $targetFileName, $targetPath, $fileObj );
 			}
 
 			return $targetFileName;

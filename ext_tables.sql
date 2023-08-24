@@ -15,6 +15,13 @@ CREATE TABLE fe_users (
 );
 
 #
+# Table structure for table 'sys_file_storage'
+#
+CREATE TABLE sys_file_storage (
+	nnrestapi_config varchar(255) DEFAULT '' NOT NULL
+);
+
+#
 # Table structure for table 'nnrestapi_sessions'
 #
 CREATE TABLE nnrestapi_sessions (

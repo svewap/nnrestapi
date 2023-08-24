@@ -197,7 +197,7 @@ class Session extends \Nng\Nnhelpers\Singleton
 	 * 
 	 * Example:
 	 * ```
-	 * \nn\t3::Session()->start( $sessionIdentifier, $feUserUid, $request );
+	 * \nn\rest::Session()->start( $sessionIdentifier, $feUserUid, $request );
 	 * ```
 	 * @return string
 	 */

@@ -61,7 +61,35 @@ plugin.tx_nnrestapi {
 				file = 1:/api/files/
 			}		
 		}
+
+		# Default settings for encrypting file-uploads
+		fileUploadEncrypt {
+
+			// Use this key in your endpoint annotation `@Api\Upload\Encrypt("config[keyname]")`
+			default {
+				// Class with methods for encrypting / decrypting files
+				encryptionClass = Nng\Nnrestapi\Helper\UploadEncryptHelper
+
+				// specials configuration for the default encrypter
+				fileEncryptionBlocks = 255
+				cipher = AES-128-CBC
+			}
+		}
 		
+		# Settings for FileStorage (can be selected in the FileStorage)
+		sysFileStoragePresets {
+			beUsersOnly {
+				label = Only backend-users can access files
+				className = Nng\Nnrestapi\Hooks\FileDumpHook
+				accessGroups = be_users
+			}
+			feUsersOnly {
+				label = Only frontend- and backend-users can access files
+				className = Nng\Nnrestapi\Hooks\FileDumpHook
+				accessGroups = fe_users, be_users
+			}
+		}
+
 		# Default values for new entries
 		insertDefaultValues {
 			/*

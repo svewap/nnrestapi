@@ -12,3 +12,6 @@ disablePreCheck = 0
 
 # cat=basic/misc; type=boolean; label=Disable donation information
 disableDonationWarning = 0
+
+# cat=basic/misc; type=text; label=Key for file encryption
+fileEncryptionKey =

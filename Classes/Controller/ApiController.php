@@ -151,7 +151,7 @@ class ApiController extends AbstractApiController
 		if (is_a($result, \TYPO3\CMS\Core\Http\Response::class)) {
 			return $result;
 		}
-		
+
 		$response->setBody( $result );
 		$json = $response->render();
 

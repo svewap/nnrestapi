@@ -48,6 +48,9 @@ call_user_func(
 			'className' => \Nng\Nnrestapi\Xclass\HiddenRestriction::class
 		];
 
+		// Register eID for encrypted file download
+		$GLOBALS['TYPO3_CONF_VARS']['FE']['eID_include']['dumpEncFile'] = \Nng\Nnrestapi\Controller\FileDumpController::class . '::dumpAction';
+
 		// Hook in `/sysext/core/Classes/Authentication/AbstractUserAuthentication.php` to auth the frontend-user
 		$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_userauth.php']['postUserLookUp']['nnrestapi'] = \Nng\Nnrestapi\Hooks\FrontendUserAuthenticationHook::class . '->postUserLookUp';
 	},

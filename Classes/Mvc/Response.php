@@ -417,6 +417,18 @@ class Response
 		$this->message = $message;
 		return $this;
 	}
+	
+	/**
+	 * Sets the message of the Response
+	 * 
+	 * @param   string  $message  
+	 * @return  self
+	 */
+	public function addCookie($cookie) 
+	{
+		$this->response = $this->response->withAddedHeader('Set-Cookie', $cookie);
+		return $this;
+	}
 
 	/**
 	 * Return the currently generated Response-Object itself
