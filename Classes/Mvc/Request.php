@@ -41,6 +41,11 @@ class Request {
      * @var array
      */
     protected $uploadedFiles = [];
+    
+	/**
+     * @var array
+     */
+    protected $uploadedSysFiles = [];
 
     /**
      * @var string
@@ -307,4 +312,19 @@ class Request {
 		return $this->feUser && $this->feUser['nnrestapi_admin'];
 	}
 
+	/**
+	 * @return  array
+	 */
+	public function getUploadedSysFiles() {
+		return $this->uploadedSysFiles;
+	}
+
+	/**
+	 * @param   array  $uploadedSysFiles  
+	 * @return  self
+	 */
+	public function setUploadedSysFiles($uploadedSysFiles) {
+		$this->uploadedSysFiles = $uploadedSysFiles;
+		return $this;
+	}
 }

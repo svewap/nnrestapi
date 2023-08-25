@@ -4,13 +4,14 @@ namespace Nng\Nnrestapi\Utilities;
 
 use Nng\Nnrestapi\Helper\AbstractUploadEncryptHelper;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Resource\ResourceFactory;
 
 /**
  * Helper zum Bearbeiten von Dateien und Uploads
  * 
  */
-class File extends \Nng\Nnhelpers\Singleton {
-
+class File extends \Nng\Nnhelpers\Singleton 
+{	
 	/**
 	 * Prefix im JSON, der für einen Dateiupload verwendet wird.
 	 * @var string
@@ -25,9 +26,15 @@ class File extends \Nng\Nnhelpers\Singleton {
 	
 	/**
 	 * Dateien, die im POST-Container des Requests hochgeladen wurden
-	 * @var array
+	 * @var array<\TYPO3\CMS\Core\Http\UploadedFile>
 	 */
 	protected $uploadedFiles = [];
+	
+	/**
+	 * Uploads als TYPO3 SysFiles
+	 * @var array<\TYPO3\CMS\Core\Resource\File>
+	 */
+	protected $uploadedSysFiles = [];
 	
 	/**
 	 * Einstellungen für Dateiupload
@@ -60,7 +67,7 @@ class File extends \Nng\Nnhelpers\Singleton {
 	{
 		$body = $request->getBody();
 		if (!$body || !is_array($body)) return;
-		
+
 		$this->uploadedFiles = $request->getUploadedFiles();
 		$settings = $request->getSettings();
 
@@ -129,6 +136,7 @@ class File extends \Nng\Nnhelpers\Singleton {
 		$this->processFileUploadsInRequestRecursive( $body );
 
 		$request->setBody( $body );
+		$request->setUploadedSysFiles( $this->uploadedSysFiles );
 		return $this;
 	}
 
@@ -267,16 +275,21 @@ class File extends \Nng\Nnhelpers\Singleton {
 				}
 
 				$this->movedFileUploads[$fileKey] = $targetFileName;
-			}
 
-			// Encrypt files?
-			if ($this->uploadEncryptionClass) {
-				$this->uploadEncryptionClass->encrypt( $targetFileName, $targetPath, $fileObj );
+				// Encrypt files?
+				if ($this->uploadEncryptionClass) {
+					$this->uploadEncryptionClass->encrypt( $targetFileName, $targetPath, $fileObj );
+				}
+
+				$sysFile = \nn\t3::Fal()->getFalFile( $targetFileName );
+				$this->uploadedSysFiles[$fileKey] = $sysFile;
+
 			}
 
 			return $targetFileName;
 		}
 
+\nn\t3::debug($this->uploadedSysFiles);
 		return $placeholder;
 	}
 

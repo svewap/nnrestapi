@@ -112,15 +112,22 @@ Here is s step-by-step example:
     
     You **definitely don't want to do this** in a production environment!
 
+    In the following example we are using ``$this->request->getUploadedSysFiles()`` to get
+    a list of all files uploaded. They are returned as an associative array.
+    
+    Then we use some of the ``EXT:nnhelpers`` methods to set them to our Model.
+    You can find other examples for setting the fields in the section ``getUploadedSysFiles()``
+    :ref:`on this page <routing_variables>`.
+
     .. code-block:: php
 
         <?php
         namespace My\Extname\Api;
 
         use Nng\Nnrestapi\Annotations as Api;
-		use Nng\Nnrestapi\Api\AbstractApi;
-		
-		/**
+        use Nng\Nnrestapi\Api\AbstractApi;
+        
+        /**
     	 * @Api\Endpoint()
     	 */
         class Index extends AbstractApi 
@@ -132,8 +139,20 @@ Here is s step-by-step example:
              */
             public function postIndexAction()
             {
-                $body = $this->request->getBody();
-                return $body;
+                // create a new Entry-model
+                $entry = new \My\Extension\Domain\Model\Entry;
+
+                // get the uploaded files as \TYPO3\CMS\Core\Resource\File
+                $files = $this->request->getUploadedSysFiles();
+
+                // add uploaded files to the ObjectStorage of the model. 
+                // nice: They will automatically be converted to \TYPO3\CMS\Extbase\Domain\Model\FileReference
+                \nn\t3::Fal()->setInModel( $entry, 'files', $files );
+                
+                // persist the Entry
+                \nn\t3::Db()->save($entry);
+
+                return ['result' => $entry];
             }
         }
 
@@ -252,8 +271,8 @@ Let's use the above example and modify the scripts to automatically create a Mod
         namespace My\Extname\Domain\Model;
 
         use \TYPO3\CMS\Extbase\Domain\Model\FileReference;
-		use \Nng\Nnrestapi\Domain\Model\AbstractRestApiModel;
-		
+        use \Nng\Nnrestapi\Domain\Model\AbstractRestApiModel;
+        
         class MyModel extends AbstractRestApiModel
         {
             /**
@@ -342,9 +361,9 @@ Let's use the above example and modify the scripts to automatically create a Mod
 
         use My\Extname\Domain\Model\MyModel;
         use Nng\Nnrestapi\Annotations as Api;
-		use Nng\Nnrestapi\Api\AbstractApi;
-		
- 		/**
+        use Nng\Nnrestapi\Api\AbstractApi;
+        
+        /**
     	 * @Api\Endpoint()
     	 */
         class Index extends AbstractApi 

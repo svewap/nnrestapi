@@ -161,6 +161,32 @@ Here is an list of the most-used methods and variables you can access in ``$this
 |                                            |    ]                                                                |
 |                                            |                                                                     |
 +--------------------------------------------+---------------------------------------------------------------------+
+| ``$this->request->getUploadedSysFiles()``  | Returns an array of the uploaded files, as SysFiles                 |
+|                                            |                                                                     |
+|                                            | .. code-block:: php                                                 |
+|                                            |                                                                     |
+|                                            |    [                                                                |
+|                                            |       'file-0' => TYPO3\CMS\Core\Resource\File,                     |
+|                                            |       'file-1' => TYPO3\CMS\Core\Resource\File,                     |
+|                                            |       ...                                                           |
+|                                            |    ]                                                                |
+|                                            |                                                                     |
+|                                            | Inside of your endpoint you can use the EXT:nnhelpers methods to    |
+|                                            | add them to a new or existing model:                                |
+|                                            |                                                                     |
+|                                            | .. code-block:: php                                                 |
+|                                            |                                                                     |
+|                                            |    // append all new files to a Model:                              |
+|                                            |    $files = $this->request->getUploadedSysFiles();                  |
+|                                            |    \nn\t3::Fal()->attach( $myModel, 'files', $files );              |
+|                                            |                                                                     |
+|                                            |    // append one file to a model:                                   |
+|                                            |    \nn\t3::Fal()->attach( $myModel, 'files', $files['file-0'] )     |
+|                                            |                                                                     |
+|                                            |    // attach (replace) them in a Model:                             |
+|                                            |    \nn\t3::Fal()->setInModel( $myModel, 'files', $files )           |
+|                                            |                                                                     |
++--------------------------------------------+---------------------------------------------------------------------+
 | ``$this->request->getServerParams()``      | Returns the ``$_SERVER`` array of the request                       |
 |                                            |                                                                     |
 |                                            | .. code-block:: php                                                 |
