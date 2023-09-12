@@ -73,8 +73,8 @@ class RequestParser implements MiddlewareInterface {
 	 * 
 	 * @return void
 	 */
-	public function handler() {
-
+	public function handler() 
+	{
 		// Ist es ein relevanter RequestType?
 		$reqMethod = $_SERVER['REQUEST_METHOD'] ?? [];
 		if (!in_array($reqMethod, $this->requestMethodsToParse)) return;

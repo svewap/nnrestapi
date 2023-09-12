@@ -17,6 +17,17 @@ return [
 		],
 
 		// Resolve the request, forward to ApiController
+		'nnrestapi/cachehashfix' => [
+			'target' => \Nng\Nnrestapi\Middleware\CacheHashFixer::class,
+			'before' => [
+				'typo3/cms-frontend/page-resolver',
+			],
+			'after' => [
+				'typo3/cms-frontend/site',
+			],
+		],
+
+		// Resolve the request, forward to ApiController
 		'nnrestapi/resolver' => [
 			'target' => \Nng\Nnrestapi\Middleware\PageResolver::class,
 			'before' => [
