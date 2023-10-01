@@ -102,7 +102,7 @@ class File extends \Nng\Nnhelpers\Singleton
 		if ($pathHelper = $this->uploadConfig['pathFinderClass'] ?? false) {
 			$this->uploadConfig = call_user_func( explode('::', $pathHelper), $request, $settings );
 			if (!$this->uploadConfig) {
-				\nn\rest::ApiError("The method ${$pathHelper} for determining the fileUploadPath must return a valid configuration array.");
+				\nn\rest::ApiError("The method {${$pathHelper}} for determining the fileUploadPath must return a valid configuration array.");
 			}
 		}
 
