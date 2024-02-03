@@ -11,18 +11,18 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 /**
  * PageResolver MiddleWare.
- * 
+ *
  * Takes care of analysing the request and checking, if an Endpoint was defined for the request.
  * Creates an Instance of the `ApiController` which will then handle the actual method call in
  * the Endpoint.
- * 
+ *
  * Request handling in MiddleWare / TYPO3 docs:
  * https://bit.ly/3GBcveH
- * 
+ *
  */
 class PageResolver implements MiddlewareInterface {
-		
-	/** 
+
+	/**
 	 * @var \Nng\Nnrestapi\Mvc\Response
 	 */
     private $response;
@@ -32,13 +32,19 @@ class PageResolver implements MiddlewareInterface {
 	 *	@param RequestHandlerInterface $handler
 	 *	@return ResponseInterface
 	 */
-	public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface 
+	public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
 	{
-		// ugly workaround until https://forge.typo3.org/issues/99417 is resolved:
-		// Force rerendering of TypoScript, even if page was cached by creating a "fake" uncachable `INT`-Object
-		$request->getAttribute('frontend.controller')->config['INTincScript']['__'] = [];
 
-		// Initialize the Settings singleton. Must be done after `typo3/cms-frontend/site` MiddleWare 
+        $site = $request->getAttribute('site');
+        if (!isset($site->getConfiguration()['nnrestapi'])) {
+            return $handler->handle($request);
+        }
+
+        // ugly workaround until https://forge.typo3.org/issues/99417 is resolved:
+        // Force rerendering of TypoScript, even if page was cached by creating a "fake" uncachable `INT`-Object
+        $request->getAttribute('frontend.controller')->config['INTincScript']['__'] = [];
+
+		// Initialize the Settings singleton. Must be done after `typo3/cms-frontend/site` MiddleWare
 		// and before `\nn\rest::Settings()` is used anywhere
 		\nn\rest::Settings()->setRequest( $request );
 
@@ -49,7 +55,7 @@ class PageResolver implements MiddlewareInterface {
 		if ($endpoint === null) {
 			return $handler->handle($request);
 		}
-		
+
 		// `OPTIONS` prerequest? Then abort with "am there, everything ok!"
 		if ($method == 'options') {
 			$response = \nn\t3::injectClass( \TYPO3\CMS\Core\Http\Response::class );
@@ -59,7 +65,7 @@ class PageResolver implements MiddlewareInterface {
 			\nn\rest::Header()->add( $response, 'Access-Control-Max-Age', '86400' );
 			\nn\rest::Header()->add( $response, 'Cache-Control', 'public, max-age=86400' );
 			\nn\rest::Header()->add( $response, 'Vary', 'origin' );
-			
+
 			$response = $response->withStatus( 204, 'No Content' );
 			return $response;
 		}
@@ -78,7 +84,7 @@ class PageResolver implements MiddlewareInterface {
 			\nn\rest::Header()->addControls( $response );
 			$response = $response->withStatus( 404, 'Not found' );
 			$response->getBody()->write(json_encode([
-				'status'	=> 404, 
+				'status'	=> 404,
 				'error'		=> 'RestApi-endpoint not found. Based on your request the endpoint would be `' . $classMethodInfo . '`',
 				'code'		=> 404,
 			]));
